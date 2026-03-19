@@ -165,14 +165,14 @@
     </div>
 </div>
 <script>
-    // const today = new Date();
-    // const currentYear = today.getFullYear();
-    // const elements = document.querySelectorAll('.myClass, [name="año_actual"]');
-    // document.addEventListener("DOMContentLoaded",()=> {
-    // console.log(elements)
-    // elements.forEach((item) => {
-    //     item.innerHTML = currentYear;});
-    // });
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const elements = document.querySelectorAll('.myClass, [name="año_actual"]');
+    document.addEventListener("DOMContentLoaded",()=> {
+    console.log(elements)
+    elements.forEach((item) => {
+        item.innerHTML = currentYear;});
+    });
 </script>
 <script src="{{ url_for('static', filename='js/general.js')}}"></script>
 {% endblock %}
