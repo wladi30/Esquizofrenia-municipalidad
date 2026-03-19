@@ -9,20 +9,41 @@ elements.forEach((item) => {
 });
 // Esto sirve para deolver las paginas en cuanto se produzca un error de url, la idea es que se use cuando el usuario acceda a una pagina que no deberia y le tira error
 // Usa back-link
+
+// var element = document.getElementById('back-link');
+// element.setAttribute('href', document.referrer);
+// element.onclick = function() {
+//   history.back();
+//   return false;
+// }
+
 var element = document.getElementById('back-link');
-element.setAttribute('href', document.referrer);
-element.onclick = function() {
-  history.back();
-  return false;
+if (element) {
+    element.setAttribute('href', document.referrer);
+    element.onclick = function() {
+        history.back();
+        return false;
+    }
 }
 // esta es una forma direfente de obtener el año, en este caso lo usare como una variable para poder usarlo en filtros por años
-const currentYearV2 = new Date().getFullYear();
-const filteredData = data.filter(item => {
-  return new Date(item.date).getFullYear() === currentYearV2;
-});
-console.log(filteredData);
+
+// const currentYearV2 = new Date().getFullYear();
+// const filteredData = data.filter(item => {
+//   return new Date(item.date).getFullYear() === currentYearV2;
+// });
+// console.log(filteredData);
+
+export const currentYearV2 = new Date().getFullYear();
+if (typeof data !== 'undefined' && data !== null) {
+    const filteredData = data.filter(item => {
+        return new Date(item.date).getFullYear() === currentYearV2;
+    });
+    console.log(filteredData);
+} else {
+    console.warn("La variable 'data' no está definida en esta página.");
+}
+
 // la idea de esto es obtener el año y restarlo para obtener los talleres anteriores , etc
 
 // IMPORTANTE, podria ser buena idea hacer un export con todo lo demas, jamas se me habia ocurrido y lo aprendi hace poco que se puede, podria separar gran parte del codigo de este modo
 //asi para cuando tenga que hacer unos arreglos o debug pueda encargarme de revisar mas a detaller
-export default currentYearV2;

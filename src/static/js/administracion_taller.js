@@ -1,5 +1,5 @@
 // estoy haciendo un import de general que trae la constante currentYearV2, esta me da el año actual el cual que lo usare como
-import currentYearV2 from "./general"
+import {currentYearV2} from "./general"
 // Aqui doy inicio al js principal que se encargara de casi todo sobre administracion de talleres
 
 // el de aca sera lo que definira a lo que se muestra en la pag de talleres, aqui hare definiciones de cuandos talleres se muestran por pagina al igual que setear cuales seran los filtros
@@ -40,9 +40,31 @@ const GestionTalleres = {
     // 
     cargarCategorias: function() {
         fetch('/funcionario/api/categoria')
-        then.response
+            .then(response => response.json())
+            .then(data => {
+                // aqui lo pase a convertir en un array
+                this.config.data.categorias = data;
+                const selectCategoria = document.getElementById('categoria');
+                // aqui lo que hago (ademas de ponerle un texto para mayor indicacion) le coloco un valor por default , si no tiene esto puede dar un error
+                selectCategoria.innerHTML = '<option value="">Seleccione categoría...</option>';
+                data.forEach(cat => {
+                    // hago uso de la id categoria y descripcion de la base dedatos, podria tambien usdar las que tengo creadas en mi app de funcionario
+                    const option = document.createElement('option');
+                    option.value = cat.ID_CATEGORIA;
+                    option.textContent = cat.DESCRIPCION_CATEGORIA;
+                    selectCategoria.appendChild(option);
+                });
+            })
+            // un catch simplemente, tal vez le podria poner un log para mas debug?
+            .catch(error => {
+                console.error('Error cargando categorías:', error);
+                this.mostrarError('No se pudieron cargar las categorías.');
+            });
     },
-    cargarTalleristasSelect: function(){},
+    // aqui va la parte d elos talleristas
+    cargarTalleristasSelect: function(){
+        // contruire primero las urls despues seguimos con los filtros
+    },
     cargarTalleres: function(){},
     bindEventos: function(){},
 }
