@@ -2,6 +2,7 @@
 from flask import flash, jsonify, make_response, redirect, url_for, session, redirect, url_for, render_template , Blueprint , request
 from db_test import autenticar
 from datetime import datetime
+# aqui no es mucho enrrollo, solo van las rutas principales que seran el dash board junto con otras rutas principales de todos los usuarios que deberian poder acceder
 
 url_principal = Blueprint('url_principal', __name__, template_folder='src/templates')
 

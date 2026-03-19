@@ -1,3 +1,6 @@
+// https://youtu.be/blBoIyNhGvY
+// este video es bueno para hacer unos catch error , eso si tambien comenta el hecho de mandar logs pero yo tengo que adpatarlo para que se manden logs con mi sistema de errores, asi queda en evidencia cuales son los problemas que estan ocurriendo en el codigo.
+// tambien necesito encontrar mas videos para poder ver como hacer un error logs mas presciso, por ahora tengo problemas para identificar en donde estan los errores en las cosas que estoy haciendo.
 // Consigue la fecha actual pero solo muestra el año, no los meses ni dias esta puesto como "año_actual" para llamarlo
 const today = new Date();
 const currentYear = today.getFullYear();

@@ -1,7 +1,8 @@
 from flask import abort, flash, jsonify, redirect, url_for, session, redirect, url_for, render_template , Blueprint , request
 import functools
 from src.utils.loggers import Logger
-
+# aqui estaran las rutas principales sobre el tema de los talleres junto con todas las partes necesarias del funcionario , aqui no deberian estar las partes de debug ya que esan son del admin, tengo que ver tambien si le puedo colocar el tema de que 2 usuarios
+# puedan acceder a las mismas rutas , por ahora no fucniona ademas tengo que mover el tema del usuario requerido que se encuentra
 url_funcionario = Blueprint('url_funcionario', __name__, template_folder='src/templates')
 
 from db_test import (

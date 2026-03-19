@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template
-
+# la ruta de admin se encargara principalmente de rutas que son de debug , esta tengo planeado usarla para testear cosas y ver los errores que estan ocurriendo en el aplicativo.
 url_admin = Blueprint('url_admin', __name__, template_folder='src/templates')
 
 @url_admin.route("/masiva-guts")
