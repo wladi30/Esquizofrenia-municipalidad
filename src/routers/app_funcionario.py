@@ -403,23 +403,6 @@ def api_seleccion_tallerista():
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")
 
-#los de aqui son filtros de prueba que estoy haciendo
-# https://youtu.be/sZl-H6GkHrk , de este video lo saque
-# @url_funcionario.app_template_filter('/string_reversa')
-# def filtro_string_reversa(s):
-#     # string_reversa es lo que dice, es las veces que se devuelve hacia atras ciertos valores, aun por definir
-#     return s[::-1]
-
-# @url_funcionario.app_template_filter('/alternativo')
-# def filtro_alternativo(s):
-#     # alternativo es de alternar entre un valor o otro valor que se le especifica, aun por definir
-#     return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(s)])
-
-# @url_funcionario.app_template_filter('/repetir')
-# def repetir(s, veces=2):
-#     # repetir es las veces que algo se tiene que repetir, aun no se muy bien como se puede aplicar en los filtros pero alli esta, aun por definir
-#     return s * veces
-
 @url_funcionario.route('/taller/<int:id_taller>/inscritos')
 @funcionario_required
 def ver_inscritos_taller(id_taller):

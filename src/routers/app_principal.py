@@ -5,14 +5,6 @@ from datetime import datetime
 
 url_principal = Blueprint('url_principal', __name__, template_folder='src/templates')
 
-@url_principal.route("/masiva-guts")
-def guts():
-    return render_template("a_massive_creature.html")
-
-@url_principal.route("/index-antiguo")
-def index_chamuco():
-    return render_template("index.html")
-
 @url_principal.route("/")
 def index():
     if 'id_usuario' in session:
@@ -118,14 +110,3 @@ def logout():
     # esto es para no puedan volver a ser usados, lo que debe hacer, basicamente lobotomizar al navegador cada vez que esta funcion definida se activa.
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, post-check=0, pre-check=0" # no-chache no-store post y pre que revalide y tambien de paso deberia hacer que le queme el compu
     return response
-
-@url_principal.route('/debug-rutas')
-def debug_rutas():
-    from flask import current_app
-    rutas = []
-    for rule in current_app.url_map.iter_rules():
-        rutas.append({
-            'endpoint': rule.endpoint,
-            'url': str(rule)
-        })
-    return jsonify(rutas)

@@ -47,3 +47,4 @@ if (typeof data !== 'undefined' && data !== null) {
 
 // IMPORTANTE, podria ser buena idea hacer un export con todo lo demas, jamas se me habia ocurrido y lo aprendi hace poco que se puede, podria separar gran parte del codigo de este modo
 //asi para cuando tenga que hacer unos arreglos o debug pueda encargarme de revisar mas a detaller
+// se puede utilizar el * para realizar un import masivo, en el caso de que se quiera trar multiples funciones de un js a otro

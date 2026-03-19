@@ -1,3 +1,5 @@
+// https://youtu.be/l50gnBWHmdA
+// Este video explica vien el tema de los imports y exports ademas de dar muchos ejemplos de como aplicar esto, desde dinamicos a import masivos de un js a otro, recomiendo ver dde nuevo
 // estoy haciendo un import de general que trae la constante currentYearV2, esta me da el año actual el cual que lo usare como
 import {currentYearV2} from "./general"
 // Aqui doy inicio al js principal que se encargara de casi todo sobre administracion de talleres
@@ -64,6 +66,22 @@ const GestionTalleres = {
     // aqui va la parte d elos talleristas
     cargarTalleristasSelect: function(){
         // contruire primero las urls despues seguimos con los filtros
+        fetch('funcionario/api/tallerista-lista')
+        .then(response => response.json())
+        .then(result => {
+            if (result.succes){
+                this.config.data.talleristas = result.data;
+                const selectTallerista = document.getElementById('tallerista');
+                selectTallerista.innerHTML = '<option value="">Aun no se que poner aqui asi que hola</option>'
+            }
+            else {
+                this.mostrarError('Error al cargar a los talleristas: ' + result.message);
+            }
+        })
+        .catch(error =>{
+            console.error('Error al cargar a los talleristas: ', error);
+            this.mostrarError('Error al cargar a los talleristas');
+        })
     },
     cargarTalleres: function(){},
     bindEventos: function(){},
