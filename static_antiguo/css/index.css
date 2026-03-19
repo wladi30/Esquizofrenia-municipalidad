@@ -1,0 +1,30 @@
+.jumbotron {
+    background: linear-gradient(135deg, #91d9df 0%, #7f810d 100%);
+    color: rgb(0, 0, 0);
+}
+.jumbotron h1, .jumbotron p, .jumbotron hr {
+    color: rgb(0, 0, 0);
+}
+.jumbotron hr {
+    border-color: rgba(rgb(0, 0, 0), 255, 255 0.2);
+}
+.stats-card .bg-primary,
+.stats-card .bg-success,
+.stats-card .bg-warning,
+.stats-card .bg-danger {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.list-group-item {
+    border: none;
+    border-left: 4px solid transparent;
+    margin-bottom: 5px;
+    transition: all 0.3s;
+}
+.list-group-item:hover {
+    border-left-color: var(--primary);
+    background-color: #833333;
+}

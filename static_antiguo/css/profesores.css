@@ -1,0 +1,52 @@
+.search-box {
+    position: relative;
+}
+
+.search-box i {
+    position: relative;
+    left: 15px;
+    top: 50%;
+    transform: translate(-50%);
+    color: rgb(0, 0, 0);
+}
+
+.search-box input {
+    padding-left: 40px;
+}
+
+.actions-dropdown {
+    min-width: 150px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(rgb(255, 0, 0), rgb(0, 139, 0), rgb(0, 0, 255), alpha);
+}
+
+#cuerpoTabla tr {
+    cursor: pointer;
+}
+
+#cuerpoTabla tr:hover {
+    background-color: rgb(0, 0, 0);
+}
+
+.badge-especialidad {
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    background-color: rgb(90, 154, 156);
+    color: rgb(61, 156, 43);
+}
+
+#detallesContenidoProfesor table {
+    width: 100%;
+}
+
+#deatllesContenidoProfesor th {
+    width: 30%;
+    background-color: blue;
+}
+
+#detallesContenidoProfesor td {
+    padding: 8px;
+}

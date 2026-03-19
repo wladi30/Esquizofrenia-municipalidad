@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <!-- por ahora nada esta echo aqui la vrd, se tiene que mejorar -->
+  <meta charset="utf-8">
+  <title>Admin - Panel</title>
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+  <h1>Panel de Administrador</h1>
+  <h2>Profesores</h2>
+  <ul>
+    {% for p in profesores %}
+      <li>{{ p.NOMBRE_PERSONA }} {{ p.APELLIDO_PATERNO }} (ID {{ p.ID_PROFESOR }})</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Inscripciones</h2>
+  <ul>
+    {% for e in estudiantes %}
+      <li>{{ e.NOMBRE_PERSONA }} {{ e.APELLIDO_PATERNO }} (ID {{ e.ID_ESTUDIANTE }})</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Talleres</h2>
+  <ul>
+    {% for t in talleres %}
+      <li>{{ t.NOMBRE_TALLER }} (ID {{ t.ID_TALLER }}) - Estado: {{ t.ID_ESTADO_TALLER }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

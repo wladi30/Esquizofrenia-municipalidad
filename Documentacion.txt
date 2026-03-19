@@ -1,0 +1,32 @@
+1: en app.py van a estar las rutas principales, estara el home, debug, login/logout y registrar. lo tengo de esto modo para cuando falle algo se pueda saber bien en donde fallo y que solo
+afecte una parte de la pagina, tambien tengo mas .py que son app_estudiante.py que en este iran todo lo relacionado con estudiante y por ultimo esta db_test.py , en este ultimo
+estan todos los procedimientos de sql server , tambien esta la conexion con la base de datos, algo que mencionar es que algunos procedimientos cambien segun sea requerido en el futuro
+por ejemplo existen 2 procedimientos para inscribir a una persona a la tabla de persona, una funciona mas direecta haciendo uso del select/insert y el otro es un procedimiento almacenado
+que viene definido, ambos funcionan y se pueden usar pero el select es mas rustico que el procedimiento.
+
+2: la vista del login al igual que la vista del usuario/estudiante ya estan creados por lo cual no es necesario volver a hacerlos por el momento, funcionan y aun que se vean feos al menos
+cumplen la pega, el css con el html estan nada mas que decir( a esto me refiero con vista ) el JS que existe actualmente no funciona del todo bien , tiene errores al momento de llamar a los 
+talleres, tambien tiene problemas con el filtro de estos mismos, falta que funcione bien el filtro por categoria y ni mencionar el inscribir el taller que no funciona como debe, haciendo un poco
+de seguimiento a lo que sucede es que el "inscribir_taller" mete al estudiante pero de manera forzada, un ejemplo de esto seria que si se le quiere meter a un taller que esta lleno generara una
+id nueva en lista de espera de dicho taller como estaba previsto, pero a su vez tambien lo inscribe en el taller superando el limite de alumnos, por si fuera poco cuando esto sucede el limite de
+alumnos no refleja que existe uno mas y ademas cuando un alumno es quitado de este taller que ya supero el limite, al momento de usar el get para ver dicho taller muestra como si le quedara un
+cupo ( esto por que sacamos a uno ) mientras que el que entro y supro el limite en ningun momento sale formulado, en la base de datos se puede ver bien, muestra que efectivamente se supero, etc
+pero aqui no y es un problema.
+
+3: la seguridad es un tema, por el momento deberia estar protegido contra inyecciones y intentos de suplantar al admin, las credenciales tambien estan cifradas con contraseña hash sin embargo
+algo que mencionar es que esto viene de un procedimiento llamado (registrar_persona) en db_test mencione que existe una forma de registrar a alguien con un insert/select y la contraseña queda
+sin hash, ahora esto se puede solucionar claro pero sin duda usar el select es mas facil por el tema de las fechas , no se que poronga tiene sql server con las fechas que tienen la hora que
+siempre me hincha las bolas incluso cuando, acepta nulls pero
+
+4: los .html , .js , .css y .py que sobran son muchos, los movi a otra carpeta para que no molesten, muchas veces cuando voy a cambiar muchas cosas creo copias para respaldar lo que estaba antes
+esto lo hago ya que las cosas funcionan pero algunas veces necesito mejorar o cambiar algo asi que creo una copia y comienzo con el proceso. NO ES QUE COMIENCE DE CERO OTRA VEZ algunas veces el 
+codigo es pequeño asi que lo revuelvo a hacer, pero otras veces es grande asi que cambio cosas especificas, un ejemplo son el .css de los .html al igual que los .js, el css los vuelvo a usar
+una y otra vez, solo los cambio cuando vuelvo a realizar cambios en los html, asi que creo copias de ambos y los guardo, los js son otro tema similar, basicamente en un principio el js era uno
+solo y este hacia de otro, tambien existian scripts en los html que complementaban, etc. los uni todos a los js y despues lo fragmente segun para que era (estudiante, profesor, talleres, etc)
+y desde ello los adapte, obvio creaba respaldos segun lo antes mencionado.
+
+5: los problemas actuales son mi pobre manejo del flask y js. html y css me manejo bien , la pagina se ve bonita ( en realidad no, tiene colores feos pero funciona ) pero el problema son el js y
+flask, se generaron tantos errores y problemas de tips que se fue a la vrg todo, al punto que es mas facil hacer un nuevo js mas compacto que intentar arreglar lo que tengo, esto mas que nada
+es por que me limita mucho las funciones que le puse y de todos modos las tengo que cambiar si quiero hacer uso de 3 usuarios distintos con vistas distintas y acciones distintas en una misma
+pagina, incluso tengo pensado hacer un js unico poniendole todas las funciones necesarias pero que solo se puedan usar segun el usuario que eres, esto se podria hacer hacer filtrando con python
+ademas de que tenia planeado un baneo de usuario en caso que se detecte un intento de modificar algo que no deberia.

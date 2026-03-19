@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/inscripcion.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="inscripcion-container">
+    <nav class="inscripcion-nav">
+        <a href="/inscripcion/talleres" {% if request.path == '/inscripcion/talleres' %}class="active"{% endif %}>
+            <i class="bi bi-search"></i> Buscar un Taller
+        </a>
+        <a href="/inscripcion/mis_talleres" {% if request.path == '/inscripcion/mis_talleres' %}class="active"{% endif %}>
+            <i class="bi bi-book"></i> Mi Taller
+        </a>
+    </nav>
+    {% block inscripcion_content %}{% endblock %}
+</div>
+
+<div class="modal-overlay" id="detallesModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitulo">Detalles del Taller</h2>
+            <button class="modal-close" onclick="app.cerrarModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+            <button class="action-btn btn-cerrar" onclick="app.cerrarModal()">Cerrar</button>
+            <button class="action-btn btn-inscribir" id="btnInscribirseModal" onclick="app.inscribirse()">
+                <i class="bi bi-check-lg"></i> Inscribirse
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="mensaje" class="message" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/inscripcion.js') }}"></script>
+{% endblock %}

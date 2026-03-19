@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Municipalidad de Quilicura - Administración de Talleres</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<!-- hola soy un comentario explicativo, el login sera mi primer html en este proyecto que full comentare lo que no sea muy obvio, asi que en lo posible tapare hasta la madre de comentarios -->
+<!-- eso si seran breves. como explicando que este en el titulo y cosas asi -->
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6 col-lg-5">
+                <!-- LOGO Y TITULO(LOGO AUN SE TIENE QUE CAMBIAR, PUSE UNA FOTO DE MI GATA GUTS POR MIENTRAS) -->
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='sm_5b348d4c557a7.png') }}" alt="Municipalidad de Quilicura" class="img-fluid rounded-circle mb-3" style="max-width: 120px; height: auto;">
+                    <h2 class="h5 text-secondary mb-1">Municipalidad de Quilicura</h2>
+                    <h1 class="h3 text-primary fw-bold">Administracion de Talleres</h1>
+                </div>
+                <!-- AQUI INICIA LA PARTE DEL LOGIN -->
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-center mb-4">
+                            <i class="bi bi-shield-lock text-primary me-2"></i>
+                            Acceso al Sistema<!-- se cayo el sistema viteh -->
+                        </h5>
+                        <!-- adivina que, EL FORMULARIO DEL LOGIN -->
+                        <form id="loginForm" novalidate>
+                            <!-- AQUI VA EL RUT, puede ser cambiado en algun futuro -->
+                            <div class="mb-3">
+                                <label for="identificador" class="form-label fw-semibold">
+                                    <i class="bi bi-person-badge me-1 text-primary"></i>
+                                    RUT
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <input type="text" class="form-control form-control-lg" id="identificador" placeholder="12.345.678-9" autocomplete="username" required>
+                                </div>
+                                <div class="form-text text-muted small">
+                                    <i class="bi bi-info-circle"></i> 
+                                    Ingrese su RUT y guion (Ej: 12.345.678-9 o 1.234.567-8)
+                                    <!-- un detallaso, logre hacer que se pusieran los puntos automaticamente, que complicado fue la vrd -->
+                                </div>
+                                <div class="invalid-feedback" id="rutError">
+                                    Por favor ingrese un RUT valido
+                                </div>
+                            </div>
+                            <!-- aqui va la parte de la contraseña y lo relacionado con esta -->
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="bi bi-key me-1 text-primary"></i>
+                                    Contraseña
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control form-control-lg" id="password" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text text-muted small">
+                                    <i class="bi bi-shield-check"></i>
+                                    Minimo 6 caracteres
+                                </div>
+                            </div>
+                            <!-- lo que hace esto es hacer uqe el sistema recuerde las credenciales y mantenga las credenciales del usuario entre sesiones -->
+                            <div class="mb-4 form-check">
+                                <input type="checkbox" class="form-check-input" id="recordar">
+                                <label class="form-check-label small" for="recordar">
+                                    Recordar mi usuario
+                                </label>
+                            </div>
+                            <!-- Boton del login -->
+                            <button type="submit" class="btn btn-primary btn-lg w-100 btn-login" id="btnLogin">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Ingresar
+                                <span class="spinner-border spinner-border-sm d-none" id="spinner"></span>
+                            </button>
+                        </form>
+                    </div>
+                    <!-- foot de la targeta del login, es solo texto y un icono la vrd -->
+                    <div class="card-footer bg-white border-0 text-center p-3 rounded-bottom-4">
+                        <small class="text-muted">
+                            <i class="bi bi-building me-1"></i>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- todo lo de aqui abajo es una ayuda, fue facil hacerlo literal es solo copiar y pegar lo de arriba, añadi lo que aprendi con el indio del css y puse un boton que oculta un panel -->
+    <div class="modal fade" id="ayudaModal" tabindex="-1" aria-labelledby="ayudaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="ayudaModalLabel">
+                        <i class="bi bi-question-circle me-2"></i>
+                        Ayuda para acceder al sistema
+                    </h5>
+                    <!-- aqui esta el dicho boton -->
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <!-- se supone que es es mas que nada un ejemplo visual de como debe estar todo -->
+                <div class="modal-body">
+                    <h6 class="fw-bold">Instrucciones de acceso:</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-1-circle-fill text-primary me-2"></i>
+                            <strong>RUT:</strong> Ingrese su RUT con guion
+                            <br>
+                            <small class="text-muted ms-4">Ejemplos: 12.345.678-9 o 1.234.567-8</small>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-2-circle-fill text-primary me-2"></i>
+                            <strong>Contraseña:</strong> Ingrese la contraseña asignada por el sistema
+                            <br>
+                            <small class="text-muted ms-4">Mínimo 6 caracteres</small>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-3-circle-fill text-primary me-2"></i>
+                            <strong>Recordar usuario:</strong> Opcional, para no escribir el RUT cada vez
+                        </li>
+                    </ul>
+                    <hr>
+                    <!-- esto es un test mas que nada, proximamente tenia planeado que al hacer click al gmail te mande a tu gmail para mandar un mensaje colocando de inmediato el gmail que puse aqui -->
+                    <p class="mb-0 small">
+                        <i class="bi bi-envelope me-1"></i> <strong>Mesa de ayuda:</strong> amigo@cagaste.cl
+                        <br>
+                        <i class="bi bi-telephone me-1"></i> <strong>Teléfono:</strong> +56 2 2345 6789
+                    </p>
+                </div>
+                <!-- el boton para cerrar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <!-- este scrip de aqui abajo es para hacer un toggle en la contraseña, basicamente el poder ver los caracteres o ocultarlos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const password = document.getElementById('password');
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                // aqui esta el cambio del icono, el ojito ese
+                const icon = this.querySelector('i');
+                icon.classList.toggle('bi-eye');
+                icon.classList.toggle('bi-eye-slash');
+            });
+        });
+    </script>
+</body>
+</html>

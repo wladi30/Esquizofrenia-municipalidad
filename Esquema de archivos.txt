@@ -1,0 +1,101 @@
+FLASK_APP
+-__pycache__
+-logFiles
+    -error_estudiantes.log
+    -error_funcionario.log
+    -talleres_log.log
+-src
+    -__pycache__
+        -__init__.cpython-314.pyc
+    -datebase
+    -models
+    -routers
+        -__pychache__
+            -app_admin.cpython-314.pyc
+            -app_estudiante.cpython-314.pyc
+            -app_funcionario.cpython-314.pyc
+            -app_principal.cpython-314.pyc
+            -error.cpython-314.pyc
+            -erros.cpython-314.pyc
+        -app_admin.py
+        -app_funcionario.py
+        -app_principal.py
+        -app_test.py
+        -error.py
+    -static
+        -css
+            -administracion_taller.css
+            -funcionario.css
+            -gestion_talleres.css
+            -login.css
+        -js
+            -funcionario.js
+            -general.js
+            -gestion.js
+            -login.js
+            -taller.js
+            -tallerista.js
+        -20241216_180631.jpg
+        -sm_5b348d4c557a7.jpg
+    -templates
+        -error
+            -404.html
+            -500.html
+            -template_error_2.html
+            -template_error.html
+        -funcionario
+            -administracion_taller.html
+            -dashboard.html
+            -gestion_inscripciones.html
+            -gestion_taller.html
+            -gestion_tallerista.html
+            -lista_espera.html
+            -perfil_funcionario.html
+            -wea_mala.html
+        -inscripcion
+            -base_inscripcion.html
+            -talleres.html
+        -principal
+            -login.html
+        -taller
+            -taller.html
+        -tallerista
+        -a_massive_creature.html
+        -admin.html
+        -base.html
+        -index.html
+    -test
+    -utils
+        -__pychache__
+            -loggers.cpython-314.pyc
+        -logger.py
+        -loggers.py
+    -__init__.py
+-venv
+    -Include
+    -Lib
+    -Scripts
+    -.gitignore
+    -pyvenv.cfg
+-.env
+-app.py
+-configuracion.py
+-db_test.py
+-requerimientos.txt
+
+hasta ahora este proyecto lo hemos hecho tu y yo, te dire que hacer ahora, tengo un problema con los href en dashboard del funcionario, no puedo redirigir a nada por que no encuentra el la url, 
+la idea es que esta plataforma tenga de usuario al funcionario y al admin(el admin lo dejaremos al final asi que no lo incluyas por ahora pero lo puedes preparar un poco) el nombre de esta
+app es Administracion Taller de la municipalidad de quilicura o Administracion Taller para abreviar, el fin de esto es hacer un crud de esto: 
+Administracion de talleres
+1.- Revision de inscripciones
+2.- Mantenedores 
+3.- Crud Talleristas
+4.- Crud Talleres
+5.- Crud inscripciones
+
+6.- Masivo Talleres
+7.- Lista de espera funcional
+8.- Gestion de cupos
+
+La base de datos que se esta utilizando es sql server 2008 r2 , en el archivo BASE_DE_DATOS.txt esta lo que tengo en sql server, existen mas cosas que son de la base de datos de por si pero si
+necesitas algo me dices, tambien si tienes que hacer cambios en la base de datos me dices con respecto a realizar cambios en las tablas o procedimientos que te estoy entregando, etc 

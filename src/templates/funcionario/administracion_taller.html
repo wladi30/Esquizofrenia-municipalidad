@@ -1,0 +1,813 @@
+{% extends "base.html" %}
+{% block title %}Administracion de Talleres - Municipalidad de Quilicura{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_taller.css') }}">
+{% endblock %}
+{% block content %}
+<div class="funcionario-container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('url_funcionario.funcionario_dashboard') }}">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+            </li>
+            <li class="breadcrumb-item active">Gestión de Talleres</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h4 text-primary mb-1">
+                <i class="bi bi-calendar-check me-2"></i>
+                Gestión de Talleres
+            </h2>
+            <p class="text-muted small mb-0">
+                Administra talleres, cupos, estados y asignaciones
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" onclick="abrirModalNuevoTaller()">
+                <i class="bi bi-plus-lg me-1"></i>
+                Nuevo Taller
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-files me-1"></i> Masivo
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="exportarTalleres()">
+                        <i class="bi bi-download me-2"></i>Exportar Talleres
+                    </a></li>
+                    <!-- falta añadir las url o funciones correspondientes -->
+                    <li><a class="dropdown-item" href="#" onclick="importarTalleres()">
+                        <i class="bi bi-upload me-2"></i>Importar Talleres
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('url_funcionario.funcionario_masivo_taller') }}">
+                        <i class="bi bi-file-spreadsheet me-2"></i>Carga Masiva
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Año</label>
+                    <select class="form-select form-select-sm" id="filtroAnio">
+                        <option value="">Todos</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Estado</label>
+                    <select class="form-select form-select-sm" id="filtroEstado">
+                        <option value="">Todos</option>
+                        <option value="1">Activo</option>
+                        <option value="2">Próximamente</option>
+                        <option value="3">Finalizado</option>
+                        <option value="4">Suspendido</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label small fw-semibold">Búsqueda</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="busqueda" 
+                               placeholder="Nombre del taller, lugar...">
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-primary btn-sm w-100" onclick="aplicarFiltros()">
+                        <i class="bi bi-filter"></i> Filtrar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm ms-2" onclick="limpiarFiltros()">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4" width="60">ID</th>
+                            <th>Taller</th>
+                            <th>Categoría</th>
+                            <th>Tallerista</th>
+                            <th>Inscritos/Cupos</th>
+                            <th>Estado</th>
+                            <th>Fechas</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaTalleresBody">
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="bi bi-arrow-repeat me-2"></i>Cargando talleres...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <div class="text-muted small" id="infoPaginacion">
+                Mostrando 0-0 de 0 resultados
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0" id="paginacionTalleres">
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalTaller" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalTallerTitulo">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Nuevo Taller
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formTaller">
+                <div class="modal-body">
+                    <input type="hidden" id="tallerId">
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label fw-semibold">Nombre del Taller <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombreTaller" required maxlength="80">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Año Proceso <span class="text-danger">*</span></label>
+                            <select class="form-select" id="yearProceso" required>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
+                            <select class="form-select" id="categoria" required>
+                                <option value="">Seleccione categoría...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Tallerista <span class="text-danger">*</span></label>
+                            <select class="form-select" id="tallerista" required>
+                                <option value="">Seleccione tallerista...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Objetivo del Taller</label>
+                        <textarea class="form-control" id="objetivo" rows="2" maxlength="500"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha Inicio <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecInicio" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha Término <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecTermino" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Lugar</label>
+                            <input type="text" class="form-control" id="lugar" placeholder="Ej: Sala 101">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">N° Clases</label>
+                            <input type="number" class="form-control" id="nroClases" min="1" value="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Minutos por clase</label>
+                            <input type="number" class="form-control" id="nroMinutos" min="1" value="90">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Edad Mínima</label>
+                            <input type="number" class="form-control" id="edadMinima" min="0" value="0">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Edad Máxima</label>
+                            <input type="number" class="form-control" id="edadMaxima" min="0" value="99">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Cupo Mínimo</label>
+                            <input type="number" class="form-control" id="minEstudiantes" min="1" value="5">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Cupo Máximo</label>
+                            <input type="number" class="form-control" id="maxEstudiantes" min="1" value="20">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Materiales Requeridos</label>
+                        <textarea class="form-control" id="material" rows="2" maxlength="500"
+                                  placeholder="Lista de materiales necesarios..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Requisitos</label>
+                        <textarea class="form-control" id="requisitos" rows="2" maxlength="500"
+                                  placeholder="Requisitos para participar..."></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
+                            <select class="form-select" id="estadoTaller" required>
+                                <option value="1">Activo</option>
+                                <option value="2">Próximamente</option>
+                                <option value="3">Finalizado</option>
+                                <option value="4">Suspendido</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Departamento</label>
+                            <select class="form-select" id="departamento">
+                                <option value="1">Cultura</option>
+                                <option value="2">Educación</option>
+                                <option value="3">Deportes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>
+                        Guardar Taller
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalConfirmacion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Confirmar Acción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeConfirmacion"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnConfirmar">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalDetallesTaller" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Detalles del Taller
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detallesTallerBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="abrirModalEditarDesdeDetalles()">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+let talleresData = [];
+let paginaActual = 1;
+let itemsPorPagina = 10;
+let filtros = {
+    year: '2026',
+    estado: '',
+    busqueda: ''
+};
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    cargarCategorias();
+    cargarTalleristasSelect();
+    cargarTalleres();
+    
+    // Event listeners
+    document.getElementById('formTaller').addEventListener('submit', function(e) {
+        e.preventDefault();
+        guardarTaller();
+    });
+    
+    document.getElementById('busqueda').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            aplicarFiltros();
+        }
+    });
+});
+
+// Cargar categorías en el select
+function cargarCategorias() {
+    fetch('/funcionario/api/categorias')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('categoria');
+            data.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.ID_CATEGORIA;
+                option.textContent = cat.DESCRIPCION_CATEGORIA;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error cargando categorías:', error));
+}
+
+// Cargar talleristas en el select
+function cargarTalleristasSelect() {
+    fetch('/funcionario/api/tallerista-lista')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const select = document.getElementById('tallerista');
+                result.data.forEach(t => {
+                    const option = document.createElement('option');
+                    option.value = t.ID_PROFESOR;
+                    option.textContent = `${t.NOMBRE_PERSONA} ${t.APELLIDO_PATERNO}`.trim();
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => console.error('Error cargando talleristas:', error));
+}
+
+// Cargar lista de talleres
+function cargarTalleres() {
+    const params = new URLSearchParams();
+    if (filtros.year) params.append('year', filtros.year);
+    if (filtros.estado) params.append('estado', filtros.estado);
+    if (filtros.busqueda) params.append('busqueda', filtros.busqueda);
+    
+    fetch(`/funcionario/api/taller-lista?${params.toString()}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                talleresData = result.data;
+                mostrarPagina(1);
+            } else {
+                mostrarError(result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarError('Error al cargar talleres');
+        });
+}
+
+// Mostrar página actual
+function mostrarPagina(pagina) {
+    paginaActual = pagina;
+    const inicio = (pagina - 1) * itemsPorPagina;
+    const fin = inicio + itemsPorPagina;
+    const datosPagina = talleresData.slice(inicio, fin);
+    
+    const tbody = document.getElementById('tablaTalleresBody');
+    if (datosPagina.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">
+            <i class="bi bi-inbox me-2"></i>No hay talleres para mostrar
+        </td></tr>`;
+    } else {
+        tbody.innerHTML = datosPagina.map(taller => generarFilaTaller(taller)).join('');
+    }
+    
+    actualizarPaginacion();
+    document.getElementById('infoPaginacion').textContent = 
+        `Mostrando ${inicio + 1}-${Math.min(fin, talleresData.length)} de ${talleresData.length} resultados`;
+}
+
+// Generar fila de taller
+function generarFilaTaller(t) {
+    const inscritos = t.personas_inscritas || 0;
+    const maximo = t.MAXIMO_ESTUDIANTE || 20;
+    const porcentaje = maximo > 0 ? (inscritos / maximo) * 100 : 0;
+    
+    let estadoClass = '';
+    let estadoTexto = '';
+    switch(t.ID_ESTADO_TALLER) {
+        case 1: estadoClass = 'estado-1'; estadoTexto = 'Activo'; break;
+        case 2: estadoClass = 'estado-2'; estadoTexto = 'Próximamente'; break;
+        case 3: estadoClass = 'estado-3'; estadoTexto = 'Finalizado'; break;
+        case 4: estadoClass = 'estado-4'; estadoTexto = 'Suspendido'; break;
+        default: estadoClass = 'estado-3'; estadoTexto = 'Desconocido';
+    }
+    
+    return `
+        <tr>
+            <td class="ps-4 fw-semibold">${t.ID_TALLER}</td>
+            <td>
+                <div class="fw-semibold">${t.NOMBRE_TALLER || 'Sin nombre'}</div>
+                <small class="text-muted">${t.LUGAR || 'Sin lugar'}</small>
+            </td>
+            <td>${t.ID_CATEGORIA || '-'}</td>
+            <td>${t.ID_DEPARTAMENTO ? 'Asignado' : 'Pendiente'}</td>
+            <td style="min-width: 120px;">
+                <div class="d-flex justify-content-between small">
+                    <span>${inscritos}/${maximo}</span>
+                    <span class="text-muted">${Math.round(porcentaje)}%</span>
+                </div>
+                <div class="cupos-indicator">
+                    <div class="cupos-fill" style="width: ${porcentaje}%;"></div>
+                </div>
+            </td>
+            <td><span class="estado-badge ${estadoClass}">${estadoTexto}</span></td>
+            <td>
+                <small>${t.FEC_INICIO ? t.FEC_INICIO.substring(0,10) : '-'}</small><br>
+                <small class="text-muted">al ${t.FEC_TERMINO ? t.FEC_TERMINO.substring(0,10) : '-'}</small>
+            </td>
+            <td class="text-end pe-4">
+                <button class="btn btn-sm btn-outline-info me-1" onclick="verDetalles(${t.ID_TALLER})" title="Ver detalles">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-primary me-1" onclick="editarTaller(${t.ID_TALLER})" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="confirmarEliminar(${t.ID_TALLER}, '${t.NOMBRE_TALLER}')" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `;
+}
+
+// Actualizar paginación
+function actualizarPaginacion() {
+    const totalPaginas = Math.ceil(talleresData.length / itemsPorPagina);
+    let html = '';
+    
+    if (totalPaginas > 1) {
+        html += `<li class="page-item ${paginaActual === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="cambiarPagina(${paginaActual - 1})">&laquo;</a>
+        </li>`;
+        
+        for (let i = 1; i <= totalPaginas; i++) {
+            if (i === paginaActual || 
+                i === 1 || 
+                i === totalPaginas || 
+                (i >= paginaActual - 2 && i <= paginaActual + 2)) {
+                html += `<li class="page-item ${i === paginaActual ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="cambiarPagina(${i})">${i}</a>
+                </li>`;
+            } else if (i === paginaActual - 3 || i === paginaActual + 3) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
+        html += `<li class="page-item ${paginaActual === totalPaginas ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="cambiarPagina(${paginaActual + 1})">&raquo;</a>
+        </li>`;
+    }
+    
+    document.getElementById('paginacionTalleres').innerHTML = html;
+}
+
+function cambiarPagina(pagina) {
+    if (pagina < 1 || pagina > Math.ceil(talleresData.length / itemsPorPagina)) return;
+    mostrarPagina(pagina);
+}
+
+function aplicarFiltros() {
+    filtros.year = document.getElementById('filtroAnio').value;
+    filtros.estado = document.getElementById('filtroEstado').value;
+    filtros.busqueda = document.getElementById('busqueda').value;
+    cargarTalleres();
+}
+
+function limpiarFiltros() {
+    document.getElementById('filtroAnio').value = '2026';
+    document.getElementById('filtroEstado').value = '';
+    document.getElementById('busqueda').value = '';
+    filtros = { year: '2026', estado: '', busqueda: '' };
+    cargarTalleres();
+}
+
+// Modal nuevo taller
+function abrirModalNuevoTaller() {
+    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
+    document.getElementById('formTaller').reset();
+    document.getElementById('tallerId').value = '';
+    
+    // Valores por defecto
+    document.getElementById('yearProceso').value = '2026';
+    document.getElementById('minEstudiantes').value = '5';
+    document.getElementById('maxEstudiantes').value = '20';
+    document.getElementById('estadoTaller').value = '1';
+    
+    new bootstrap.Modal(document.getElementById('modalTaller')).show();
+}
+
+// Guardar taller
+function guardarTaller() {
+    const id = document.getElementById('tallerId').value;
+    const data = {
+        year_proceso: parseInt(document.getElementById('yearProceso').value),
+        id_categoria: parseInt(document.getElementById('categoria').value),
+        nombre_taller: document.getElementById('nombreTaller').value,
+        id_departamento: parseInt(document.getElementById('departamento').value || '1'),
+        objetivo_taller: document.getElementById('objetivo').value,
+        fec_inicio: document.getElementById('fecInicio').value,
+        fec_termino: document.getElementById('fecTermino').value,
+        nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
+        nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
+        horas_totales: 0,
+        id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
+        lugar: document.getElementById('lugar').value,
+        minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
+        maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
+        requisito: document.getElementById('requisitos').value,
+        edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
+        edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
+        material: document.getElementById('material').value,
+        ind_tipo_taller: 1
+    };
+    
+    if (!data.nombre_taller || !data.fec_inicio || !data.fec_termino) {
+        mostrarError('Complete los campos obligatorios');
+        return;
+    }
+    
+    const url = id ? 
+        `/funcionario/api/taller-actualizar/${id}` : 
+        '/funcionario/api/taller-crear';
+    const method = id ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
+            mostrarExito(result.message);
+            cargarTalleres();
+        } else {
+            mostrarError(result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarError('Error al guardar taller');
+    });
+}
+
+// Editar taller
+function editarTaller(id) {
+    fetch(`/funcionario/api/taller-get/${id}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const t = result.data;
+                document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
+                document.getElementById('tallerId').value = t.id_taller;
+                document.getElementById('yearProceso').value = t.year_proceso || 2026;
+                document.getElementById('nombreTaller').value = t.nombre_taller || '';
+                document.getElementById('categoria').value = t.id_categoria || '';
+                document.getElementById('objetivo').value = t.objetivo_taller || '';
+                document.getElementById('fecInicio').value = t.fec_inicio || '';
+                document.getElementById('fecTermino').value = t.fec_termino || '';
+                document.getElementById('lugar').value = t.lugar || '';
+                document.getElementById('nroMinutos').value = t.nro_minutos || 90;
+                document.getElementById('nroClases').value = t.nro_clases_anual || 1;
+                document.getElementById('edadMinima').value = t.edad_minima || 0;
+                document.getElementById('edadMaxima').value = t.edad_maxima || 99;
+                document.getElementById('minEstudiantes').value = t.minimo_estudiante || 5;
+                document.getElementById('maxEstudiantes').value = t.maximo_estudiante || 20;
+                document.getElementById('material').value = t.material || '';
+                document.getElementById('requisitos').value = t.requisito || '';
+                document.getElementById('estadoTaller').value = t.id_estado_taller || 1;
+                
+                new bootstrap.Modal(document.getElementById('modalTaller')).show();
+            } else {
+                mostrarError('No se pudo cargar el taller');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarError('Error al cargar taller');
+        });
+}
+
+// Ver detalles
+function verDetalles(id) {
+    fetch(`/funcionario/api/taller-get/${id}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const t = result.data;
+                const inscritos = t.personas_inscritas || 0;
+                const maximo = t.maximo_estudiante || 20;
+                const disponibles = maximo - inscritos;
+                
+                let estadoTexto = '';
+                switch(t.id_estado_taller) {
+                    case 1: estadoTexto = '<span class="badge bg-success">Activo</span>'; break;
+                    case 2: estadoTexto = '<span class="badge bg-info">Próximamente</span>'; break;
+                    case 3: estadoTexto = '<span class="badge bg-secondary">Finalizado</span>'; break;
+                    case 4: estadoTexto = '<span class="badge bg-danger">Suspendido</span>'; break;
+                    default: estadoTexto = '<span class="badge bg-light">Desconocido</span>';
+                }
+                
+                let html = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Información General</h6>
+                            <table class="table table-sm">
+                                <tr><th>ID:</th><td>${t.id_taller}</td></tr>
+                                <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
+                                <tr><th>Categoría:</th><td>${t.id_categoria || '-'}</td></tr>
+                                <tr><th>Lugar:</th><td>${t.lugar || '-'}</td></tr>
+                                <tr><th>Estado:</th><td>${estadoTexto}</td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Fechas y Horarios</h6>
+                            <table class="table table-sm">
+                                <tr><th>Inicio:</th><td>${t.fec_inicio || '-'}</td></tr>
+                                <tr><th>Término:</th><td>${t.fec_termino || '-'}</td></tr>
+                                <tr><th>N° Clases:</th><td>${t.nro_clases_anual || '-'}</td></tr>
+                                <tr><th>Minutos/clase:</th><td>${t.nro_minutos || '-'}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Cupos</h6>
+                            <table class="table table-sm">
+                                <tr><th>Inscritos:</th><td>${inscritos}</td></tr>
+                                <tr><th>Máximo:</th><td>${maximo}</td></tr>
+                                <tr><th>Disponibles:</th><td class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</td></tr>
+                                <tr><th>Mínimo:</th><td>${t.minimo_estudiante || '-'}</td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Requisitos de Edad</h6>
+                            <table class="table table-sm">
+                                <tr><th>Edad Mínima:</th><td>${t.edad_minima || 0} años</td></tr>
+                                <tr><th>Edad Máxima:</th><td>${t.edad_maxima || 99} años</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                
+                if (t.objetivo_taller) {
+                    html += `<div class="mt-3"><h6 class="fw-bold">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
+                }
+                
+                if (t.material) {
+                    html += `<div class="mt-2"><h6 class="fw-bold">Materiales:</h6><p>${t.material}</p></div>`;
+                }
+                
+                if (t.requisito) {
+                    html += `<div class="mt-2"><h6 class="fw-bold">Requisitos:</h6><p>${t.requisito}</p></div>`;
+                }
+                
+                if (t.estudiantes && t.estudiantes.length > 0) {
+                    html += `<div class="mt-3"><h6 class="fw-bold">Estudiantes Inscritos (${t.estudiantes.length}):</h6>`;
+                    html += '<ul class="list-group">';
+                    t.estudiantes.forEach(e => {
+                        html += `<li class="list-group-item">${e.NOMBRE_PERSONA || ''} ${e.APELLIDO_PATERNO || ''}</li>`;
+                    });
+                    html += '</ul></div>';
+                }
+                
+                document.getElementById('detallesTallerBody').innerHTML = html;
+                
+                // Guardar ID para editar desde detalles
+                window.tallerDetallesId = id;
+                
+                new bootstrap.Modal(document.getElementById('modalDetallesTaller')).show();
+            } else {
+                mostrarError('No se pudo cargar el taller');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarError('Error al cargar detalles');
+        });
+}
+
+function abrirModalEditarDesdeDetalles() {
+    bootstrap.Modal.getInstance(document.getElementById('modalDetallesTaller')).hide();
+    setTimeout(() => {
+        editarTaller(window.tallerDetallesId);
+    }, 500);
+}
+
+// Confirmar eliminación
+function confirmarEliminar(id, nombre) {
+    document.getElementById('mensajeConfirmacion').innerHTML = 
+        `¿Está seguro de suspender el taller <strong>${nombre}</strong>?<br>
+        <small class="text-muted">Esta acción cambiará el estado a "Suspendido"</small>`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+    document.getElementById('btnConfirmar').onclick = function() {
+        eliminarTaller(id);
+        modal.hide();
+    };
+    modal.show();
+}
+
+function eliminarTaller(id) {
+    fetch(`/funcionario/api/taller-eliminar/${id}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                mostrarExito(result.message);
+                cargarTalleres();
+            } else {
+                mostrarError(result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarError('Error al eliminar taller');
+        });
+}
+
+// Exportar/Importar (pendiente implementación)
+function exportarTalleres() {
+    mostrarInfo('Funcionalidad de exportación en desarrollo');
+}
+
+function importarTalleres() {
+    mostrarInfo('Funcionalidad de importación en desarrollo');
+}
+
+// Utilidades de mensajes
+function mostrarExito(mensaje) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: mensaje,
+        timer: 2000,
+        showConfirmButton: false
+    });
+}
+
+function mostrarError(mensaje) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: mensaje
+    });
+}
+
+function mostrarInfo(mensaje) {
+    Swal.fire({
+        icon: 'info',
+        title: 'Información',
+        text: mensaje
+    });
+}
+</script>
+{% endblock %}

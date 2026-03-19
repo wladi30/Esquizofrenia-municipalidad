@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block tittle %}Inicio - Sistema de Talleres{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="jumbotron p-5 rounded shadow-sm">
+                <h1 class="display-4 text-primary">
+                    <i class="bi bi-mortarboard-fill me-3"></i>
+                    Bienvenido al Sistema de Gestion de Talleres
+                </h1>
+                <p class="lead text-muted">
+                    Sistema integral para la administracion de inscripciones, talleristas y talleres educativos.
+                </p>
+                <hr class="my-4">
+                <p class="mb-4">
+                    Utiliza los modulos del sistema para gestionar eficientemente todos los aspectos de los talleres educativos
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#" class="btn btn-primary btn-lg">
+                        <i class="bi bi-people-fill me-2"></i> Gestionar Inscripciones
+                    </a>
+                    <a href="#" class="btn btn-success btn-lg">
+                        <i class="bi bi-person-badge me-2"></i> Gestionar Talleristas
+                    </a>
+                    <a href="#" class="btn btn-warning btn-lg">
+                        <i class="bi bi-book me-2"></i> Gestionar Talleres
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h3 class="text-gray-800">
+                <i class="bi bi-graph-up me-2"></i> Estadisticas del Sistema
+            </h3>
+            <p class="text-muted">Resumen de la informacion actual del sistema</p>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card stats-card-primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-primary mb-2">Total Inscripciones</h6>
+                            <h2 class="mb-0" id="totalInscripciones">0</h2>
+                            <p class="text-muted small mb-0">Inscritos activos</p>
+                        </div>
+                        <div class="bg-primary rounded-circle p-3">
+                            <i class="bi bi-people-fill fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card stats-card-success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-success mb-2">Total Talleristas</h6>
+                            <h2 class="mb-0" id="totalTalleristas">0</h2>
+                            <p class="text-muted small mb-0">Talleristas activos</p>
+                        </div>
+                        <div class="bg-success rounded-circle p-3">
+                            <i class="bi bi-person-badge fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card stats-card-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-warning mb-2">Total Talleres</h6>
+                            <h2 class="mb-0" id="totalTalleres">0</h2>
+                            <p class="text-muted small mb-0">Talleres activos</p>
+                        </div>
+                        <div class="bg-warning rounded-circle p-3">
+                            <i class="bi bi-book fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card stats-card stats-card-danger h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase text-danger mb-2">En Lista de Espera</h6>
+                            <h2 class="mb-0" id="totalEspera">0</h2>
+                            <p class="text-muted small mb-0">Inscripciones en espera</p>
+                        </div>
+                        <div class="bg-danger rounded-circle p-3">
+                            <i class="bi bi-clock fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i> Informacion del Sistema
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h6>Caracteristicas principales:</h6>
+                    <ul class="mb-4">
+                        <li><strong>Gestion completa</strong> de inscripciones, talleristas y talleres</li>
+                        <li><strong>Inscripciones (semi)automaticas</strong> con verificacion de cupos disponibles en los talleres</li>
+                        <li><strong>Interfaz adaptable</strong> se puede ver bien tanto en celulares como en computadores</li>
+                    </ul>
+                    
+                    <h6>Procedimientos SQL utilizados:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="alert alert-light border small p-3 mb-2">
+                                <strong>VER_ESTUDIANTE</strong><br>
+                                Consulta informacion de estudiantes
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-light border small p-3 mb-2">
+                                <strong>INSCRIBIR_TALLER_O_ESPERA</strong><br>
+                                Inscripcion con validacion de cupos
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-light border small p-3 mb-2">
+                                <strong>AC_ESTUDIANTE</strong><br>
+                                Actualizacion de datos de estudiantes
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-light border small p-3 mb-2">
+                                <strong>VER_TALLERES</strong><br>
+                                Consulta informacion de talleres
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i> Acceso Rapido
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people-fill text-primary me-2"></i>
+                            Gestion de Inscripciones
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person-badge text-success me-2"></i>
+                            Gestion de Talleristas
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-book text-warning me-2"></i>
+                            Gestion de Talleres
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}

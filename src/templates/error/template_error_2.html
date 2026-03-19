@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(aqui el titulo)</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            font-size: 6rem;
+            margin: 0;
+            color: #ff4c4c;
+        }
+        h2 {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+        p {
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 10px auto 20px;
+            color: #ccc;
+        }
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff4c4c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #e03e3e;
+        }
+        .gear {
+            font-size: 4rem;
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="(sin nombre)">(algo aqui tambien si se necesita)</div>
+    <h1>(n° de error)</h1>
+    <h2>(descripcion breve del error)</h2>
+    <p>Oops! (mas texto explicando que sucedio)</p>
+    <a href="#" onclick="history.go(-1)" class="btn">Volver a la pagina anterior</a>
+</body>
+</html>
