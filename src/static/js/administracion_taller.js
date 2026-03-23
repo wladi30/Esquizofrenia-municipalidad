@@ -39,7 +39,6 @@ const GestionTalleres = {
         this.cargarCategorias();
         this.cargarTalleristasSelect();
     },
-    // 
     cargarCategorias: function() {
         fetch('/funcionario/api/categoria')
             .then(response => response.json())
@@ -178,45 +177,40 @@ const GestionTalleres = {
                     html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
                 }
             }
-            // Botón "Siguiente"
+            // esto deberia mostrar el boton siguiente
             html += `<li class="page-item ${this.config.paginaActual === totalPaginas ? 'disabled' : ''}">
                 <a class="page-link" href="#" onclick="GestionTalleres.cambiarPagina(${this.config.paginaActual + 1}); return false;">&raquo;</a>
             </li>`;
         }
-
         document.getElementById('paginacionTalleres').innerHTML = html;
     },
-
+    // cambiar pagina, matematicas wuaa
     cambiarPagina: function(pagina) {
         if (pagina < 1 || pagina > Math.ceil(this.config.data.talleres.length / this.config.itemsPorPagina)) return;
         this.mostrarPagina(pagina);
     },
-
-    // --- Lógica de Filtros ---
+    // esto es el filtro que esta mas arriba, aqui se esta aplciando
     aplicarFiltros: function() {
         this.config.filtros.year = document.getElementById('filtroAnio').value;
         this.config.filtros.estado = document.getElementById('filtroEstado').value;
         this.config.filtros.busqueda = document.getElementById('busqueda').value;
-        this.cargarTalleres(); // Recarga los datos con los nuevos filtros
+        this.cargarTalleres(); // aqui se cargan los datos en la funcion cargarTalleres()
     },
-
+    // wea mala xd
     limpiarFiltros: function() {
-        document.getElementById('filtroAnio').value = '2026';
+        document.getElementById('filtroAnio').value = currentYearV2;
         document.getElementById('filtroEstado').value = '';
         document.getElementById('busqueda').value = '';
-        this.config.filtros = { year: '2026', estado: '', busqueda: '' };
+        this.config.filtros = { year: currentYearV2, estado: '', busqueda: '' };
         this.cargarTalleres();
     },
-
-    // --- Lógica del Modal de Taller (Crear/Editar) ---
+    // abre el modal de taller para crear y editar
     abrirModalNuevoTaller: function() {
-        // Reinicia el formulario y el título
+        // se reinicia el formulario
         document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
         document.getElementById('formTaller').reset();
         document.getElementById('tallerId').value = '';
-
-        // Valores por defecto
-        document.getElementById('yearProceso').value = '2026';
+        document.getElementById('yearProceso').value = currentYearV2;
         document.getElementById('minEstudiantes').value = '5';
         document.getElementById('maxEstudiantes').value = '20';
         document.getElementById('estadoTaller').value = '1';
@@ -224,15 +218,13 @@ const GestionTalleres = {
         document.getElementById('edadMaxima').value = '99';
         document.getElementById('nroClases').value = '1';
         document.getElementById('nroMinutos').value = '90';
-
-        // Muestra el modal usando Bootstrap
+        // le aplico sus iconos causa
         new bootstrap.Modal(document.getElementById('modalTaller')).show();
     },
-
-    // Guarda un taller (nuevo o actualizado)
+    // guarda el taller creado o actualizado, puede que la actualziacion no funcione de inmediato
     guardarTaller: function() {
         const id = document.getElementById('tallerId').value;
-        // Recolecta los datos del formulario
+        // se recolectan los datos del formulario
         const data = {
             year_proceso: parseInt(document.getElementById('yearProceso').value),
             id_categoria: parseInt(document.getElementById('categoria').value),
@@ -243,7 +235,7 @@ const GestionTalleres = {
             fec_termino: document.getElementById('fecTermino').value,
             nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
             nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
-            horas_totales: 0, // Se puede calcular después si es necesario
+            horas_totales: 0, // se puede hacer el calculo despues, esto lo tengo que tener presente
             id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
             lugar: document.getElementById('lugar').value,
             minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
@@ -255,16 +247,16 @@ const GestionTalleres = {
             ind_tipo_taller: 1
         };
 
-        // Validación simple de campos obligatorios
+        // pongo esto para que no se creen talleres sin todos los datos basicos(que son casi todos) es una validador de campos
         if (!data.nombre_taller || !data.fec_inicio || !data.fec_termino) {
             this.mostrarError('Complete los campos obligatorios (*)');
             return;
         }
 
-        // Determina la URL y el método según si estamos editando o creando
+        // se entiende poco, pero esto deberia determinar la url y el metodo que se esta utlizando, en este caso el editando (PUT) y el crear utilizando (POST)
         const url = id ?
-            `/funcionario/api/taller-ac/${id}` :  // Para actualizar, usa el endpoint con PUT
-            '/funcionario/api/taller-crear';       // Para crear, usa el endpoint de POST
+            `/funcionario/api/taller-ac/${id}` :
+            '/funcionario/api/taller-crear';
         const method = id ? 'PUT' : 'POST';
 
         fetch(url, {
@@ -275,31 +267,31 @@ const GestionTalleres = {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                // Cierra el modal y recarga la lista
+                // se cierra el modal y se recarga los talleres
                 bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
-                this.mostrarExito(result.message || 'Operación exitosa');
+                this.mostrarExito(result.message || 'Operacion exitosa');
                 this.cargarTalleres();
-            } else {
+            } 
+            else {
                 this.mostrarError(result.message || 'Error al guardar');
             }
         })
         .catch(error => {
             console.error('Error en fetch guardarTaller:', error);
-            this.mostrarError('Error de conexión al guardar.');
+            this.mostrarError('Error de conexion al guardar.');
         });
     },
 
-    // Carga los datos de un taller en el formulario para editar
+    // carga los datos de un taller en el formulario para editar
     editarTaller: function(id) {
         fetch(`/funcionario/api/taller-get/${id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    // Rellena el formulario con los datos del taller
                     document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
                     document.getElementById('tallerId').value = t.id_taller;
-                    document.getElementById('yearProceso').value = t.year_proceso || 2026;
+                    document.getElementById('yearProceso').value = t.year_proceso || currentYearV2;
                     document.getElementById('nombreTaller').value = t.nombre_taller || '';
                     document.getElementById('categoria').value = t.id_categoria || '';
                     document.getElementById('objetivo').value = t.objetivo_taller || '';
@@ -315,20 +307,18 @@ const GestionTalleres = {
                     document.getElementById('material').value = t.material || '';
                     document.getElementById('requisitos').value = t.requisito || '';
                     document.getElementById('estadoTaller').value = t.id_estado_taller || 1;
-
-                    // Muestra el modal
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
-                } else {
+                } 
+                else {
                     this.mostrarError('No se pudo cargar el taller para editar.');
                 }
             })
             .catch(error => {
                 console.error('Error en fetch editarTaller:', error);
-                this.mostrarError('Error de conexión al cargar datos del taller.');
+                this.mostrarError('Error de conexion al cargar datos del taller.');
             });
     },
-
-    // --- Lógica de Detalles (Modal de solo lectura) ---
+    // AQUI VA LO DEL VER DETALLES , ESTO DEBERIA MOSTRAR TODO LO NECESARIO TANTO FECHA DE CREACION, TALLERISTA, NRO DE ALUMNOS, ETC
     verDetalles: function(id) {
         fetch(`/funcionario/api/taller-get/${id}`)
             .then(response => response.json())
@@ -338,22 +328,21 @@ const GestionTalleres = {
                     const inscritos = t.personas_inscritas || 0;
                     const maximo = t.maximo_estudiante || 20;
                     const disponibles = maximo - inscritos;
-
-                    // Determina el badge de estado
+                    // SE DETERMINA EL BADGE DEL ESTADO DEL TALLER, DIFERENTE AL DE ARRIBA POR QUE ESTO ES LO QUE TIENE QUE VER EL USUARIO, LO DE ARRIBA SON LAS IDS
                     let estadoBadge = '';
                     switch(t.id_estado_taller) {
-                        case 1: estadoBadge = '<span class="badge bg-success">Activo</span>'; break;
-                        case 2: estadoBadge = '<span class="badge bg-info">Próximamente</span>'; break;
-                        case 3: estadoBadge = '<span class="badge bg-secondary">Finalizado</span>'; break;
-                        case 4: estadoBadge = '<span class="badge bg-danger">Suspendido</span>'; break;
-                        default: estadoBadge = '<span class="badge bg-light text-dark">Desconocido</span>';
+                        case 1: estadoBadge = '<span class="badge bg-success">INGRESADO</span>'; break;
+                        case 2: estadoBadge = '<span class="badge bg-info">CANDALERIZADO</span>'; break;
+                        case 3: estadoBadge = '<span class="badge bg-secondary">CERRDO</span>'; break;
+                        case 4: estadoBadge = '<span class="badge bg-danger">DE BAJA</span>'; break;
+                        default: estadoBadge = '<span class="badge bg-light text-dark">DESCONOCIDO</span>';
                     }
-
-                    // Construye el HTML del modal de detalles
+                    // TAMADRE QUE ME COSTO ESTA PARTE, TENGO QUE ADMITIR QUE LA MAYORIA DE LO DE AQUI ABAJO LO HIZO CHAT GTP, NO VEIA LA FORMA (no me acordaba del ${} que existia) 
+                    // CABDE DEDCIR QUE CUANDO ME AYUDO CON LO DEL HTML Y JS JUNTO A USA SOLA SCRIPT LO COPIE Y LE PEGUE ARRIBA TAMBIEN ASIQUE SI ME AHORRO COMO 20 MIN DE VIDEO GPT CHAT
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="fw-bold">Información General</h6>
+                                <h6 class="fw-bold">Informacion General</h6>
                                 <table class="table table-sm">
                                     <tr><th>ID:</th><td>${t.id_taller}</td></tr>
                                     <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
@@ -366,7 +355,7 @@ const GestionTalleres = {
                                 <h6 class="fw-bold">Fechas y Horarios</h6>
                                 <table class="table table-sm">
                                     <tr><th>Inicio:</th><td>${t.fec_inicio || '-'}</td></tr>
-                                    <tr><th>Término:</th><td>${t.fec_termino || '-'}</td></tr>
+                                    <tr><th>TErmino:</th><td>${t.fec_termino || '-'}</td></tr>
                                     <tr><th>N° Clases:</th><td>${t.nro_clases_anual || '-'}</td></tr>
                                     <tr><th>Minutos/clase:</th><td>${t.nro_minutos || '-'}</td></tr>
                                 </table>
@@ -377,7 +366,7 @@ const GestionTalleres = {
                                 <h6 class="fw-bold">Cupos</h6>
                                 <table class="table table-sm">
                                     <tr><th>Inscritos:</th><td>${inscritos}</td></tr>
-                                    <tr><th>Máximo:</th><td>${maximo}</td></tr>
+                                    <tr><th>Maximo:</th><td>${maximo}</td></tr>
                                     <tr><th>Disponibles:</th><td class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</td></tr>
                                     <tr><th>Mínimo:</th><td>${t.minimo_estudiante || '-'}</td></tr>
                                 </table>
@@ -386,83 +375,78 @@ const GestionTalleres = {
                                 <h6 class="fw-bold">Requisitos de Edad</h6>
                                 <table class="table table-sm">
                                     <tr><th>Edad Mínima:</th><td>${t.edad_minima || 0} años</td></tr>
-                                    <tr><th>Edad Máxima:</th><td>${t.edad_maxima || 99} años</td></tr>
+                                    <tr><th>Edad Maxima:</th><td>${t.edad_maxima || 99} años</td></tr>
                                 </table>
                             </div>
                         </div>
                     `;
-
                     if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="fw-bold">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
                     if (t.material) html += `<div class="mt-2"><h6 class="fw-bold">Materiales:</h6><p>${t.material}</p></div>`;
                     if (t.requisito) html += `<div class="mt-2"><h6 class="fw-bold">Requisitos:</h6><p>${t.requisito}</p></div>`;
-
                     document.getElementById('detallesTallerBody').innerHTML = html;
-                    window.tallerDetallesId = id; // Guarda el ID para el botón "Editar" del modal de detalles
+                    window.tallerDetallesId = id; // GUARDA EL BOTON EDITAR PARA VER LOS DETALLES, PERO QUE FUNCIONE SIPO MI CHANCHO
                     new bootstrap.Modal(document.getElementById('modalDetallesTaller')).show();
-                } else {
+                } 
+                else {
                     this.mostrarError('No se pudieron cargar los detalles.');
                 }
             })
             .catch(error => {
                 console.error('Error en fetch verDetalles:', error);
-                this.mostrarError('Error de conexión al cargar detalles.');
+                this.mostrarError('Error de conexion al cargar detalles.');
             });
     },
 
-    // Acción del botón "Editar" dentro del modal de detalles
+    // debo dejar de utilizr la mayuscula jaja
     abrirModalEditarDesdeDetalles: function() {
         bootstrap.Modal.getInstance(document.getElementById('modalDetallesTaller')).hide();
         setTimeout(() => {
             this.editarTaller(window.tallerDetallesId);
-        }, 500); // Pequeño retraso para que se cierre el primer modal
+        }, 500); // un pequeño timer para que no se cierre tan rapido
     },
 
-    // --- Lógica de Eliminación (Lógica: Cambiar estado a "Suspendido") ---
+    // bueno aqui la idea es que si se elimina un taller se le cambia a suspendido 
     confirmarEliminar: function(id, nombre) {
         this.config.tallerAEliminar = id;
         document.getElementById('mensajeConfirmacion').innerHTML =
-            `¿Está seguro de suspender el taller <strong>${nombre}</strong>?<br>
-            <small class="text-muted">Esta acción cambiará el estado a "Suspendido". Los alumnos no podrán inscribirse.</small>`;
+            `¿Esta seguro de suspender el taller <strong>${nombre}</strong>?<br>
+            <small class="text-muted">Esta accion cambiara el estado a "Suspendido". Los alumnos no podran inscribirse.</small>`;
 
         const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
         modal.show();
     },
-
     ejecutarEliminacion: function() {
         const id = this.config.tallerAEliminar;
         if (!id) return;
-
         fetch(`/funcionario/api/taller-cambiar/${id}`, { method: 'DELETE' })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
                     this.mostrarExito(result.message || 'Taller suspendido');
-                    this.cargarTalleres(); // Recarga la lista
+                    this.cargarTalleres(); // RECARGA LA LISTA DEL SUS
                 } else {
                     this.mostrarError(result.message || 'Error al suspender');
                 }
             })
             .catch(error => {
                 console.error('Error en fetch eliminar:', error);
-                this.mostrarError('Error de conexión al suspender.');
+                this.mostrarError('Error de conexion al suspender.');
             })
             .finally(() => {
                 bootstrap.Modal.getInstance(document.getElementById('modalConfirmacion')).hide();
                 this.config.tallerAEliminar = null;
             });
     },
-
-    // --- Utilidades (Mensajes) ---
+    // AQUI VAN LAS UTILIDADES UQE SON LOS MENSAJE, CABE DECIR QUE ESTO ES DE MI CODIGO ANTIGUO ASI QUE TAL VEZ FALLE, POR MIENTRAS AQUI ESTAN
     mostrarExito: function(mensaje) {
         Swal.fire({
             icon: 'success',
-            title: 'Éxito',
+            title: 'Exito',
             text: mensaje,
             timer: 2000,
             showConfirmButton: false
         });
     },
-
     mostrarError: function(mensaje) {
         Swal.fire({
             icon: 'error',
@@ -471,37 +455,32 @@ const GestionTalleres = {
         });
     },
 
-    // --- Eventos de la UI ---
+    // EL BIND EVENTOS QUE CREE HACE RATO, ESTO ES CASI LO ULTIMO
     bindEventos: function() {
-        // Botón de filtros
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => { this.aplicarFiltros(); });
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => { this.limpiarFiltros(); });
-
-        // Búsqueda con Enter
         document.getElementById('busqueda')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { this.aplicarFiltros(); }
         });
-
-        // Formulario del modal (guardar)
         document.getElementById('formTaller')?.addEventListener('submit', (e) => {
             e.preventDefault();
             this.guardarTaller();
         });
 
-        // Botón de confirmación de eliminación
+        // boton de confirmacion de eliminacion
         document.getElementById('btnConfirmar')?.addEventListener('click', () => { this.ejecutarEliminacion(); });
 
-        // Botón "Nuevo Taller"
+        // boton nuevo taller
         document.querySelector('button[onclick="abrirModalNuevoTaller()"]')?.addEventListener('click', () => { this.abrirModalNuevoTaller(); });
-        // Nota: Como el HTML tiene onclick, también funciona. Pero para mantener la consistencia, lo vinculamos también aquí.
+        // Como el HTML tiene onclick, tambiEn funciona. pero para mantener la consistencia, lo vinculamos tambiEn aqui.
     }
 };
 
-// Inicialización cuando el DOM esté completamente cargado
+// inicializacion cuando el DOM estE completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     GestionTalleres.init();
 });
 
-// Exponer funciones necesarias para los onclick en el HTML (si los hay)
-// Esto permite que los botones con onclick="GestionTalleres.funcion()" sigan funcionando.
+// dxponer funciones necesarias para los onclick en el HTML (si los hay)
+// dsto permite que los botones con onclick="GestionTalleres.funcion()" sigan funcionando.
 window.GestionTalleres = GestionTalleres;
