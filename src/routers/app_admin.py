@@ -6,10 +6,6 @@ url_admin = Blueprint('url_admin', __name__, template_folder='src/templates')
 def guts():
     return render_template("a_massive_creature.html")
 
-@url_admin.route("/index-antiguo")
-def index_chamuco():
-    return render_template("index.html")
-
 @url_admin.route('/debug-rutas')
 def debug_rutas():
     from flask import current_app
