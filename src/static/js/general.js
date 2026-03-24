@@ -28,14 +28,10 @@ if (element) {
         return false;
     }
 }
-// esta es una forma direfente de obtener el año, en este caso lo usare como una variable para poder usarlo en filtros por años
+// no se puede exportar asi que cuando la quiera usar tendre que llamar al general entero, tal vez buscar una forma de exportarla? este js se llenara de cosas
 
-// const currentYearV2 = new Date().getFullYear();
-// const filteredData = data.filter(item => {
-//   return new Date(item.date).getFullYear() === currentYearV2;
-// });
-// console.log(filteredData);
-
+// el current year v2 es bueno para usarlo como filtro asi como para ponerlo en un display en pantalla, siempre solo dara el 2026 del año , algo que no se eso si es si lo da como numero o
+// lo suelta como si fuera una string, ahora esto no tengo idea si afectara realmente pero debo buscar por que en algun futuro podria afectar
 export const currentYearV2 = new Date().getFullYear();
 if (typeof data !== 'undefined' && data !== null) {
     const filteredData = data.filter(item => {
@@ -43,6 +39,8 @@ if (typeof data !== 'undefined' && data !== null) {
     });
     console.log(filteredData);
 } else {
+    // esto lo hice para que no mandara un error cada vez que se accede a una nueba pagina, el general,js se le tira un llamado desde base.html el cual lo tienen con extendes todos
+    // asi que puede ser algo molesto ver que el error sale todo el rato
     console.warn("La variable 'data' no está definida en esta página.");
 }
 

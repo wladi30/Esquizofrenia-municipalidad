@@ -1,3 +1,5 @@
+// codigo de busqueda "GUTS" , importante "guts" , baja importancia "Guts" , medianamente importante
+
 // https://youtu.be/l50gnBWHmdA
 // Este video explica vien el tema de los imports y exports ademas de dar muchos ejemplos de como aplicar esto, desde dinamicos a import masivos de un js a otro, recomiendo ver dde nuevo
 // estoy haciendo un import de general que trae la constante currentYearV2, esta me da el año actual el cual que lo usare como
@@ -457,6 +459,8 @@ const GestionTalleres = {
 
     // EL BIND EVENTOS QUE CREE HACE RATO, ESTO ES CASI LO ULTIMO
     bindEventos: function() {
+        // ahora esto esta definido en la parte de arriba tambien pero aqui los pongo como botones que activan dicha funcion, aun no lo pruebo ni se si esta del todo bien pero vendre aqui
+        // si algo sale mal asi que pondre mi codigo "GUTS"
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => { this.aplicarFiltros(); });
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => { this.limpiarFiltros(); });
         document.getElementById('busqueda')?.addEventListener('keypress', (e) => {
@@ -472,7 +476,7 @@ const GestionTalleres = {
 
         // boton nuevo taller
         document.querySelector('button[onclick="abrirModalNuevoTaller()"]')?.addEventListener('click', () => { this.abrirModalNuevoTaller(); });
-        // Como el HTML tiene onclick, tambiEn funciona. pero para mantener la consistencia, lo vinculamos tambiEn aqui.
+        // como el HTML tiene onclick, tambiEn funciona. pero para mantener la consistencia, lo vinculamos tambiEn aqui.
     }
 };
 
@@ -480,7 +484,6 @@ const GestionTalleres = {
 document.addEventListener('DOMContentLoaded', function() {
     GestionTalleres.init();
 });
-
 // dxponer funciones necesarias para los onclick en el HTML (si los hay)
 // dsto permite que los botones con onclick="GestionTalleres.funcion()" sigan funcionando.
 window.GestionTalleres = GestionTalleres;

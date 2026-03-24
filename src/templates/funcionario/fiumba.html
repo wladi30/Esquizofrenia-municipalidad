@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Administracion de Talleres - Municipalidad de Quilicura{% endblock %}
+{% block title %}Administración de Talleres - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_taller.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gestion_talleres.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
 {% endblock %}
+
 {% block content %}
 <div class="funcionario-container">
     <nav aria-label="breadcrumb" class="mb-4">
@@ -16,6 +17,7 @@
             <li class="breadcrumb-item active">Gestión de Talleres</li>
         </ol>
     </nav>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="h4 text-primary mb-1">
@@ -27,7 +29,7 @@
             </p>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn btn-primary" onclick="abrirModalNuevoTaller()">
+            <button class="btn btn-primary" onclick="GestionTalleres.abrirModalNuevoTaller()">
                 <i class="bi bi-plus-lg me-1"></i>
                 Nuevo Taller
             </button>
@@ -36,10 +38,10 @@
                     <i class="bi bi-files me-1"></i> Masivo
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#" onclick="exportarTalleres()">
+                    <li><a class="dropdown-item" href="#" onclick="GestionTalleres.exportarTalleres()">
                         <i class="bi bi-download me-2"></i>Exportar Talleres
                     </a></li>
-                    <li><a class="dropdown-item" href="#" onclick="importarTalleres()">
+                    <li><a class="dropdown-item" href="#" onclick="GestionTalleres.importarTalleres()">
                         <i class="bi bi-upload me-2"></i>Importar Talleres
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
@@ -50,7 +52,8 @@
             </div>
         </div>
     </div>
-    <div class="card border-0 shadow-sm mb-4">
+
+    <div class="card filtros-card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-2">
@@ -78,21 +81,22 @@
                         <span class="input-group-text bg-white">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="busqueda" 
+                        <input type="text" class="form-control" id="busqueda"
                                placeholder="Nombre del taller, lugar...">
                     </div>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button class="btn btn-primary btn-sm w-100" id="aplicarFiltrosBtn">
-                        <i class="bi bi-filter"></i> Filtrar
+                        <i class="bi bi-funnel"></i> Filtrar
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm ms-2" id="limpiarFiltrosBtn>
+                    <button class="btn btn-outline-secondary btn-sm ms-2" id="limpiarFiltrosBtn">
                         <i class="bi bi-arrow-counterclockwise"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -130,10 +134,11 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalTaller" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="modalTallerTitulo">
                     <i class="bi bi-plus-circle me-2"></i>
                     Nuevo Taller
@@ -143,7 +148,7 @@
             <form id="formTaller">
                 <div class="modal-body">
                     <input type="hidden" id="tallerId">
-                    
+
                     <div class="row">
                         <div class="col-md-8 mb-3">
                             <label class="form-label fw-semibold">Nombre del Taller <span class="text-danger">*</span></label>
@@ -155,7 +160,6 @@
                                 <option value="2026">2026</option>
                                 <option value="2025">2025</option>
                                 <option value="2024">2024</option>
-                                <option value="2023">tamadre pe causa</option>
                             </select>
                         </div>
                     </div>
@@ -209,7 +213,7 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Edad Mínima</label>
-                            <input type="number" class="form-control" id="edadMinima" min="0" value="0">
+                            <input type="number" class="form-control" id="edadMinima" min="16" value="16">
                         </div>
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Edad Máxima</label>
@@ -270,6 +274,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalConfirmacion" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -294,6 +299,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalDetallesTaller" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
