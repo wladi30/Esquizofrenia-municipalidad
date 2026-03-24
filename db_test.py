@@ -673,7 +673,7 @@ def buscar_talleres(termino, categoria=None, año=None, estados=None, limite=999
         cursor.close()
         conn.close()
 
-def ac_taller(id_taller,id_estado_taller,fec_estado_taller,obervacion,aud_usuario_ingreso,aud_fec_ingreso,aud_usuario_modifica,aud_fec_modifica):
+def ac_taller(id_taller,id_estado_taller,fec_estado_taller,observacion,aud_usuario_ingreso,aud_fec_ingreso,aud_usuario_modifica,aud_fec_modifica):
      conn = get_connection()
      if not conn:
           return False
@@ -682,7 +682,7 @@ def ac_taller(id_taller,id_estado_taller,fec_estado_taller,obervacion,aud_usuari
           fec_estado_taller_str = f"'{fec_estado_taller}'" if fec_estado_taller else "NULL"
           aud_fec_ingreso_str = f"'{aud_fec_ingreso}'" if aud_fec_ingreso else "NULL"
           aud_fec_modifica_str = f"'{aud_fec_modifica}'" if aud_fec_modifica else "NULL"
-          query=f"""{{CALL AC_TALLER({id_taller},{id_estado_taller},{fec_estado_taller_str},'{obervacion}','{aud_usuario_ingreso}',{aud_fec_ingreso},'{aud_usuario_modifica}',{aud_fec_modifica})}}"""
+          query=f"""{{CALL AC_TALLER({id_taller},{id_estado_taller},{fec_estado_taller_str},'{observacion}','{aud_usuario_ingreso}',{aud_fec_ingreso},'{aud_usuario_modifica}',{aud_fec_modifica})}}"""
           cursor.execute(query)
           return True
      except Exception as e:

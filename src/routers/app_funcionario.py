@@ -204,7 +204,7 @@ def api_actualizar_taller(id_taller): #CR(U)D
             id_taller=id_taller,
             id_estado_taller=data.get('id_estado_taller'),
             fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
-            obervacion=data.get('observacion', ''),
+            observacion=data.get('observacion', ''),
             aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
             aud_fec_ingreso=None,
             aud_usuario_modifica=session.get('id_usuario', 'sistema'),
@@ -228,7 +228,7 @@ def api_delete_taller(id_taller): # CRU(D)
             id_taller=id_taller,
             id_estado_taller=4,
             fec_estado_taller=None, #deberia haber un getdate()
-            obervacion="-",
+            observacion="-",
             aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
             aud_fec_ingreso=None,
             aud_usuario_modifica=session.get('id_usuario', 'sistema'),

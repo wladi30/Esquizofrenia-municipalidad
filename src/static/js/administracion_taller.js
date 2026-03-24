@@ -52,11 +52,11 @@ const GestionTalleres = {
         this.cargarTalleristasSelect();
     },
     cargarCategorias: function() {
-        fetch('/funcionario/api/categoria')
+        fetch('/api/categoria')
             .then(response => response.json())
             .then(data => {
                 // aqui lo pase a convertir en un array
-                this.config.data.categorias = data;
+                this.configuracion.datos.categorias = data;
                 const selectCategoria = document.getElementById('categoria');
                 // aqui lo que hago (ademas de ponerle un texto para mayor indicacion) le coloco un valor por default , si no tiene esto puede dar un error
                 selectCategoria.innerHTML = '<option value="">Seleccione categoría...</option>';
@@ -77,11 +77,11 @@ const GestionTalleres = {
     // aqui va la parte d elos talleristas
     cargarTalleristasSelect: function(){
         // contruire primero las urls despues seguimos con los filtros
-        fetch('funcionario/api/tallerista-lista')
+        fetch('/api/tallerista-lista')
         .then(response => response.json())
         .then(result => {
-            if (result.succes){
-                this.config.data.talleristas = result.data;
+            if (result.success){
+                this.configuracion.datos.talleristas = result.data;
                 const selectTallerista = document.getElementById('tallerista');
                 // option value, la idea que esto muestre un valor default
                 selectTallerista.innerHTML = '<option value="">Aun no se que poner aqui asi que hola 23/03</option>'
@@ -106,34 +106,44 @@ const GestionTalleres = {
         // aqui estoy haciendo los filtros que usare en cargar taller, year y estado seran valores mas simples de poner, year es solo el año que deberia ser automatico ademas de poder colocar los años anteriores
         // y estado seran los estados del 1 al 4 que se encuentran los talleres
         const params = new URLSearchParams();
-        if (filtros.year) params.append('year', filtros.year);
-        if (filtros.estado) params.append('estado', filtros.estado);
-        if (filtros.busqueda) params.append('busqueda', filtros.busqueda);
+        if (this.configuracion.filtros.year) params.append('year', this.configuracion.filtros.year);
+        if (this.configuracion.filtros.estado) params.append('estado', this.configuracion.filtros.estado);
+        if (this.configuracion.filtros.busqueda) params.append('busqueda', this.configuracion.filtros.busqueda);
         // html que deberia mostrar el indicador de la carga de la tabla, es solo algo visual debo buscar los iconos en bt
-        document.getElementById('tablaTalleresCuerpo').innerHTML = `{aqui deberia ir algo .html, debo ver que colocar}`
-        fetch(`/funcionario/api/taller-lista?${params.toString()}`)
+        document.getElementById('tablaTalleresCuerpo').innerHTML = `
+            <tr><td colspan="8" class="text-center py-4 text-muted">
+                <i class="bi bi-arrow-repeat me-2"></i>Cargando talleres...
+            </td></tr>`;
+        fetch(`/api/taller-lista?${params.toString()}`)
             .then(response => response.json())
             .then(result => {
                 // ATENCION recuerda que aqui aun no existe nada, tambien los innerHTML de esta funcion aun no tienen nada valido, asi que tengo que solucionarlo
                 // solo deberia poner unos cuantos iconos en los innerHTML, por lo demas debo ver que ocuure de resultado, podria ser mostrarPagina pero lo veo despues.
-                if (result.succes) {
-
+                if (result.success) {
+                    this.configuracion.datos.talleres = result.data;
+                    this.mostrarPagina(1);
                 }
                 else {
                     this.mostrarError(result.message);
-                    document.getElementById('tablaTalleresCuerpo').innerHTML =`{aqui lo mismo, deberia ir algo relacionado con errores en cargar los datos}`;
+                    document.getElementById('tablaTalleresCuerpo').innerHTML = `
+                        <tr><td colspan="8" class="text-center py-4 text-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Error: ${result.message}
+                        </td></tr>`;
                 }
             })
             .catch(error => {
                 console.error('', error);
                 this.mostrarError('');
-                document.getElementById('tablaTalleresBody').innerHTML = `{ aqui algo relacionado con errores de conexion}`;
+                document.getElementById('tablaTalleresCuerpo').innerHTML = `
+                    <tr><td colspan="8" class="text-center py-4 text-danger">
+                        <i class="bi bi-wifi-off me-2"></i>Error de conexión
+                    </td></tr>`;
             });
     },
     // esto genera un html para la fila de tabla taller, esto deberia dar pie a que en la lista se muestren bien los talleres
     generarFilaTaller: function(t){
         const inscritos = t.personas_inscritas || 0;
-        const maximo = t.MAXMIMO_ESTUDIANTE || 20;
+        const maximo = t.MAXIMO_ESTUDIANTE || 20;
         const porcentaje = maximo > 0 ? (inscritos / maximo) * 100 : 0;
         let estadoClass = '', estado = '';
         // aqui pondre todos los estados de taller , son solo 4 por defecto pondre el estado 3(cerrado) como el predeterminado
@@ -144,18 +154,53 @@ const GestionTalleres = {
             case 4: estadoClass = 'estado 4' ; estadoTexto = 'DE BAJA';
             default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO';
         }
-        return `{ insertar porbablemente texto masivo de html aaaaa}`
+        return `
+            <tr>
+                <td class="ps-4 fw-semibold">${t.ID_TALLER}</td>
+                <td>
+                    <div class="fw-semibold">${t.NOMBRE_TALLER || 'Sin nombre'}</div>
+                    <small class="text-muted">${t.LUGAR || 'Sin lugar'}</small>
+                </td>
+                <td>${this.obtenerNombreCategoria(t.ID_CATEGORIA) || t.ID_CATEGORIA || '-'}</td>
+                <td>${t.ID_DEPARTAMENTO ? 'Asignado' : 'Pendiente'}</td>
+                <td style="min-width: 120px;">
+                    <div class="d-flex justify-content-between small">
+                        <span>${inscritos}/${maximo}</span>
+                        <span class="text-muted">${Math.round(porcentaje)}%</span>
+                    </div>
+                    <div class="cupos-indicator">
+                        <div class="cupos-fill" style="width: ${porcentaje}%;"></div>
+                    </div>
+                </td>
+                <td><span class="estado-badge ${estadoClass}">${estadoTexto}</span></td>
+                <td>
+                    <small>${t.FEC_INICIO ? t.FEC_INICIO.substring(0,10) : '-'}</small><br>
+                    <small class="text-muted">al ${t.FEC_TERMINO ? t.FEC_TERMINO.substring(0,10) : '-'}</small>
+                </td>
+                <td class="text-end pe-4">
+                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleres.editarTaller(${t.ID_TALLER})" title="Editar">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="GestionTalleres.confirmarEliminar(${t.ID_TALLER}, '${t.NOMBRE_TALLER?.replace(/'/g, "\\'") || ''}')" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
     },
     mostrarPagina: function(pagina){
         //esto mas que nada me serivra para mostrar una pagina especifica en ela lista de los talleres
-        this.config.paginaActual = pagina;
-        const inicio = (pagina - 1) * this.config.itemsPorPagina;
-        const fin = inicio + this.config.itemsPorPagina;
-        const datosPagina = this.config.data.talleres.slice(inicio,fin);
+        this.configuracion.paginaActual = pagina;
+        const inicio = (pagina - 1) * this.configuracion.itemsPorPagina;
+        const fin = inicio + this.configuracion.itemsPorPagina;
+        const datosPagina = this.configuracion.datos.talleres.slice(inicio,fin);
         const  tbody = document.getElementById('tablaTalleresCuerpo');
         // tengo que cambiarlo y mejorarlo
         if (datosPagina.length ===0) {
-            tbody.innerHTML = `{ Wuaa soy un innerHTML que necesita atencion en algun futuro }`
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No hay talleres para mostrar</td></tr>`;
         }
         else {
             // falta terminar este
@@ -163,49 +208,52 @@ const GestionTalleres = {
         }
         this.actualizarPaginacion();
         // esta parte del codigo de abajo es algo que sqe de stack overflow, se supone que deberia mostrar 10~ por pagina.
-        document.getElementById('inforPaginacion').textContent = `Mostrando ${inicio + 1}-${Math.min(fin, this.config.data.talleres.length)} de ${this.config.data.talleres.length} resultados`;
+        document.getElementById('infoPaginacion').textContent = `Mostrando ${inicio + 1}-${Math.min(fin, this.configuracion.datos.talleres.length)} de ${this.configuracion.datos.talleres.length} resultados`;
     },
     obtenerNombreCategoria: function(idCategoria){
-        const categoria = this.config.data.categorias.find(c => c.ID_CATEGORIA == idCategoria);
+        const categoria = this.configuracion.datos.categorias.find(c => c.ID_CATEGORIA == idCategoria);
         return categoria ? categoria.DESCRIPCION_CATEGORIA : null;
     },
     actualizarPaginacion: function() {
-        const totalPaginas = Math.ceil(this.config.data.talleres.length / this.config.itemsPorPagina);
+        const totalPaginas = Math.ceil(this.configuracion.datos.talleres.length / this.configuracion.itemsPorPagina);
         let html = '';
         if (totalPaginas > 1) {
             // aqui deberia ir un boton para ir a la pag anterior
-            html += ``;
+            html += `<li class="page-item ${this.configuracion.paginaActual === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="GestionTalleres.cambiarPagina(${this.configuracion.paginaActual - 1}); return false;">&laquo;</a>
+            </li>`;
+            // esto m
             // esto mostrara el numero de paginas
             for (let i = 1; i <= totalPaginas; i++) {
-                if (i === this.config.paginaActual ||
+                if (i === this.configuracion.paginaActual ||
                     i === 1 ||
                     i === totalPaginas ||
-                    (i >= this.config.paginaActual - 2 && i <= this.config.paginaActual + 2)) {
-                    html += `<li class="page-item ${i === this.config.paginaActual ? 'active' : ''}">
+                    (i >= this.configuracion.paginaActual - 2 && i <= this.configuracion.paginaActual + 2)) {
+                    html += `<li class="page-item ${i === this.configuracion.paginaActual ? 'active' : ''}">
                         <a class="page-link" href="#" onclick="GestionTalleres.cambiarPagina(${i}); return false;">${i}</a>
                     </li>`;
                 } 
-                else if (i === this.config.paginaActual - 3 || i === this.config.paginaActual + 3) {
+                else if (i === this.configuracion.paginaActual - 3 || i === this.configuracion.paginaActual + 3) {
                     html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
                 }
             }
             // esto deberia mostrar el boton siguiente
-            html += `<li class="page-item ${this.config.paginaActual === totalPaginas ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="GestionTalleres.cambiarPagina(${this.config.paginaActual + 1}); return false;">&raquo;</a>
+            html += `<li class="page-item ${this.configuracion.paginaActual === totalPaginas ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="GestionTalleres.cambiarPagina(${this.configuracion.paginaActual + 1}); return false;">&raquo;</a>
             </li>`;
         }
         document.getElementById('paginacionTalleres').innerHTML = html;
     },
     // cambiar pagina, matematicas wuaa
     cambiarPagina: function(pagina) {
-        if (pagina < 1 || pagina > Math.ceil(this.config.data.talleres.length / this.config.itemsPorPagina)) return;
+        if (pagina < 1 || pagina > Math.ceil(this.configuracion.datos.talleres.length / this.configuracion.itemsPorPagina)) return;
         this.mostrarPagina(pagina);
     },
     // esto es el filtro que esta mas arriba, aqui se esta aplciando
     aplicarFiltros: function() {
-        this.config.filtros.year = document.getElementById('filtroAnio').value;
-        this.config.filtros.estado = document.getElementById('filtroEstado').value;
-        this.config.filtros.busqueda = document.getElementById('busqueda').value;
+        this.configuracion.filtros.year = document.getElementById('filtroAnio').value;
+        this.configuracion.filtros.estado = document.getElementById('filtroEstado').value;
+        this.configuracion.filtros.busqueda = document.getElementById('busqueda').value;
         this.cargarTalleres(); // aqui se cargan los datos en la funcion cargarTalleres()
     },
     // wea mala xd
@@ -213,7 +261,7 @@ const GestionTalleres = {
         document.getElementById('filtroAnio').value = currentYearV3;
         document.getElementById('filtroEstado').value = '';
         document.getElementById('busqueda').value = '';
-        this.config.filtros = { year: currentYearV3, estado: '', busqueda: '' };
+        this.configuracion.filtros = { year: currentYearV3, estado: '', busqueda: '' };
         this.cargarTalleres();
     },
     // abre el modal de taller para crear y editar
@@ -296,7 +344,7 @@ const GestionTalleres = {
 
     // carga los datos de un taller en el formulario para editar
     editarTaller: function(id) {
-        fetch(`/funcionario/api/taller-get/${id}`)
+        fetch(`/api/taller-get/${id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
@@ -332,7 +380,7 @@ const GestionTalleres = {
     },
     // AQUI VA LO DEL VER DETALLES , ESTO DEBERIA MOSTRAR TODO LO NECESARIO TANTO FECHA DE CREACION, TALLERISTA, NRO DE ALUMNOS, ETC
     verDetalles: function(id) {
-        fetch(`/funcionario/api/taller-get/${id}`)
+        fetch(`/api/taller-get/${id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
@@ -419,16 +467,15 @@ const GestionTalleres = {
 
     // bueno aqui la idea es que si se elimina un taller se le cambia a suspendido 
     confirmarEliminar: function(id, nombre) {
-        this.config.tallerAEliminar = id;
+        this.configuracion.EliminacionVerdaderaDeTaller = id;
         document.getElementById('mensajeConfirmacion').innerHTML =
             `¿Esta seguro de suspender el taller <strong>${nombre}</strong>?<br>
             <small class="text-muted">Esta accion cambiara el estado a "Suspendido". Los alumnos no podran inscribirse.</small>`;
-
         const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
         modal.show();
     },
     ejecutarEliminacion: function() {
-        const id = this.config.tallerAEliminar;
+        const id = this.configuracion.EliminacionVerdaderaDeTaller;
         if (!id) return;
         fetch(`/funcionario/api/taller-cambiar/${id}`, { method: 'DELETE' })
             .then(response => response.json())
@@ -446,7 +493,7 @@ const GestionTalleres = {
             })
             .finally(() => {
                 bootstrap.Modal.getInstance(document.getElementById('modalConfirmacion')).hide();
-                this.config.tallerAEliminar = null;
+                this.configuracion.EliminacionVerdaderaDeTaller = null;
             });
     },
     // AQUI VAN LAS UTILIDADES UQE SON LOS MENSAJE, CABE DECIR QUE ESTO ES DE MI CODIGO ANTIGUO ASI QUE TAL VEZ FALLE, POR MIENTRAS AQUI ESTAN
@@ -480,19 +527,21 @@ const GestionTalleres = {
             e.preventDefault();
             this.guardarTaller();
         });
-
         // boton de confirmacion de eliminacion
         document.getElementById('btnConfirmar')?.addEventListener('click', () => { this.ejecutarEliminacion(); });
-
         // boton nuevo taller
-        document.querySelector('button[onclick="abrirModalNuevoTaller()"]')?.addEventListener('click', () => { this.abrirModalNuevoTaller(); });
+        const nuevoTallerBtn = document.querySelector('button[onclick*="abrirModalNuevoTaller"]');
+        if (nuevoTallerBtn) {
+            // este ejemplo me la dio la ia, se reemplaza el onclick para que se utilice la refenria correcta
+            nuevoTallerBtn.onclick = () => { this.abrirModalNuevoTaller(); };
+        }
         // como el HTML tiene onclick, tambiEn funciona. pero para mantener la consistencia, lo vinculamos tambiEn aqui.
     }
 };
 
 // inicializacion cuando el DOM estE completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
-    GestionTalleres.init();
+    GestionTalleres.inicializando();
 });
 // dxponer funciones necesarias para los onclick en el HTML (si los hay)
 // dsto permite que los botones con onclick="GestionTalleres.funcion()" sigan funcionando.
