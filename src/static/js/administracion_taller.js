@@ -2,7 +2,7 @@
 
 // https://youtu.be/l50gnBWHmdA
 // Este video explica vien el tema de los imports y exports ademas de dar muchos ejemplos de como aplicar esto, desde dinamicos a import masivos de un js a otro, recomiendo ver dde nuevo
-// estoy haciendo un import de general que trae la constante currentYearV3, esta me da el año actual el cual que lo usare como
+// estoy haciendo un import de general que trae la constante '', esta me da el año actual el cual que lo usare como
 const currentYearV3 = new Date().getFullYear();
 if (typeof data !== 'undefined' && data !== null) {
     const filteredData = data.filter(item => {
@@ -24,9 +24,11 @@ const GestionTalleres = {
         itemsPorPagina: 30,
         filtros: {
             // esto es suponiendo el año, se tiene que hacer de manera automatica.
-            year: currentYearV3,
+            year: '',
             estado: '',
-            busqueda: ''
+            busqueda: '',
+            busqueda_id: '',
+            busqueda_lugar: '',
         },
         // aqui van a almacenar todos los datos de talleres, talleristas y las categorias de las cuales se usaran para los filtros, los otros 2 seran los que se muestren en pantalla
         datos: {
@@ -109,6 +111,8 @@ const GestionTalleres = {
         if (this.configuracion.filtros.year) params.append('year', this.configuracion.filtros.year);
         if (this.configuracion.filtros.estado) params.append('estado', this.configuracion.filtros.estado);
         if (this.configuracion.filtros.busqueda) params.append('busqueda', this.configuracion.filtros.busqueda);
+        if (this.configuracion.filtros.busqueda_id) params.append('busqueda_id', this.configuracion.filtros.busqueda_id);
+        if (this.configuracion.filtros.busqueda_lugar) params.append('busqueda_lugar', this.configuracion.filtros.busqueda_lugar);
         // html que deberia mostrar el indicador de la carga de la tabla, es solo algo visual debo buscar los iconos en bt
         document.getElementById('tablaTalleresCuerpo').innerHTML = `
             <tr><td colspan="8" class="text-center py-4 text-muted">
@@ -254,14 +258,18 @@ const GestionTalleres = {
         this.configuracion.filtros.year = document.getElementById('filtroAnio').value;
         this.configuracion.filtros.estado = document.getElementById('filtroEstado').value;
         this.configuracion.filtros.busqueda = document.getElementById('busqueda').value;
+        this.configuracion.filtros.busqueda_id = document.getElementById('busqueda_id').value;
+        this.configuracion.filtros.busqueda_lugar = document.getElementById('busqueda_lugar').value;
         this.cargarTalleres(); // aqui se cargan los datos en la funcion cargarTalleres()
     },
     // wea mala xd
     limpiarFiltros: function() {
-        document.getElementById('filtroAnio').value = currentYearV3;
+        document.getElementById('filtroAnio').value = '';
         document.getElementById('filtroEstado').value = '';
         document.getElementById('busqueda').value = '';
-        this.configuracion.filtros = { year: currentYearV3, estado: '', busqueda: '' };
+        document.getElementById('busqueda_id').value = '';
+        document.getElementById('busqueda_lugar').value = '';
+        this.configuracion.filtros = { year: '', estado: '', busqueda: '', busqueda_id: '', busqueda_lugar: '' };
         this.cargarTalleres();
     },
     // abre el modal de taller para crear y editar
@@ -270,7 +278,7 @@ const GestionTalleres = {
         document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
         document.getElementById('formTaller').reset();
         document.getElementById('tallerId').value = '';
-        document.getElementById('yearProceso').value = currentYearV3;
+        document.getElementById('yearProceso').value = '';
         document.getElementById('minEstudiantes').value = '5';
         document.getElementById('maxEstudiantes').value = '20';
         document.getElementById('estadoTaller').value = '1';
@@ -351,7 +359,7 @@ const GestionTalleres = {
                     const t = result.data;
                     document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
                     document.getElementById('tallerId').value = t.id_taller;
-                    document.getElementById('yearProceso').value = t.year_proceso || currentYearV3;
+                    document.getElementById('yearProceso').value = t.year_proceso || '';
                     document.getElementById('nombreTaller').value = t.nombre_taller || '';
                     document.getElementById('categoria').value = t.id_categoria || '';
                     document.getElementById('objetivo').value = t.objetivo_taller || '';

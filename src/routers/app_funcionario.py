@@ -121,8 +121,13 @@ def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui es
         year = request.args.get('year', '')
         estado = request.args.get('estado', '')
         busqueda = request.args.get('busqueda', '')
+        busqueda_id = request.args.get('busqueda_id', '')
+        busqueda_lugar = request.args.get('busqueda_lugar', '')
         estados = [int(estado)] if estado else None
         año = int(year) if year else None
+        #GUTS, detallazo aqui , el filtro de id no funcion y de lugar tampoco, ahora el filtro de id no funciona por que bueno es un int pero lugar si deberia estar bien asi que tengo que revisar
+        #esto, debo solucionar el tema del filtro de id y filtro de lugar
+        #tambien otro detalle es que la busqueda por categorias no sirve, literal solo estan mal escrita
         talleres = obtener_talleres(año=año, estados=estados)
 
         for taller in talleres:
@@ -131,6 +136,11 @@ def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui es
         if busqueda:
             busqueda_lower = busqueda.lower()
             talleres = [t for t in talleres if busqueda_lower in t.get('NOMBRE_TALLER', '').lower()]
+        if busqueda_id:
+            talleres = [t for t in talleres if busqueda_id in t.get('ID_TALLER', '')]
+        if busqueda_lugar:
+            busqueda_lugar_lower = busqueda_lugar.lower()
+            talleres = [t for t in talleres if busqueda_lugar_lower in t.get('LUGAR', '')]
         return jsonify({"success": True, "data": talleres, "total": len(talleres)})
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.api_taller_lista: {e}", "error_funcionario")

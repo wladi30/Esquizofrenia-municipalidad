@@ -56,10 +56,19 @@
                 <div class="col-md-2">
                     <label class="form-label small fw-semibold">Año</label>
                     <select class="form-select form-select-sm" id="filtroAnio">
-                        <option value="">Todos</option>
-                        <option value="2026" selected>2026</option>
+                        <option value="" selected>Todos</option>
+                        <option value="2026">2026</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <!-- <option value="0">0, existe solo un taller asi</option> -->
+                        <!-- actualmente no funciona el buscar por año ai que tengo que resolverlo, por lo demas se muestran todos
+                        los talleres asi que ese es un avanze gordo -->
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -72,14 +81,31 @@
                         <option value="4">Suspendido</option>
                     </select>
                 </div>
-                <div class="col-md-5">
-                    <label class="form-label small fw-semibold">Búsqueda</label>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Búsqueda por Nombre</label>
                     <div class="input-group input-group-sm">
                         <span class="input-group-text bg-white">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="busqueda" 
-                               placeholder="Nombre del taller, lugar...">
+                        <input type="text" class="form-control" id="busqueda" placeholder="Nombre del taller...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Búsqueda por ID</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="busqueda_id" placeholder="ID del taller...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Búsqueda por Lugar</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="busqueda_lugar" placeholder="Lugar del taller...">
                     </div>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">

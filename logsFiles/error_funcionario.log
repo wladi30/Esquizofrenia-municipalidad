@@ -98,3 +98,5 @@
 2026-03-23 12:48:07 | Thread-52 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_dashboard_ Could not build url for endpoint _url_principal.debug_rutas_. Did you mean _url_admin.debug_rutas_ instead_
 2026-03-23 12:48:18 | Thread-53 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_dashboard_ Could not build url for endpoint _url_principal.index_chamuco_. Did you mean _url_principal.index_ instead_
 2026-03-23 12:48:25 | Thread-54 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_dashboard_ Could not build url for endpoint _url_principal.debug_rutas_. Did you mean _url_admin.debug_rutas_ instead_
+2026-03-24 17:01:41 | Thread-97 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ argument of type _decimal.Decimal_ is not a container or iterable
+2026-03-24 17:02:17 | Thread-101 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ argument of type _decimal.Decimal_ is not a container or iterable
