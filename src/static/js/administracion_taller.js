@@ -2,8 +2,18 @@
 
 // https://youtu.be/l50gnBWHmdA
 // Este video explica vien el tema de los imports y exports ademas de dar muchos ejemplos de como aplicar esto, desde dinamicos a import masivos de un js a otro, recomiendo ver dde nuevo
-// estoy haciendo un import de general que trae la constante currentYearV2, esta me da el año actual el cual que lo usare como
-import {currentYearV2} from "./general"
+// estoy haciendo un import de general que trae la constante currentYearV3, esta me da el año actual el cual que lo usare como
+const currentYearV3 = new Date().getFullYear();
+if (typeof data !== 'undefined' && data !== null) {
+    const filteredData = data.filter(item => {
+        return new Date(item.date).getFullYear() === currentYearV3;
+    });
+    console.log(filteredData);
+} else {
+    // esto lo hice para que no mandara un error cada vez que se accede a una nueba pagina, el general,js se le tira un llamado desde base.html el cual lo tienen con extendes todos
+    // asi que puede ser algo molesto ver que el error sale todo el rato
+    console.warn("La variable 'data' no está definida en esta página.");
+}
 // Aqui doy inicio al js principal que se encargara de casi todo sobre administracion de talleres
 
 // el de aca sera lo que definira a lo que se muestra en la pag de talleres, aqui hare definiciones de cuandos talleres se muestran por pagina al igual que setear cuales seran los filtros
@@ -14,7 +24,7 @@ const GestionTalleres = {
         itemsPorPagina: 30,
         filtros: {
             // esto es suponiendo el año, se tiene que hacer de manera automatica.
-            year: currentYearV2,
+            year: currentYearV3,
             estado: '',
             busqueda: ''
         },
@@ -200,10 +210,10 @@ const GestionTalleres = {
     },
     // wea mala xd
     limpiarFiltros: function() {
-        document.getElementById('filtroAnio').value = currentYearV2;
+        document.getElementById('filtroAnio').value = currentYearV3;
         document.getElementById('filtroEstado').value = '';
         document.getElementById('busqueda').value = '';
-        this.config.filtros = { year: currentYearV2, estado: '', busqueda: '' };
+        this.config.filtros = { year: currentYearV3, estado: '', busqueda: '' };
         this.cargarTalleres();
     },
     // abre el modal de taller para crear y editar
@@ -212,7 +222,7 @@ const GestionTalleres = {
         document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
         document.getElementById('formTaller').reset();
         document.getElementById('tallerId').value = '';
-        document.getElementById('yearProceso').value = currentYearV2;
+        document.getElementById('yearProceso').value = currentYearV3;
         document.getElementById('minEstudiantes').value = '5';
         document.getElementById('maxEstudiantes').value = '20';
         document.getElementById('estadoTaller').value = '1';
@@ -293,7 +303,7 @@ const GestionTalleres = {
                     const t = result.data;
                     document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
                     document.getElementById('tallerId').value = t.id_taller;
-                    document.getElementById('yearProceso').value = t.year_proceso || currentYearV2;
+                    document.getElementById('yearProceso').value = t.year_proceso || currentYearV3;
                     document.getElementById('nombreTaller').value = t.nombre_taller || '';
                     document.getElementById('categoria').value = t.id_categoria || '';
                     document.getElementById('objetivo').value = t.objetivo_taller || '';
