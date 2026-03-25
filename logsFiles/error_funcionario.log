@@ -100,3 +100,10 @@
 2026-03-23 12:48:25 | Thread-54 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_dashboard_ Could not build url for endpoint _url_principal.debug_rutas_. Did you mean _url_admin.debug_rutas_ instead_
 2026-03-24 17:01:41 | Thread-97 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ argument of type _decimal.Decimal_ is not a container or iterable
 2026-03-24 17:02:17 | Thread-101 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ argument of type _decimal.Decimal_ is not a container or iterable
+2026-03-25 11:59:49 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ cannot access local variable _categoria_ where it is not associated with a value
+2026-03-25 12:00:10 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ cannot access local variable _categoria_ where it is not associated with a value
+2026-03-25 12:00:35 | Thread-21 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ cannot access local variable _categoria_ where it is not associated with a value
+2026-03-25 12:05:58 | Thread-29 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ cannot access local variable _categoria_ where it is not associated with a value
+2026-03-25 12:07:03 | Thread-32 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ cannot access local variable _categoria_ where it is not associated with a value
+2026-03-25 12:10:39 | Thread-45 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ cannot access local variable _categoria_ where it is not associated with a value
+2026-03-25 12:14:27 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _id_categoria_

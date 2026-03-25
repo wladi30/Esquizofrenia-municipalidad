@@ -26,16 +26,13 @@ FLASK_APP
         -css
             -administracion_taller.css
             -funcionario.css
-            -gestion_talleres.css
             -login.css
         -js
             -funcionario.js
             -general.js
-            -gestion.js
             -login.js
-            -taller.js
-            -tallerista.js
         -20241216_180631.jpg
+        -images.png
         -sm_5b348d4c557a7.jpg
     -templates
         -error
@@ -47,11 +44,11 @@ FLASK_APP
             -administracion_taller.html
             -dashboard.html
             -gestion_inscripciones.html
-            -gestion_taller.html
+            -gestion_talleres.html
             -gestion_tallerista.html
             -lista_espera.html
             -perfil_funcionario.html
-            -wea_mala.html
+            -taller_masivo.html
         -inscripcion
             -base_inscripcion.html
             -talleres.html

@@ -554,7 +554,7 @@ def ver_taller(id_taller):
             T.MATERIAL
         FROM SGT_TALLER T
         WHERE T.ID_TALLER = {id_taller}
-          AND T.ID_ESTADO_TALLER IN (1,2)
+          AND T.ID_ESTADO_TALLER IN (1,2,3,4)
         """
         cursor.execute(query)
         row = cursor.fetchone()
@@ -596,22 +596,27 @@ def ver_taller(id_taller):
         cursor.close()
         conn.close()
 
-def obtener_talleres(año=None, estados=None): #esto deberia hacer que los talleres se filtren por año, la idea es que el admin puedan modificar ese año asi de este modo se pueden los talleres anteriores
+def obtener_talleres(año=None, estados=None, id_categoria=None): #esto deberia hacer que los talleres se filtren por año, la idea es que el admin puedan modificar ese año asi de este modo se pueden los talleres anteriores
     conn = get_connection()
     if not conn:
         return []
     cursor = conn.cursor()
     try: # falta revisar esto mejor, no se porque params no esta funcionando, tengo que importarlo de algo ?
         sql = "SELECT * FROM SGT_TALLER WHERE 1=1"
-        if año:
+        # buena cosa tuvo de idea deep seak asi que la aplique
+        parametros = []
+        if año is not None:
             sql += " AND YEAR_PROCESO = ?"
-            parametros = []
             parametros.append(año)
         if estados:
             placeholders = ','.join(['?'] * len(estados))
             sql += f" AND ID_ESTADO_TALLER IN ({placeholders})"
             parametros.extend(estados)
-        cursor.execute(sql)
+        # añadi el tema de buscar por categoria(GUTS) espermos que funcione
+        if id_categoria:
+            sql += f" AND ID_CATEGORIA = ?"
+            parametros.append(id_categoria)
+        cursor.execute(sql, parametros)
         cols = [c[0] for c in cursor.description]
         return [dict(zip(cols, row)) for row in cursor.fetchall()]
     except Exception as e:

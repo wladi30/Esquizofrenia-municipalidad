@@ -26,6 +26,7 @@ const GestionTalleres = {
             // esto es suponiendo el año, se tiene que hacer de manera automatica.
             year: '',
             estado: '',
+            categoria: '',
             busqueda: '',
             busqueda_id: '',
             busqueda_lugar: '',
@@ -66,7 +67,7 @@ const GestionTalleres = {
                     // hago uso de la id categoria y descripcion de la base dedatos, podria tambien usdar las que tengo creadas en mi app de funcionario
                     const option = document.createElement('option');
                     option.value = cat.ID_CATEGORIA;
-                    option.textContent = cat.DESCRIPCION_CATEGORIA;
+                    option.textContent = cat.ID_CATEGORIA;
                     selectCategoria.appendChild(option);
                 });
             })
@@ -110,6 +111,7 @@ const GestionTalleres = {
         const params = new URLSearchParams();
         if (this.configuracion.filtros.year) params.append('year', this.configuracion.filtros.year);
         if (this.configuracion.filtros.estado) params.append('estado', this.configuracion.filtros.estado);
+        if (this.configuracion.filtros.categoria) params.append('categoria', this.configuracion.filtros.categoria);
         if (this.configuracion.filtros.busqueda) params.append('busqueda', this.configuracion.filtros.busqueda);
         if (this.configuracion.filtros.busqueda_id) params.append('busqueda_id', this.configuracion.filtros.busqueda_id);
         if (this.configuracion.filtros.busqueda_lugar) params.append('busqueda_lugar', this.configuracion.filtros.busqueda_lugar);
@@ -151,12 +153,16 @@ const GestionTalleres = {
         const porcentaje = maximo > 0 ? (inscritos / maximo) * 100 : 0;
         let estadoClass = '', estado = '';
         // aqui pondre todos los estados de taller , son solo 4 por defecto pondre el estado 3(cerrado) como el predeterminado
+        // ESTA WEA ESTA ENTERA MALA 'GUTS'(palabra clave), por alguna razon que desconozco completamente el estado que se muestra en pantalla es el mismo al ultimo estado que dejo habilitado
+        // un ejemplo de esto, ahora mismo existen 4 case y un default, si dejo el default habiltado todos mostraran el estado 'CERRADO' por que es el texto que le puse
+        // si lo desactivo y dejo solo los 4 case todos tendran el estado 'DE BAJA' , hrmano esta wea esta entera mala xd
+        // 25/03/2026 11:34 am, ahora funciona salu2 solo tuve que ponerle el break; al final, no me crucifiquen salu2 salu2 y recuerd salu2
         switch (t.ID_ESTADO_TALLER) {
-            case 1: estadoClass = 'estado 1' ; estadoTexto = 'INGRESADO';
-            case 2: estadoClass = 'estado 2' ; estadoTexto = 'CALENDARIZADO';
-            case 3: estadoClass = 'estado 3' ; estadoTexto = 'CERRADO';
-            case 4: estadoClass = 'estado 4' ; estadoTexto = 'DE BAJA';
-            default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO';
+            case 1: estadoClass = 'estado 1' ; estadoTexto = 'INGRESADO'; break;
+            case 2: estadoClass = 'estado 2' ; estadoTexto = 'CALENDARIZADO'; break;
+            case 3: estadoClass = 'estado 3' ; estadoTexto = 'CERRADO'; break;
+            case 4: estadoClass = 'estado 4' ; estadoTexto = 'DE BAJA'; break;
+            default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO-DEFAULT'; break;
         }
         return `
             <tr>
@@ -257,6 +263,7 @@ const GestionTalleres = {
     aplicarFiltros: function() {
         this.configuracion.filtros.year = document.getElementById('filtroAnio').value;
         this.configuracion.filtros.estado = document.getElementById('filtroEstado').value;
+        this.configuracion.filtros.categoria = document.getElementById('categoria').value;
         this.configuracion.filtros.busqueda = document.getElementById('busqueda').value;
         this.configuracion.filtros.busqueda_id = document.getElementById('busqueda_id').value;
         this.configuracion.filtros.busqueda_lugar = document.getElementById('busqueda_lugar').value;
@@ -266,10 +273,11 @@ const GestionTalleres = {
     limpiarFiltros: function() {
         document.getElementById('filtroAnio').value = '';
         document.getElementById('filtroEstado').value = '';
+        document.getElementById('categoria').value = '';
         document.getElementById('busqueda').value = '';
         document.getElementById('busqueda_id').value = '';
         document.getElementById('busqueda_lugar').value = '';
-        this.configuracion.filtros = { year: '', estado: '', busqueda: '', busqueda_id: '', busqueda_lugar: '' };
+        this.configuracion.filtros = { year: '', estado: '', categoria: '', busqueda: '', busqueda_id: '', busqueda_lugar: '' };
         this.cargarTalleres();
     },
     // abre el modal de taller para crear y editar
@@ -278,6 +286,7 @@ const GestionTalleres = {
         document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
         document.getElementById('formTaller').reset();
         document.getElementById('tallerId').value = '';
+        document.getElementById('categoria').value = '';
         document.getElementById('yearProceso').value = '';
         document.getElementById('minEstudiantes').value = '5';
         document.getElementById('maxEstudiantes').value = '20';
@@ -297,7 +306,7 @@ const GestionTalleres = {
             year_proceso: parseInt(document.getElementById('yearProceso').value),
             id_categoria: parseInt(document.getElementById('categoria').value),
             nombre_taller: document.getElementById('nombreTaller').value,
-            id_departamento: parseInt(document.getElementById('departamento').value || '1'),
+            id_departamento: parseInt(document.getElementById('departamento').value || '169'),
             objetivo_taller: document.getElementById('objetivo').value,
             fec_inicio: document.getElementById('fecInicio').value,
             fec_termino: document.getElementById('fecTermino').value,
@@ -401,7 +410,7 @@ const GestionTalleres = {
                     switch(t.id_estado_taller) {
                         case 1: estadoBadge = '<span class="badge bg-success">INGRESADO</span>'; break;
                         case 2: estadoBadge = '<span class="badge bg-info">CANDALERIZADO</span>'; break;
-                        case 3: estadoBadge = '<span class="badge bg-secondary">CERRDO</span>'; break;
+                        case 3: estadoBadge = '<span class="badge bg-secondary">CERRADO</span>'; break;
                         case 4: estadoBadge = '<span class="badge bg-danger">DE BAJA</span>'; break;
                         default: estadoBadge = '<span class="badge bg-light text-dark">DESCONOCIDO</span>';
                     }
@@ -529,6 +538,12 @@ const GestionTalleres = {
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => { this.aplicarFiltros(); });
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => { this.limpiarFiltros(); });
         document.getElementById('busqueda')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_id')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_lugar')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { this.aplicarFiltros(); }
         });
         document.getElementById('formTaller')?.addEventListener('submit', (e) => {

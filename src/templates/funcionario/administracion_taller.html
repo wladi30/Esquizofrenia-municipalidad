@@ -26,7 +26,7 @@
                 Administra talleres, cupos, estados y asignaciones
             </p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-grid gap-2 me-3">
             <button class="btn btn-primary" onclick="GestionTalleres.abrirModalNuevoTaller()">
                 <i class="bi bi-plus-lg me-1"></i>
                 Nuevo Taller
@@ -75,11 +75,17 @@
                     <label class="form-label small fw-semibold">Estado</label>
                     <select class="form-select form-select-sm" id="filtroEstado">
                         <option value="">Todos</option>
-                        <option value="1">Activo</option>
-                        <option value="2">Próximamente</option>
-                        <option value="3">Finalizado</option>
-                        <option value="4">Suspendido</option>
+                        <option value="1">INGRESADO</option>
+                        <option value="2">CALENDARIZADO</option>
+                        <option value="3">CERRADO</option>
+                        <option value="4">DE BAJA</option>
                     </select>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Categoría <span class="text-danger"></span></label>
+                    <select class="form-select" id="categoria" required>
+                        <option></option>
+                    </select>
+                </div>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small fw-semibold">Búsqueda por Nombre</label>
@@ -188,7 +194,7 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Categoría<span class="text-danger">*</span></label>
                             <select class="form-select" id="categoria" required>
                                 <option value="">Seleccione categoría...</option>
                             </select>
@@ -253,32 +259,30 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Materiales Requeridos</label>
-                        <textarea class="form-control" id="material" rows="2" maxlength="500"
-                                  placeholder="Lista de materiales necesarios..."></textarea>
+                        <textarea class="form-control" id="material" rows="2" maxlength="500" placeholder="Lista de materiales necesarios..."></textarea>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Requisitos</label>
-                        <textarea class="form-control" id="requisitos" rows="2" maxlength="500"
-                                  placeholder="Requisitos para participar..."></textarea>
+                        <textarea class="form-control" id="requisitos" rows="2" maxlength="500" placeholder="Requisitos para participar..."></textarea>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
                             <select class="form-select" id="estadoTaller" required>
-                                <option value="1">Activo</option>
-                                <option value="2">Próximamente</option>
-                                <option value="3">Finalizado</option>
-                                <option value="4">Suspendido</option>
+                                <option value="1">INGRESADO</option>
+                                <option value="2">CALENDARIZADO</option>
+                                <option value="3">CERRADO</option>
+                                <option value="4">DE BAJA</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Departamento</label>
                             <select class="form-select" id="departamento">
-                                <option value="1">Cultura</option>
-                                <option value="2">Educación</option>
-                                <option value="3">Deportes</option>
+                                <option value="169">169 desconocido</option>
+                                <option value="22">22 desconocido</option>
+                                <option value="104">104 desconocido</option>
                             </select>
                         </div>
                     </div>

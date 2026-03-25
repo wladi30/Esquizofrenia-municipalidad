@@ -124,11 +124,13 @@ def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui es
         busqueda_id = request.args.get('busqueda_id', '')
         busqueda_lugar = request.args.get('busqueda_lugar', '')
         estados = [int(estado)] if estado else None
-        año = int(year) if year else None
+        categoria = request.args.get('categoria', '')
+        id_categoria = int(categoria) if categoria and categoria.isdigit() else None
+        año = int(year) if year and year.isdigit() else None #un cambio aqui para validar que sea digito
         #GUTS, detallazo aqui , el filtro de id no funcion y de lugar tampoco, ahora el filtro de id no funciona por que bueno es un int pero lugar si deberia estar bien asi que tengo que revisar
         #esto, debo solucionar el tema del filtro de id y filtro de lugar
         #tambien otro detalle es que la busqueda por categorias no sirve, literal solo estan mal escrita
-        talleres = obtener_talleres(año=año, estados=estados)
+        talleres = obtener_talleres(año=año, estados=estados, id_categoria=id_categoria)
 
         for taller in talleres:
             estudiantes = obtener_estudiantes_por_taller(taller.get('ID_TALLER'))
@@ -136,11 +138,12 @@ def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui es
         if busqueda:
             busqueda_lower = busqueda.lower()
             talleres = [t for t in talleres if busqueda_lower in t.get('NOMBRE_TALLER', '').lower()]
-        if busqueda_id:
-            talleres = [t for t in talleres if busqueda_id in t.get('ID_TALLER', '')]
+        if busqueda_id and busqueda_id.isdigit():
+            busqueda_id_int = int(busqueda_id)
+            talleres = [t for t in talleres if t.get('ID_TALLER') == busqueda_id_int]
         if busqueda_lugar:
             busqueda_lugar_lower = busqueda_lugar.lower()
-            talleres = [t for t in talleres if busqueda_lugar_lower in t.get('LUGAR', '')]
+            talleres = [t for t in talleres if busqueda_lugar_lower in t.get('LUGAR', '').lower()]
         return jsonify({"success": True, "data": talleres, "total": len(talleres)})
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.api_taller_lista: {e}", "error_funcionario")
@@ -155,7 +158,7 @@ def api_crear_taller():
         year_proceso = data.get('year_proceso')
         id_categoria = data.get('id_categoria')
         nombre_taller = data.get('nombre_taller')
-        id_departamento = data.get('id_departamento', 1)
+        id_departamento = data.get('id_departamento', 169)
         objetivo_taller = data.get('objetivo_taller', '')
         fec_inicio = data.get('fec_inicio')
         fec_termino = data.get('fec_termino')
