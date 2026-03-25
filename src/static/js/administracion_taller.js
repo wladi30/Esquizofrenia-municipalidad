@@ -60,22 +60,35 @@ const GestionTalleres = {
             .then(data => {
                 // aqui lo pase a convertir en un array
                 this.configuracion.datos.categorias = data;
-                const selectCategoria = document.getElementById('categoria');
+                // cambio de getelementbyid hacia queryselectorall, vere como resulta
+                const selectsModal = document.querySelectorAll('.select-categoria');
                 // aqui lo que hago (ademas de ponerle un texto para mayor indicacion) le coloco un valor por default , si no tiene esto puede dar un error
-                selectCategoria.innerHTML = '<option value="">Seleccione categoría...</option>';
-                data.forEach(cat => {
-                    // hago uso de la id categoria y descripcion de la base dedatos, podria tambien usdar las que tengo creadas en mi app de funcionario
-                    const option = document.createElement('option');
-                    option.value = cat.ID_CATEGORIA;
-                    option.textContent = cat.ID_CATEGORIA;
-                    selectCategoria.appendChild(option);
+                selectsModal.forEach(select => {
+                    select.innerHTML = '<option value="">Seleccione categoría...</option>';
+                    data.forEach(cat => { 
+                        // hago uso de la id categoria y descripcion de la base dedatos, podria tambien usdar las que tengo creadas en mi app de funcionario
+                        const option = document.createElement('option');
+                        option.value = cat.ID_CATEGORIA;
+                        option.textContent = cat.DESCRIPCION_CATEGORIA;
+                        select.appendChild(option);
+                    });
+                });
+                const selectsFiltro = document.querySelectorAll('.select-categoria-filtro');
+                selectsFiltro.forEach(select => {
+                    select.innerHTML = '<option value="">Todas las categorías</option>';
+                    data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.ID_CATEGORIA;
+                        option.textContent = cat.DESCRIPCION_CATEGORIA;
+                        select.appendChild(option);
+                    });
                 });
             })
-            // un catch simplemente, tal vez le podria poner un log para mas debug?
-            .catch(error => {
-                console.error('Error cargando categorías:', error);
-                this.mostrarError('No se pudieron cargar las categorías.');
-            });
+        // un catch simplemente, tal vez le podria poner un log para mas debug?
+        .catch(error => {
+            console.error('Error cargando categorías:', error);
+            this.mostrarError('No se pudieron cargar las categorías.');
+        });
     },
     // aqui va la parte d elos talleristas
     cargarTalleristasSelect: function(){
@@ -105,6 +118,29 @@ const GestionTalleres = {
             this.mostrarError('Error al cargar a los talleristas');
         })
     },
+    limpiarFiltros: function() {
+    document.getElementById('filtroAnio').value = '';
+    document.getElementById('filtroEstado').value = '';
+    document.getElementById('busqueda').value = '';
+    document.getElementById('busqueda_id').value = '';
+    document.getElementById('busqueda_lugar').value = '';
+    
+    // Limpiar el select de categoría filtro
+    const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
+    if (selectCategoriaFiltro) {
+        selectCategoriaFiltro.value = '';
+    }
+    
+    this.configuracion.filtros = { 
+        year: '', 
+        estado: '', 
+        busqueda: '', 
+        busqueda_id: '', 
+        busqueda_lugar: '',
+        categoria: ''
+    };
+    this.cargarTalleres();
+},
     cargarTalleres: function(){
         // aqui estoy haciendo los filtros que usare en cargar taller, year y estado seran valores mas simples de poner, year es solo el año que deberia ser automatico ademas de poder colocar los años anteriores
         // y estado seran los estados del 1 al 4 que se encuentran los talleres
@@ -263,21 +299,27 @@ const GestionTalleres = {
     aplicarFiltros: function() {
         this.configuracion.filtros.year = document.getElementById('filtroAnio').value;
         this.configuracion.filtros.estado = document.getElementById('filtroEstado').value;
-        this.configuracion.filtros.categoria = document.getElementById('categoria').value;
+        // this.configuracion.filtros.categoria = document.getElementById('categoria').value;
         this.configuracion.filtros.busqueda = document.getElementById('busqueda').value;
         this.configuracion.filtros.busqueda_id = document.getElementById('busqueda_id').value;
         this.configuracion.filtros.busqueda_lugar = document.getElementById('busqueda_lugar').value;
-        this.cargarTalleres(); // aqui se cargan los datos en la funcion cargarTalleres()
+        // this.cargarTalleres(); // aqui se cargan los datos en la funcion cargarTalleres()
+        const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
+        this.configuracion.filtros.categoria = selectCategoriaFiltro ? selectCategoriaFiltro.value: '';
+        this.cargarTalleres();
     },
     // wea mala xd
+    // vamos a arreglar esto, cualquier cosa su rollback y a los pastos
     limpiarFiltros: function() {
         document.getElementById('filtroAnio').value = '';
         document.getElementById('filtroEstado').value = '';
-        document.getElementById('categoria').value = '';
+        // document.getElementById('categoria').value = '';
         document.getElementById('busqueda').value = '';
         document.getElementById('busqueda_id').value = '';
         document.getElementById('busqueda_lugar').value = '';
-        this.configuracion.filtros = { year: '', estado: '', categoria: '', busqueda: '', busqueda_id: '', busqueda_lugar: '' };
+        const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
+        if (selectCategoriaFiltro) {selectCategoriaFiltro.value = '';}
+        this.configuracion.filtros = {year: '', estado: '', busqueda: '', busqueda_id: '', busqueda_lugar: '', categoria: ''};
         this.cargarTalleres();
     },
     // abre el modal de taller para crear y editar
@@ -286,7 +328,10 @@ const GestionTalleres = {
         document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
         document.getElementById('formTaller').reset();
         document.getElementById('tallerId').value = '';
-        document.getElementById('categoria').value = '';
+        // cambio del este de categoria, en este caso voy a aplicar el select-categoria
+        // document.getElementById('categoria').value = '';
+        const selectCategoriaModal = document.querySelector('.select-categoria');
+        if (selectCategoriaModal) {selectCategoriaModal.value = '';}
         document.getElementById('yearProceso').value = '';
         document.getElementById('minEstudiantes').value = '5';
         document.getElementById('maxEstudiantes').value = '20';
@@ -302,9 +347,11 @@ const GestionTalleres = {
     guardarTaller: function() {
         const id = document.getElementById('tallerId').value;
         // se recolectan los datos del formulario
+        // aqui se pondra una const que sera para el categoria taller
+        const selectCategoriaModal = document.querySelector('.select-categoria')
         const data = {
             year_proceso: parseInt(document.getElementById('yearProceso').value),
-            id_categoria: parseInt(document.getElementById('categoria').value),
+            id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value:0),
             nombre_taller: document.getElementById('nombreTaller').value,
             id_departamento: parseInt(document.getElementById('departamento').value || '169'),
             objetivo_taller: document.getElementById('objetivo').value,
@@ -332,8 +379,8 @@ const GestionTalleres = {
 
         // se entiende poco, pero esto deberia determinar la url y el metodo que se esta utlizando, en este caso el editando (PUT) y el crear utilizando (POST)
         const url = id ?
-            `/funcionario/api/taller-ac/${id}` :
-            '/funcionario/api/taller-crear';
+            `/api/taller-ac/${id}` :
+            '/api/taller-crear';
         const method = id ? 'PUT' : 'POST';
 
         fetch(url, {
@@ -370,7 +417,10 @@ const GestionTalleres = {
                     document.getElementById('tallerId').value = t.id_taller;
                     document.getElementById('yearProceso').value = t.year_proceso || '';
                     document.getElementById('nombreTaller').value = t.nombre_taller || '';
-                    document.getElementById('categoria').value = t.id_categoria || '';
+                    // se viene un cambio muchachos
+                    // document.getElementById('categoria').value = t.id_categoria || '';
+                    const selectCategoriaModal = document.querySelector('.select-categoria');
+                    if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
                     document.getElementById('objetivo').value = t.objetivo_taller || '';
                     document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
                     document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
@@ -494,7 +544,7 @@ const GestionTalleres = {
     ejecutarEliminacion: function() {
         const id = this.configuracion.EliminacionVerdaderaDeTaller;
         if (!id) return;
-        fetch(`/funcionario/api/taller-cambiar/${id}`, { method: 'DELETE' })
+        fetch(`/api/taller-cambiar/${id}`, { method: 'DELETE' })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
