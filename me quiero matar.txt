@@ -1,42 +1,21 @@
-@url_funcionario.route('/api/taller-crear', methods=['POST'])
-@funcionario_required
-def api_crear_taller():
-    try:
-        data = request.json # duerman a michelo
-        year_proceso = data.get('year_proceso')
-        id_categoria = data.get('id_categoria')
-        nombre_taller = data.get('nombre_taller')
-        id_departamento = data.get('id_departamento', 169)
-        objetivo_taller = data.get('objetivo_taller', '')
-        fec_inicio = data.get('fec_inicio')
-        fec_termino = data.get('fec_termino')
-        nro_minutos = data.get('nro_minutos', 90)
-        nro_clases_anual = data.get('nro_clases_anual', 1)
-        horas_totales = data.get('horas_totales', 0)
-        id_estado_taller = data.get('id_estado_taller', 1)
-        lugar = data.get('lugar', '')
-        minimo_estudiante = data.get('minimo_estudiante', 5)
-        maximo_estudiante = data.get('maximo_estudiante', 20)
-        requisito = data.get('requisito', '')
-        edad_minima = data.get('edad_minima', 0)
-        edad_maxima = data.get('edad_maxima', 99)
-        material = data.get('material', '')
-        ind_tipo_taller = data.get('ind_tipo_taller', 1)
-        resultado = inscribir_el_taller(
-            year_proceso,id_categoria,nombre_taller,id_departamento,objetivo_taller,fec_inicio,fec_termino,nro_minutos,
-            nro_clases_anual,horas_totales,id_estado_taller,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,
-            edad_maxima,material,ind_tipo_taller
-        )
-        #primero defino que son cada dato y despues los meto todos en el 'resultado'
-        if resultado.get('success'):
-            return jsonify({"success": True, "message": "taller creado", "id_taller": resultado.get('id_taller')}), 201
-        else:
-            return jsonify({"success": False, "message": resultado.get('message', 'Error al crear taller')}), 400
-        # return print("ZA WARUDOO!!")
-    except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_crear_taller: {e}", "error_funcionario")
-        return jsonify({"success": False, "message": str(e)}), 500
-        # return print("ZA WARUDOO!!")
+def ac_taller(id_taller,fec_inicio,fec_termino):
+conn = get_connection()
+    if not conn:
+        return False
+    cursor = conn.cursor()
+    fecha_inicio = fec_inicio
+    fecha_termino = fec_termino
+    query = f"""
+        UPDATE SGT_TALLER 
+            FEC_INICIO = '{fecha_inicio}',
+            FEC_TERMINO = '{fecha_termino}'
+        WHERE ID_TALLER = {id_taller}
+    """
+    cursor.execute(query)
+    conn.commit()
+    return True
+
+!! ESTO PERTENECE A UN ARCHIVO db_test.py !!
 
 @url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT'])
 @funcionario_required
@@ -45,184 +24,50 @@ def api_actualizar_taller(id_taller): #CR(U)D
         data = request.json
         resultado = ac_taller(
             id_taller=id_taller,
-            id_estado_taller=data.get('id_estado_taller'),
-            fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
-            observacion=data.get('observacion', ''),
-            aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-            aud_fec_ingreso=None,
-            aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-            aud_fec_modifica=None
+            fec_inicio=data.get('fec_inicio'),
+            fec_termino=data.get('fec_termino')
         )
         if resultado:
             return jsonify({"success": True, "message": "taller actualizado correctamente"})
         else:
             return jsonify({"success": False, "message": "eeror al actualizar el tallere"}), 400
-        # return print("ZA WARUDOO!!")
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
-        # return print("ZA WARUDOO!!")
-!! LO DE ARRIBA ES DE UN .PY
 
-generarFilaTaller: function(t){
-        const inscritos = t.personas_inscritas || 0;
-        const maximo = t.MAXIMO_ESTUDIANTE || 20;
-        const porcentaje = maximo > 0 ? (inscritos / maximo) * 100 : 0;
-        let estadoClass = '', estado = '';
-        // aqui pondre todos los estados de taller , son solo 4 por defecto pondre el estado 3(cerrado) como el predeterminado
-        // ESTA WEA ESTA ENTERA MALA 'GUTS'(palabra clave), por alguna razon que desconozco completamente el estado que se muestra en pantalla es el mismo al ultimo estado que dejo habilitado
-        // un ejemplo de esto, ahora mismo existen 4 case y un default, si dejo el default habiltado todos mostraran el estado 'CERRADO' por que es el texto que le puse
-        // si lo desactivo y dejo solo los 4 case todos tendran el estado 'DE BAJA' , hrmano esta wea esta entera mala xd
-        // 25/03/2026 11:34 am, ahora funciona salu2 solo tuve que ponerle el break; al final, no me crucifiquen salu2 salu2 y recuerd salu2
-        switch (t.ID_ESTADO_TALLER) {
-            case 1: estadoClass = 'estado 1' ; estadoTexto = 'INGRESADO'; break;
-            case 2: estadoClass = 'estado 2' ; estadoTexto = 'CALENDARIZADO'; break;
-            case 3: estadoClass = 'estado 3' ; estadoTexto = 'CERRADO'; break;
-            case 4: estadoClass = 'estado 4' ; estadoTexto = 'DE BAJA'; break;
-            default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO-DEFAULT'; break;
-        }
-        return `
-            <tr>
-                <td class="ps-4 fw-semibold">${t.ID_TALLER}</td>
-                <td>
-                    <div class="fw-semibold">${t.NOMBRE_TALLER || 'Sin nombre'}</div>
-                    <small class="text-muted">${t.LUGAR || 'Sin lugar'}</small>
-                </td>
-                <td>${this.obtenerNombreCategoria(t.ID_CATEGORIA) || t.ID_CATEGORIA || '-'}</td>
-                <td>${t.ID_DEPARTAMENTO ? 'Asignado' : 'Pendiente'}</td>
-                <td style="min-width: 120px;">
-                    <div class="d-flex justify-content-between small">
-                        <span>${inscritos}/${maximo}</span>
-                        <span class="text-muted">${Math.round(porcentaje)}%</span>
-                    </div>
-                    <div class="cupos-indicator">
-                        <div class="cupos-fill" style="width: ${porcentaje}%;"></div>
-                    </div>
-                </td>
-                <td><span class="estado-badge ${estadoClass}">${estadoTexto}</span></td>
-                <td>
-                    <small>${t.FEC_INICIO ? t.FEC_INICIO.substring(0,10) : '-'}</small><br>
-                    <small class="text-muted">al ${t.FEC_TERMINO ? t.FEC_TERMINO.substring(0,10) : '-'}</small>
-                </td>
-                <td class="text-end pe-4">
-                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleres.editarTaller(${t.ID_TALLER})" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="GestionTalleres.confirmarEliminar(${t.ID_TALLER}, '${t.NOMBRE_TALLER?.replace(/'/g, "\\'") || ''}')" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-    },
+!! ESTO PERTENECE A UN ARCHIVO app_funcionario.py !!
 
 guardarTaller: function() {
-        const id = document.getElementById('tallerId').value;
-        // se recolectan los datos del formulario
-        // aqui se pondra una const que sera para el categoria taller
-        const selectCategoriaModal = document.querySelector('.select-categoria')
-        const data = {
-            year_proceso: parseInt(document.getElementById('yearProceso').value),
-            id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value:0),
-            nombre_taller: document.getElementById('nombreTaller').value,
-            id_departamento: parseInt(document.getElementById('departamento').value || '169'),
-            objetivo_taller: document.getElementById('objetivo').value,
-            fec_inicio: document.getElementById('fecInicio').value,
-            fec_termino: document.getElementById('fecTermino').value,
-            nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
-            nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
-            horas_totales: 0, // se puede hacer el calculo despues, esto lo tengo que tener presente
-            id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
-            lugar: document.getElementById('lugar').value,
-            minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
-            maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
-            requisito: document.getElementById('requisitos').value,
-            edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
-            edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
-            material: document.getElementById('material').value,
-            ind_tipo_taller: 1
-        };
-
-        // pongo esto para que no se creen talleres sin todos los datos basicos(que son casi todos) es una validador de campos
-        if (!data.nombre_taller || !data.fec_inicio || !data.fec_termino) {
-            this.mostrarError('Complete los campos obligatorios (*)');
-            return;
+    const id = document.getElementById('tallerId').value;
+    const selectCategoriaModal = document.querySelector('.select-categoria');
+    const data = {
+        nombre_taller: document.getElementById('nombreTaller').value,
+        fecha_inicio: document.getElementById('fecInicio').value,
+        fecha_termino: document.getElementById('fecTermino').value
+    };
+    const url = id ? `/api/taller-ac/${id}` : '/api/taller-crear';
+    const method = id ? 'PUT' : 'POST';
+    fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
+            this.mostrarExito(result.message || 'Operacion exitosa');
+            this.cargarTalleres();
+        } else {
+            this.mostrarError(result.message || 'Error al guardar');
         }
+    })
+    .catch(error => {
+        console.error('Error en fetch guardarTaller:', error);
+        this.mostrarError('Error de conexion al guardar.');
+    });
+}
 
-        // se entiende poco, pero esto deberia determinar la url y el metodo que se esta utlizando, en este caso el editando (PUT) y el crear utilizando (POST)
-        const url = id ?
-            `/api/taller-ac/${id}` :
-            '/api/taller-crear';
-        const method = id ? 'PUT' : 'POST';
-
-        fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                // se cierra el modal y se recarga los talleres
-                bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
-                this.mostrarExito(result.message || 'Operacion exitosa');
-                this.cargarTalleres();
-            } 
-            else {
-                this.mostrarError(result.message || 'Error al guardar');
-            }
-        })
-        .catch(error => {
-            console.error('Error en fetch guardarTaller:', error);
-            this.mostrarError('Error de conexion al guardar.');
-        });
-    },
-
-    // carga los datos de un taller en el formulario para editar
-    editarTaller: function(id) {
-        fetch(`/api/taller-get/${id}`)
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    const t = result.data;
-                    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
-                    document.getElementById('tallerId').value = t.id_taller;
-                    document.getElementById('yearProceso').value = t.year_proceso || '';
-                    document.getElementById('nombreTaller').value = t.nombre_taller || '';
-                    // se viene un cambio muchachos
-                    // document.getElementById('categoria').value = t.id_categoria || '';
-                    const selectCategoriaModal = document.querySelector('.select-categoria');
-                    if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
-                    document.getElementById('objetivo').value = t.objetivo_taller || '';
-                    document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
-                    document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
-                    document.getElementById('lugar').value = t.lugar || '';
-                    document.getElementById('nroMinutos').value = t.nro_minutos || 90;
-                    document.getElementById('nroClases').value = t.nro_clases_anual || 1;
-                    document.getElementById('edadMinima').value = t.edad_minima || 0;
-                    document.getElementById('edadMaxima').value = t.edad_maxima || 99;
-                    document.getElementById('minEstudiantes').value = t.minimo_estudiante || 5;
-                    document.getElementById('maxEstudiantes').value = t.maximo_estudiante || 20;
-                    document.getElementById('material').value = t.material || '';
-                    document.getElementById('requisitos').value = t.requisito || '';
-                    document.getElementById('estadoTaller').value = t.id_estado_taller || 1;
-                    new bootstrap.Modal(document.getElementById('modalTaller')).show();
-                } 
-                else {
-                    this.mostrarError('No se pudo cargar el taller para editar.');
-                }
-            })
-            .catch(error => {
-                console.error('Error en fetch editarTaller:', error);
-                this.mostrarError('Error de conexion al cargar datos del taller.');
-            });
-    },
-
-!! LO DE ARRIBA ES DE UN .JS
-
-todo esto me da un webeo con la fecha, por falta de tiempo no podre revisarlo bien ahora asi que me lo dejo como tarea para la casa.
+!! ESTO PERTENECE A UN ARCHIVO administracion_taller.js !!
 
 <div class="row">
     <div class="col-md-6 mb-3">
@@ -235,4 +80,4 @@ todo esto me da un webeo con la fecha, por falta de tiempo no podre revisarlo bi
     </div>
 </div>
 
-de paso esto es del html de administracion_taller.html
+!! ESTO PERTENECE A UN ARCHIVO administracion_taller.html !!

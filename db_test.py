@@ -1,4 +1,5 @@
 from ast import Param
+import datetime
 import functools,pyodbc
 from flask import flash, redirect, request, session, url_for
 
@@ -678,33 +679,116 @@ def buscar_talleres(termino, categoria=None, año=None, estados=None, limite=999
         cursor.close()
         conn.close()
 
-def ac_taller(id_taller,id_estado_taller,fec_estado_taller,observacion,aud_usuario_ingreso,aud_fec_ingreso,aud_usuario_modifica,aud_fec_modifica):
-     conn = get_connection()
-     if not conn:
-          return False
-     cursor = conn.cursor()
-     try:
-          fec_estado_taller_str = f"'{fec_estado_taller}'" if fec_estado_taller else "NULL"
-          aud_fec_ingreso_str = f"'{aud_fec_ingreso}'" if aud_fec_ingreso else "NULL"
-          aud_fec_modifica_str = f"'{aud_fec_modifica}'" if aud_fec_modifica else "NULL"
-          query=f"""{{CALL AC_TALLER({id_taller},{id_estado_taller},{fec_estado_taller_str},'{observacion}','{aud_usuario_ingreso}',{aud_fec_ingreso},'{aud_usuario_modifica}',{aud_fec_modifica})}}"""
-          cursor.execute(query)
-          return True
-     except Exception as e:
-          print(f"Error en AC_TALLER. revisa las urls o la ID: {e}")
-          conn.rollback()
-          return False
-     finally:
-          cursor.close()
-          conn.close()
+def ac_taller(id_taller,
+            #   id_estado_taller,
+            #   year_proceso,
+            #   id_categoria,
+            #   nombre_taller,
+            #   id_departamento,
+            #   objetivo_taller,
+              fec_inicio,
+              fec_termino):
+            #   nro_minutos,
+            #   nro_clases_anual,
+            #   horas_totales,
+            #   fec_estado_taller,
+            #   observacion,
+            #   lugar,
+            #   minimo_estudiante,
+            #   maximo_estudiante,
+            #   requisito,
+            #   edad_minima,
+            #   edad_maxima,
+            #   material,
+            #   ind_tipo_taller,
+            #   aud_usuario_ingreso,
+            #   aud_fec_ingreso,
+            #   aud_usuario_modifica):
+    conn = get_connection()
+    if not conn:
+        return False
+    cursor = conn.cursor()
+    try:
+        # fecha = fec_estado_taller if fec_estado_taller else datetime.now().strftime('%Y-%m-%d')
+        fecha_inicio = fec_inicio
+        fecha_termino = fec_termino
+        # observacion = observacion.replace("'", "''") if observacion else '-'
+        
+        # query = f"""
+        #     UPDATE SGT_TALLER 
+        #     SET ID_ESTADO_TALLER = {id_estado_taller},
+        #         YEAR_PROCESO = {year_proceso},
+        #         ID_CATEGORIA = {id_categoria},
+        #         NOMBRE_TALLER = '{nombre_taller}',
+        #         ID_DEPARTAMENTO = {id_categoria},
+        #         OBJETIVO_TALLER = '{objetivo_taller}',
+        #         FEC_INICIO = '{fecha_inicio}',
+        #         FEC_TERMINO = '{fecha_termino}',
+        #         NRO_MINUTOS = {nro_minutos},
+        #         NRO_CLASES_ANUAL = {nro_clases_anual},
+        #         HORAS_TOTALES = {horas_totales},
+        #         ID_ESTADO_TALLER = {id_estado_taller},
+        #         FEC_ESTADO_TALLER = '{fecha}',
+        #         LUGAR = '{lugar}',
+        #         MINIMO_ESTUDIANTE = {minimo_estudiante},
+        #         MAXIMO_ESTUDIANTE = {maximo_estudiante},
+        #         REQUISITO = '{requisito}',
+        #         EDAD_MINIMA = {edad_minima},
+        #         EDAD_MAXIMA = {edad_maxima},
+        #         MATERIAL = '{material}',
+        #         IND_TIPO_TALLER = {ind_tipo_taller},
+        #         OBSERVACION = '{observacion}',
+        #         AUD_USUARIO_INGRESO = '{aud_usuario_ingreso}'
+        #         AUD_FEC_INGRESO = '{aud_fec_ingreso}'
+        #         AUD_USUARIO_MODIFICA = '{aud_usuario_modifica}',
+        #         AUD_FEC_MODIFICA = GETDATE()
+        #     WHERE ID_TALLER = {id_taller}
+        # """
 
-def inscribir_el_taller(year_proceso, id_categoria, nombre_taller, id_departamento,objetivo_taller, fec_inicio, fec_termino, nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima, material, ind_tipo_taller):
+        query = f"""
+            UPDATE SGT_TALLER SET
+                FEC_INICIO = CONVERT(DATE, '{fecha_inicio}', 23),
+                FEC_TERMINO = CONVERT(DATE, '{fecha_termino}', 23)
+            WHERE ID_TALLER = {id_taller}
+        """
+        cursor.execute(query)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error en AC_TALLER: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+fec_inicio recibido: 'None'
+fec_termino recibido: 'None'
+Tipo fec_inicio: <class 'NoneType'>
+Query:
+            UPDATE SGT_TALLER SET
+                FEC_INICIO = CAST('None' AS DATE),
+                FEC_TERMINO = CAST('None' AS DATE)
+            WHERE ID_TALLER = 1
+
+Error en AC_TALLER: ('22007', '[22007] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Error al convertir una cadena de caracteres en fecha y/u hora. (241) (SQLExecDirectW)')
+
+https://chat.deepseek.com/a/chat/s/41bd757f-e9a6-4a0f-8955-d845b025fe5a
+
+def inscribir_el_taller(year_proceso, id_categoria, nombre_taller, id_departamento, objetivo_taller, fec_inicio, fec_termino, nro_minutos, nro_clases_anual, horas_totales, id_estado_taller, lugar, minimo_estudiante, maximo_estudiante, requisito, edad_minima, edad_maxima, material, ind_tipo_taller):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL INSCRIBIR_EL_TALLER({year_proceso}, {id_categoria}, '{nombre_taller}', {id_departamento},'{objetivo_taller}', '{fec_inicio}', '{fec_termino}', {nro_minutos},{nro_clases_anual}, {horas_totales}, {id_estado_taller}, GETDATE(),'-', '{lugar}', {minimo_estudiante}, {maximo_estudiante},'{requisito}', {edad_minima}, {edad_maxima}, '{material}',{ind_tipo_taller}, '', '1900-01-01 00:00:00.000','', '1900-01-01 00:00:00.000')}}"""
+        query = f"""{{CALL INSCRIBIR_EL_TALLER(
+            {year_proceso}, {id_categoria}, '{nombre_taller}', {id_departamento},
+            '{objetivo_taller}', '{fec_inicio}', '{fec_termino}', {nro_minutos},
+            {nro_clases_anual}, {horas_totales}, {id_estado_taller}, GETDATE(), '-',
+            '{lugar}', {minimo_estudiante}, {maximo_estudiante}, '{requisito}',
+            {edad_minima}, {edad_maxima}, '{material}', {ind_tipo_taller}, '', '1900-01-01 00:00:00.000',
+            '', '1900-01-01 00:00:00.000'
+        )}}"""
         cursor.execute(query)
         resultado = cursor.fetchone()
         conn.commit()

@@ -323,88 +323,179 @@ const GestionTalleres = {
         this.cargarTalleres();
     },
     // abre el modal de taller para crear y editar
-    abrirModalNuevoTaller: function() {
-        // se reinicia el formulario
-        document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
-        document.getElementById('formTaller').reset();
-        document.getElementById('tallerId').value = '';
-        // cambio del este de categoria, en este caso voy a aplicar el select-categoria
-        // document.getElementById('categoria').value = '';
-        const selectCategoriaModal = document.querySelector('.select-categoria');
-        if (selectCategoriaModal) {selectCategoriaModal.value = '';}
-        document.getElementById('yearProceso').value = '';
-        document.getElementById('minEstudiantes').value = '5';
-        document.getElementById('maxEstudiantes').value = '20';
-        document.getElementById('estadoTaller').value = '1';
-        document.getElementById('edadMinima').value = '0';
-        document.getElementById('edadMaxima').value = '99';
-        document.getElementById('nroClases').value = '1';
-        document.getElementById('nroMinutos').value = '90';
-        // le aplico sus iconos causa
-        new bootstrap.Modal(document.getElementById('modalTaller')).show();
-    },
+    // abrirModalNuevoTaller: function() {
+    //     // se reinicia el formulario
+    //     document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
+    //     document.getElementById('formTaller').reset();
+    //     document.getElementById('tallerId').value = '';
+    //     // cambio del este de categoria, en este caso voy a aplicar el select-categoria
+    //     // document.getElementById('categoria').value = '';
+    //     const selectCategoriaModal = document.querySelector('.select-categoria');
+    //     if (selectCategoriaModal) {selectCategoriaModal.value = '';}
+    //     document.getElementById('yearProceso').value = '';
+    //     document.getElementById('minEstudiantes').value = '5';
+    //     document.getElementById('maxEstudiantes').value = '20';
+    //     document.getElementById('estadoTaller').value = '1';
+    //     document.getElementById('edadMinima').value = '0';
+    //     document.getElementById('edadMaxima').value = '99';
+    //     document.getElementById('nroClases').value = '1';
+    //     document.getElementById('nroMinutos').value = '90';
+    //     // le aplico sus iconos causa
+    //     new bootstrap.Modal(document.getElementById('modalTaller')).show();
+    // },
+
+abrirModalNuevoTaller: function() {
+    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
+    document.getElementById('formTaller').reset();
+    document.getElementById('tallerId').value = '';
+    
+    const selectCategoriaModal = document.querySelector('.select-categoria');
+    if (selectCategoriaModal) {
+        selectCategoriaModal.value = '';
+    }
+    
+    const currentYear = new Date().getFullYear();
+    document.getElementById('yearProceso').value = currentYear;
+    document.getElementById('minEstudiantes').value = '5';
+    document.getElementById('maxEstudiantes').value = '20';
+    document.getElementById('estadoTaller').value = '1';
+    document.getElementById('edadMinima').value = '0';
+    document.getElementById('edadMaxima').value = '99';
+    document.getElementById('nroClases').value = '1';
+    document.getElementById('nroMinutos').value = '90';
+    
+    new bootstrap.Modal(document.getElementById('modalTaller')).show();
+},
+
     // guarda el taller creado o actualizado, puede que la actualziacion no funcione de inmediato
+    // guardarTaller: function() {
+    //     const id = document.getElementById('tallerId').value;
+    //     // se recolectan los datos del formulario
+    //     // aqui se pondra una const que sera para el categoria taller
+    //     const selectCategoriaModal = document.querySelector('.select-categoria')
+    //     // estoy solucionando el tema de las fechas , asi que estoy probando codigo nuevo
+    //     let fecInicio = document.getElementById('fecInicio').value;
+    //     let fecTermino = document.getElementById('fecTermino').value;
+    //     // con los if obtengo las fechas y envio null si estan vacios, sin embargo la base de datos no acepta un Null
+    //     // por ahora lo dejare como Null, cuando me asegure que no fallara es cuando le pondre la fecha predeterminada de 1900 y algo que esta por alli
+    //     // if (!fecInicio) fecInicio = null;
+    //     // if (!fecTermino) fecTermino = null;
+    //     if (!fecInicio || !fecTermino) {this.mostrarError('Las fechas de inicio y termino son obligatorias');return;}
+    //     const data = {
+    //         year_proceso: parseInt(document.getElementById('yearProceso').value),
+    //         id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value:0),
+    //         nombre_taller: document.getElementById('nombreTaller').value,
+    //         id_departamento: parseInt(document.getElementById('departamento').value || '169'),
+    //         objetivo_taller: document.getElementById('objetivo').value,
+    //         // en fechas ocurre el cambio
+    //         // fec_inicio: document.getElementById('fecInicio').value,
+    //         // fec_termino: document.getElementById('fecTermino').value,
+    //         fec_inicio: fecInicio,
+    //         fec_termino: fecTermino,
+    //         nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
+    //         nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
+    //         horas_totales: 0, // se puede hacer el calculo despues, esto lo tengo que tener presente
+    //         id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
+    //         lugar: document.getElementById('lugar').value,
+    //         minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
+    //         maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
+    //         requisito: document.getElementById('requisitos').value,
+    //         edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
+    //         edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
+    //         material: document.getElementById('material').value,
+    //         ind_tipo_taller: 1
+    //     };
+    //     // pongo esto para que no se creen talleres sin todos los datos basicos(que son casi todos) es una validador de campos
+    //     // if (!data.nombre_taller || !data.fec_inicio || !data.fec_termino) {
+    //     //     this.mostrarError('Complete los campos obligatorios (*)');
+    //     //     return;
+    //     // }
+    //     if (!data.nombre_taller) {
+    //         this.mostrarError('Complete los campos obligatorios (*)');
+    //         return;
+    //     }
+    //     // se entiende poco, pero esto deberia determinar la url y el metodo que se esta utlizando, en este caso el editando (PUT) y el crear utilizando (POST)
+    //     const url = id ?
+    //         `/api/taller-ac/${id}` :
+    //         '/api/taller-crear';
+    //     const method = id ? 'PUT' : 'POST';
+    //     fetch(url, {
+    //         method: method,
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify(data)
+    //     })
+    //     .then(response => response.json())
+    //     .then(result => {
+    //         if (result.success) {
+    //             // se cierra el modal y se recarga los talleres
+    //             bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
+    //             this.mostrarExito(result.message || 'Operacion exitosa');
+    //             this.cargarTalleres();
+    //         } 
+    //         else {
+    //             this.mostrarError(result.message || 'Error al guardar');
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Error en fetch guardarTaller:', error);
+    //         this.mostrarError('Error de conexion al guardar.');
+    //     });
+    // },
+
     guardarTaller: function() {
-        const id = document.getElementById('tallerId').value;
-        // se recolectan los datos del formulario
-        // aqui se pondra una const que sera para el categoria taller
-        const selectCategoriaModal = document.querySelector('.select-categoria')
-        const data = {
-            year_proceso: parseInt(document.getElementById('yearProceso').value),
-            id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value:0),
-            nombre_taller: document.getElementById('nombreTaller').value,
-            id_departamento: parseInt(document.getElementById('departamento').value || '169'),
-            objetivo_taller: document.getElementById('objetivo').value,
-            fec_inicio: document.getElementById('fecInicio').value,
-            fec_termino: document.getElementById('fecTermino').value,
-            nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
-            nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
-            horas_totales: 0, // se puede hacer el calculo despues, esto lo tengo que tener presente
-            id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
-            lugar: document.getElementById('lugar').value,
-            minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
-            maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
-            requisito: document.getElementById('requisitos').value,
-            edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
-            edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
-            material: document.getElementById('material').value,
-            ind_tipo_taller: 1
-        };
+    const id = document.getElementById('tallerId').value;
+    const selectCategoriaModal = document.querySelector('.select-categoria');
+    
+    const data = {
+        // year_proceso: parseInt(document.getElementById('yearProceso').value),
+        // id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value : 0),
+        nombre_taller: document.getElementById('nombreTaller').value,
+        // id_departamento: parseInt(document.getElementById('departamento').value || '169'),
+        // objetivo_taller: document.getElementById('objetivo').value,
+        // VOLVER A LA VERSIÓN QUE FUNCIONABA - ENVIAR LAS FECHAS COMO VIENEN DEL INPUT
+        fecha_inicio: document.getElementById('fecInicio').value,
+        fecha_termino: document.getElementById('fecTermino').value
+        // nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
+        // nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
+        // horas_totales: 0,
+        // id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
+        // lugar: document.getElementById('lugar').value,
+        // minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
+        // maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
+        // requisito: document.getElementById('requisitos').value,
+        // edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
+        // edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
+        // material: document.getElementById('material').value,
+        // ind_tipo_taller: 1
+    };
 
-        // pongo esto para que no se creen talleres sin todos los datos basicos(que son casi todos) es una validador de campos
-        if (!data.nombre_taller || !data.fec_inicio || !data.fec_termino) {
-            this.mostrarError('Complete los campos obligatorios (*)');
-            return;
+    // Validación simple
+    // if (!data.nombre_taller || !data.fecha_inicio || !data.fecha_termino) {
+    //     this.mostrarError('Complete los campos obligatorios (*)');
+    //     return;
+    // }
+    const url = id ? `/api/taller-ac/${id}` : '/api/taller-crear';
+    const method = id ? 'PUT' : 'POST';
+    fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
+            this.mostrarExito(result.message || 'Operacion exitosa');
+            this.cargarTalleres();
+        } else {
+            this.mostrarError(result.message || 'Error al guardar');
         }
-
-        // se entiende poco, pero esto deberia determinar la url y el metodo que se esta utlizando, en este caso el editando (PUT) y el crear utilizando (POST)
-        const url = id ?
-            `/api/taller-ac/${id}` :
-            '/api/taller-crear';
-        const method = id ? 'PUT' : 'POST';
-
-        fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                // se cierra el modal y se recarga los talleres
-                bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
-                this.mostrarExito(result.message || 'Operacion exitosa');
-                this.cargarTalleres();
-            } 
-            else {
-                this.mostrarError(result.message || 'Error al guardar');
-            }
-        })
-        .catch(error => {
-            console.error('Error en fetch guardarTaller:', error);
-            this.mostrarError('Error de conexion al guardar.');
-        });
-    },
+    })
+    .catch(error => {
+        console.error('Error en fetch guardarTaller:', error);
+        this.mostrarError('Error de conexion al guardar.');
+    });
+},
 
     // carga los datos de un taller en el formulario para editar
     editarTaller: function(id) {
@@ -422,8 +513,11 @@ const GestionTalleres = {
                     const selectCategoriaModal = document.querySelector('.select-categoria');
                     if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
                     document.getElementById('objetivo').value = t.objetivo_taller || '';
-                    document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
-                    document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
+                    // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
+                    // document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
+                    // document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
+                    document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.split('T')[0] : '';
+                    document.getElementById('fecTermino'). value = t.fec_termino ? t.fec_termino.split('T')[0] : '';
                     document.getElementById('lugar').value = t.lugar || '';
                     document.getElementById('nroMinutos').value = t.nro_minutos || 90;
                     document.getElementById('nroClases').value = t.nro_clases_anual || 1;

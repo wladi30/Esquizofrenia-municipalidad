@@ -160,8 +160,14 @@ def api_crear_taller():
         nombre_taller = data.get('nombre_taller')
         id_departamento = data.get('id_departamento', 169)
         objetivo_taller = data.get('objetivo_taller', '')
+        # la fecha estaba dando problemas  asi que busque como solucionar el tema de  que no me deja subir ni tampoco actualziar ningun taller al momento de dale submit
+        # por lo cual ahora mismo voy a a aplicar algo que vi en internet especifico para sql server
         fec_inicio = data.get('fec_inicio')
         fec_termino = data.get('fec_termino')
+        if fec_inicio: fec_inicio = fec_inicio
+        if fec_termino: fec_termino = fec_termino
+        # lo de aqui arriba es el tema que voy a intentar, si ya viene como yyyy-mm-dd se usara el input date y si entrega none o estan vacias usara None, ahora claro la
+        # base d edatos o acepta un none pero tampoco se permite que en la cosa de la pagina les permitira dejar el campo de fecha vacio asi que no creo que sea problema
         nro_minutos = data.get('nro_minutos', 90)
         nro_clases_anual = data.get('nro_clases_anual', 1)
         horas_totales = data.get('horas_totales', 0)
@@ -215,13 +221,15 @@ def api_actualizar_taller(id_taller): #CR(U)D
         data = request.json
         resultado = ac_taller(
             id_taller=id_taller,
-            id_estado_taller=data.get('id_estado_taller'),
-            fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
-            observacion=data.get('observacion', ''),
-            aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-            aud_fec_ingreso=None,
-            aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-            aud_fec_modifica=None
+            # id_estado_taller=data.get('id_estado_taller'),
+            # fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
+            fec_inicio=data.get('fec_inicio'),
+            fec_termino=data.get('fec_termino')
+            # observacion=data.get('observacion', ''),
+            # aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
+            # aud_fec_ingreso=None,
+            # aud_usuario_modifica=session.get('id_usuario', 'sistema'),
+            # aud_fec_modifica=None
         )
         if resultado:
             return jsonify({"success": True, "message": "taller actualizado correctamente"})
