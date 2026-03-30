@@ -504,30 +504,30 @@ abrirModalNuevoTaller: function() {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
+                    // document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
                     document.getElementById('tallerId').value = t.id_taller;
-                    document.getElementById('yearProceso').value = t.year_proceso || '';
-                    document.getElementById('nombreTaller').value = t.nombre_taller || '';
+                    // document.getElementById('yearProceso').value = t.year_proceso || '';
+                    // document.getElementById('nombreTaller').value = t.nombre_taller || '';
                     // se viene un cambio muchachos
                     // document.getElementById('categoria').value = t.id_categoria || '';
-                    const selectCategoriaModal = document.querySelector('.select-categoria');
-                    if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
-                    document.getElementById('objetivo').value = t.objetivo_taller || '';
+                    // const selectCategoriaModal = document.querySelector('.select-categoria');
+                    // if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
+                    // document.getElementById('objetivo').value = t.objetivo_taller || '';
                     // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
                     // document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
                     // document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
-                    document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.split('T')[0] : '';
-                    document.getElementById('fecTermino'). value = t.fec_termino ? t.fec_termino.split('T')[0] : '';
-                    document.getElementById('lugar').value = t.lugar || '';
-                    document.getElementById('nroMinutos').value = t.nro_minutos || 90;
-                    document.getElementById('nroClases').value = t.nro_clases_anual || 1;
+                    // document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.split('T')[0] : '';
+                    // document.getElementById('fecTermino'). value = t.fec_termino ? t.fec_termino.split('T')[0] : '';
+                    // document.getElementById('lugar').value = t.lugar || '';
+                    // document.getElementById('nroMinutos').value = t.nro_minutos || 90;
+                    // document.getElementById('nroClases').value = t.nro_clases_anual || 1;
                     document.getElementById('edadMinima').value = t.edad_minima || 0;
-                    document.getElementById('edadMaxima').value = t.edad_maxima || 99;
-                    document.getElementById('minEstudiantes').value = t.minimo_estudiante || 5;
-                    document.getElementById('maxEstudiantes').value = t.maximo_estudiante || 20;
-                    document.getElementById('material').value = t.material || '';
-                    document.getElementById('requisitos').value = t.requisito || '';
-                    document.getElementById('estadoTaller').value = t.id_estado_taller || 1;
+                    // document.getElementById('edadMaxima').value = t.edad_maxima || 99;
+                    // document.getElementById('minEstudiantes').value = t.minimo_estudiante || 5;
+                    // document.getElementById('maxEstudiantes').value = t.maximo_estudiante || 20;
+                    // document.getElementById('material').value = t.material || '';
+                    // document.getElementById('requisitos').value = t.requisito || '';
+                    // document.getElementById('estadoTaller').value = t.id_estado_taller || 1;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
                 else {

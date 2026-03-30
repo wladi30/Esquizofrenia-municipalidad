@@ -181,9 +181,25 @@ def api_crear_taller():
         material = data.get('material', '')
         ind_tipo_taller = data.get('ind_tipo_taller', 1)
         resultado = inscribir_el_taller(
-            year_proceso,id_categoria,nombre_taller,id_departamento,objetivo_taller,fec_inicio,fec_termino,nro_minutos,
-            nro_clases_anual,horas_totales,id_estado_taller,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,
-            edad_maxima,material,ind_tipo_taller
+            year_proceso,
+            id_categoria,
+            nombre_taller,
+            id_departamento,
+            objetivo_taller,
+            fec_inicio,
+            fec_termino,
+            nro_minutos,
+            nro_clases_anual,
+            horas_totales,
+            id_estado_taller,
+            lugar,
+            minimo_estudiante,
+            maximo_estudiante,
+            requisito,
+            edad_minima,
+            edad_maxima,
+            material,
+            ind_tipo_taller
         )
         #primero defino que son cada dato y despues los meto todos en el 'resultado'
         if resultado.get('success'):
@@ -223,9 +239,11 @@ def api_actualizar_taller(id_taller): #CR(U)D
             id_taller=id_taller,
             # id_estado_taller=data.get('id_estado_taller'),
             # fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
-            fec_inicio=data.get('fec_inicio'),
-            fec_termino=data.get('fec_termino')
+            # fec_inicio=data.get('fec_inicio'),
+            # fec_termino=data.get('fec_termino')
             # observacion=data.get('observacion', ''),
+            edad_minima=int(data.get('edad_minima'))    
+            # edad_maxima=data.get('edad_maxima')
             # aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
             # aud_fec_ingreso=None,
             # aud_usuario_modifica=session.get('id_usuario', 'sistema'),
@@ -241,27 +259,27 @@ def api_actualizar_taller(id_taller): #CR(U)D
         # return print("ZA WARUDOO!!")
 
 # -- API TALLER CRU(D)? , ES UN UPDATE DISFRAZADO DE DELETE --
-@url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['DELETE'])
-@funcionario_required
-def api_delete_taller(id_taller): # CRU(D)
-    try:
-        resultado = ac_taller(
-            id_taller=id_taller,
-            id_estado_taller=4,
-            fec_estado_taller=None, #deberia haber un getdate()
-            observacion="-",
-            aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-            aud_fec_ingreso=None,
-            aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-            aud_fec_modifica=None
-        )
-        if resultado:
-            return jsonify({"success": True, "message": "Taller cambiado a no usado/suspendido"})
-        else:
-            return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
-        # return print("ZA WARUDOO!!")
+# @url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['DELETE'])
+# @funcionario_required
+# def api_delete_taller(id_taller): # CRU(D)
+#     try:
+#         resultado = ac_taller(
+#             id_taller=id_taller,
+#             id_estado_taller=4,
+#             fec_estado_taller=None, #deberia haber un getdate()
+#             observacion="-",
+#             aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
+#             aud_fec_ingreso=None,
+#             aud_usuario_modifica=session.get('id_usuario', 'sistema'),
+#             aud_fec_modifica=None
+#         )
+#         if resultado:
+#             return jsonify({"success": True, "message": "Taller cambiado a no usado/suspendido"})
+#         else:
+#             return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)}), 500
+#         # return print("ZA WARUDOO!!")
     
 # -- API TALLER CRU(D) --
 @url_funcionario.route('/api/taller-delete/<int:id_taller>', methods=['DELETE'])

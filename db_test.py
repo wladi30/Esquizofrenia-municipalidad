@@ -679,6 +679,19 @@ def buscar_talleres(termino, categoria=None, año=None, estados=None, limite=999
         cursor.close()
         conn.close()
 
+# fec_inicio recibido: 'None'
+# fec_termino recibido: 'None'
+# Tipo fec_inicio: <class 'NoneType'>
+# Query:
+#             UPDATE SGT_TALLER SET
+#                 FEC_INICIO = CAST('None' AS DATE),
+#                 FEC_TERMINO = CAST('None' AS DATE)
+#             WHERE ID_TALLER = 1
+
+# Error en AC_TALLER: ('22007', '[22007] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Error al convertir una cadena de caracteres en fecha y/u hora. (241) (SQLExecDirectW)')
+
+# https://chat.deepseek.com/a/chat/s/41bd757f-e9a6-4a0f-8955-d845b025fe5a
+
 def ac_taller(id_taller,
             #   id_estado_taller,
             #   year_proceso,
@@ -686,8 +699,8 @@ def ac_taller(id_taller,
             #   nombre_taller,
             #   id_departamento,
             #   objetivo_taller,
-              fec_inicio,
-              fec_termino):
+            #   fec_inicio,
+            #   fec_termino,
             #   nro_minutos,
             #   nro_clases_anual,
             #   horas_totales,
@@ -697,7 +710,7 @@ def ac_taller(id_taller,
             #   minimo_estudiante,
             #   maximo_estudiante,
             #   requisito,
-            #   edad_minima,
+              edad_minima):
             #   edad_maxima,
             #   material,
             #   ind_tipo_taller,
@@ -710,8 +723,8 @@ def ac_taller(id_taller,
     cursor = conn.cursor()
     try:
         # fecha = fec_estado_taller if fec_estado_taller else datetime.now().strftime('%Y-%m-%d')
-        fecha_inicio = fec_inicio
-        fecha_termino = fec_termino
+        # fecha_inicio = fec_inicio
+        # fecha_termino = fec_termino
         # observacion = observacion.replace("'", "''") if observacion else '-'
         
         # query = f"""
@@ -745,11 +758,26 @@ def ac_taller(id_taller,
         #     WHERE ID_TALLER = {id_taller}
         # """
 
+        # query = f"""
+        #         UPDATE SGT_TALLER SET
+        #             FEC_INICIO = CAST('{fecha_inicio}' AS DATE),
+        #             FEC_TERMINO = CAST('{fecha_termino}' AS DATE)
+        #         WHERE ID_TALLER = {id_taller}
+        # """
+
+        # query = f"""
+        #     UPDATE SGT_TALLER SET
+        #         FEC_INICIO = CONVERT(DATE, '{fecha_inicio}', 23),
+        #         FEC_TERMINO = CONVERT(DATE, '{fecha_termino}', 23)
+        #     WHERE ID_TALLER = {id_taller}
+        # """
+
+        # lo que pasa aqui es que al poner en edad minima un valor int fijo se coloca pero no deberia ser asi, tendria que ser que al colocar la variable esta se tome el numero que tiene
+        # y se coloque en lugar del valor fijo, este debe ser problema del app_funcionario o administracion_taller
         query = f"""
-            UPDATE SGT_TALLER SET
-                FEC_INICIO = CONVERT(DATE, '{fecha_inicio}', 23),
-                FEC_TERMINO = CONVERT(DATE, '{fecha_termino}', 23)
-            WHERE ID_TALLER = {id_taller}
+                UPDATE SGT_TALLER SET
+                    EDAD_MINIMA = {edad_minima}
+                WHERE ID_TALLER = {id_taller}
         """
         cursor.execute(query)
         conn.commit()
@@ -762,32 +790,38 @@ def ac_taller(id_taller,
         cursor.close()
         conn.close()
 
-fec_inicio recibido: 'None'
-fec_termino recibido: 'None'
-Tipo fec_inicio: <class 'NoneType'>
-Query:
-            UPDATE SGT_TALLER SET
-                FEC_INICIO = CAST('None' AS DATE),
-                FEC_TERMINO = CAST('None' AS DATE)
-            WHERE ID_TALLER = 1
-
-Error en AC_TALLER: ('22007', '[22007] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Error al convertir una cadena de caracteres en fecha y/u hora. (241) (SQLExecDirectW)')
-
-https://chat.deepseek.com/a/chat/s/41bd757f-e9a6-4a0f-8955-d845b025fe5a
-
-def inscribir_el_taller(year_proceso, id_categoria, nombre_taller, id_departamento, objetivo_taller, fec_inicio, fec_termino, nro_minutos, nro_clases_anual, horas_totales, id_estado_taller, lugar, minimo_estudiante, maximo_estudiante, requisito, edad_minima, edad_maxima, material, ind_tipo_taller):
+def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,id_departamento,objetivo_taller,fec_inicio,fec_termino,nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
         query = f"""{{CALL INSCRIBIR_EL_TALLER(
-            {year_proceso}, {id_categoria}, '{nombre_taller}', {id_departamento},
-            '{objetivo_taller}', '{fec_inicio}', '{fec_termino}', {nro_minutos},
-            {nro_clases_anual}, {horas_totales}, {id_estado_taller}, GETDATE(), '-',
-            '{lugar}', {minimo_estudiante}, {maximo_estudiante}, '{requisito}',
-            {edad_minima}, {edad_maxima}, '{material}', {ind_tipo_taller}, '', '1900-01-01 00:00:00.000',
-            '', '1900-01-01 00:00:00.000'
+            {year_proceso}, 
+            {id_categoria}, 
+            '{nombre_taller}', 
+            {id_departamento},
+            '{objetivo_taller}', 
+            '{fec_inicio}, 
+            '{fec_termino}', 
+            {nro_minutos},
+            {nro_clases_anual},
+            {horas_totales}, 
+            {id_estado_taller}, 
+            GETDATE(), 
+            '-',
+            '{lugar}', 
+            {minimo_estudiante}, 
+            {maximo_estudiante}, 
+            '{requisito}',
+            {edad_minima}, 
+            {edad_maxima}, 
+            '{material}', 
+            {ind_tipo_taller}, 
+            '', 
+            '1900-01-01 00:00:00.000',
+            '', 
+            '1900-01-01 00:00:00.000'
         )}}"""
         cursor.execute(query)
         resultado = cursor.fetchone()
