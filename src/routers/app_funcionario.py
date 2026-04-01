@@ -234,26 +234,36 @@ def api_get_taller_id(id_taller): #C(R)UD
 @funcionario_required
 def api_actualizar_taller(id_taller): #CR(U)D
     try:
-        data = request.json
-        resultado = ac_taller(
-            id_taller=id_taller,
-            # id_estado_taller=data.get('id_estado_taller'),
-            # fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
-            # fec_inicio=data.get('fec_inicio'),
-            # fec_termino=data.get('fec_termino')
-            # observacion=data.get('observacion', ''),
-            edad_minima=int(data.get('edad_minima'))    
-            # edad_maxima=data.get('edad_maxima')
-            # aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-            # aud_fec_ingreso=None,
-            # aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-            # aud_fec_modifica=None
-        )
-        if resultado:
-            return jsonify({"success": True, "message": "taller actualizado correctamente"})
-        else:
-            return jsonify({"success": False, "message": "eeror al actualizar el tallere"}), 400
-        # return print("ZA WARUDOO!!")
+        if request.method ==  'PUT':
+            data = request.json
+            print(f'METODO: {request.method}')
+            edad = data.get('edad_minima')
+            fecha_ini = data.get('fec_inicio')
+          
+            if not edad:
+                return jsonify({"success": False, "message": "error falta datos de ingreso"}), 400 
+
+
+            resultado = ac_taller(
+                id_taller=id_taller,
+                # id_estado_taller=data.get('id_estado_taller'),
+                # fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
+                fec_inicio=fecha_ini,
+                # fec_termino=data.get('fec_termino')
+                # objetivo_taller=('objetivo_taller'),
+                # observacion=data.get('observacion', ''),
+                edad_minima= edad
+                # edad_maxima=data.get('edad_maxima')
+                # aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
+                # aud_fec_ingreso=None,
+                # aud_usuario_modifica=session.get('id_usuario', 'sistema'),
+                # aud_fec_modifica=None
+            )
+            if resultado:  
+                return jsonify({"success": True, "message": "taller actualizado correctamente"})
+            else:
+                return jsonify({"success": False, "message": "eeror al actualizar el tallere"}), 400
+            # return print("ZA WARUDOO!!")
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")

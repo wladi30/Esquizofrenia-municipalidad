@@ -454,7 +454,7 @@ abrirModalNuevoTaller: function() {
         // objetivo_taller: document.getElementById('objetivo').value,
         // VOLVER A LA VERSIÓN QUE FUNCIONABA - ENVIAR LAS FECHAS COMO VIENEN DEL INPUT
         fecha_inicio: document.getElementById('fecInicio').value,
-        fecha_termino: document.getElementById('fecTermino').value
+        fecha_termino: document.getElementById('fecTermino').value,
         // nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
         // nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
         // horas_totales: 0,
@@ -463,7 +463,7 @@ abrirModalNuevoTaller: function() {
         // minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
         // maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
         // requisito: document.getElementById('requisitos').value,
-        // edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
+        edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
         // edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
         // material: document.getElementById('material').value,
         // ind_tipo_taller: 1
@@ -512,9 +512,9 @@ abrirModalNuevoTaller: function() {
                     // document.getElementById('categoria').value = t.id_categoria || '';
                     // const selectCategoriaModal = document.querySelector('.select-categoria');
                     // if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
-                    // document.getElementById('objetivo').value = t.objetivo_taller || '';
+                    // document.getElementById('objetivo').value = t.objetivo_taller || 'NADA';
                     // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
-                    // document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
+                    document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
                     // document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
                     // document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.split('T')[0] : '';
                     // document.getElementById('fecTermino'). value = t.fec_termino ? t.fec_termino.split('T')[0] : '';
@@ -713,3 +713,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // dxponer funciones necesarias para los onclick en el HTML (si los hay)
 // dsto permite que los botones con onclick="GestionTalleres.funcion()" sigan funcionando.
 window.GestionTalleres = GestionTalleres;
+
+
+const name = ()=> { 
+
+}

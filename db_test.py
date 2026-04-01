@@ -698,8 +698,8 @@ def ac_taller(id_taller,
             #   id_categoria,
             #   nombre_taller,
             #   id_departamento,
-            #   objetivo_taller,
-            #   fec_inicio,
+            # objetivo_taller,
+            fec_inicio,
             #   fec_termino,
             #   nro_minutos,
             #   nro_clases_anual,
@@ -710,7 +710,7 @@ def ac_taller(id_taller,
             #   minimo_estudiante,
             #   maximo_estudiante,
             #   requisito,
-              edad_minima):
+            edad_minima):
             #   edad_maxima,
             #   material,
             #   ind_tipo_taller,
@@ -723,7 +723,7 @@ def ac_taller(id_taller,
     cursor = conn.cursor()
     try:
         # fecha = fec_estado_taller if fec_estado_taller else datetime.now().strftime('%Y-%m-%d')
-        # fecha_inicio = fec_inicio
+        fecha_inicio = fec_inicio
         # fecha_termino = fec_termino
         # observacion = observacion.replace("'", "''") if observacion else '-'
         
@@ -734,7 +734,7 @@ def ac_taller(id_taller,
         #         ID_CATEGORIA = {id_categoria},
         #         NOMBRE_TALLER = '{nombre_taller}',
         #         ID_DEPARTAMENTO = {id_categoria},
-        #         OBJETIVO_TALLER = '{objetivo_taller}',
+        #         
         #         FEC_INICIO = '{fecha_inicio}',
         #         FEC_TERMINO = '{fecha_termino}',
         #         NRO_MINUTOS = {nro_minutos},
@@ -776,6 +776,7 @@ def ac_taller(id_taller,
         # y se coloque en lugar del valor fijo, este debe ser problema del app_funcionario o administracion_taller
         query = f"""
                 UPDATE SGT_TALLER SET
+                    FEC_INICIO = CAST('{fecha_inicio}' AS DATE),
                     EDAD_MINIMA = {edad_minima}
                 WHERE ID_TALLER = {id_taller}
         """
