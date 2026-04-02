@@ -518,6 +518,87 @@ def borrar_estudiante(id_estudiante, id_taller=None):
         conn.close()
 
 #--TALLER--
+# def ver_taller(id_taller):
+#     conn = get_connection()
+#     if not conn:
+#         return None
+#     cursor = conn.cursor()
+#     try:
+#         print(f"DEBUG - Consultando taller ID: {id_taller}")
+#         query = f"""
+#         SELECT 
+#             T.ID_TALLER,
+#             T.ID_CATEGORIA,
+#             T.NOMBRE_TALLER,
+#             T.YEAR_PROCESO,
+#             T.ID_DEPARTAMENTO,
+#             T.OBJETIVO_TALLER,
+#             T.FEC_INICIO,
+#             T.FEC_TERMINO,
+#             T.NRO_MINUTOS,
+#             T.NRO_CLASES_ANUAL,
+#             T.HORAS_TOTALES,
+#             T.ID_ESTADO_TALLER,
+#             T.FEC_ESTADO_TALLER,
+#             T.OBSERVACION,
+#             T.LUGAR,
+#             T.MINIMO_ESTUDIANTE,
+#             T.MAXIMO_ESTUDIANTE,
+#             ISNULL((
+#                 SELECT COUNT(*) 
+#                 FROM SGT_INTEGRANTE_TALLER E 
+#                 WHERE E.ID_TALLER = T.ID_TALLER 
+#                 AND E.IND_ESTADO_INTEGRANTE = 1
+#             ), 0) as personas_inscritas,
+#             T.REQUISITO,
+#             T.EDAD_MINIMA,
+#             T.EDAD_MAXIMA,
+#             T.MATERIAL
+#         FROM SGT_TALLER T
+#         WHERE T.ID_TALLER = {id_taller}
+#           AND T.ID_ESTADO_TALLER IN (1,2,3,4)
+#         """
+#         cursor.execute(query)
+#         row = cursor.fetchone()
+#         if row:
+#             #print(f"DEBUG - Taller encontrado: ID={row[0]}, Nombre={row[2]}")
+#             resultado = {
+#                 'id_taller': row[0],
+#                 'id_categoria': row[1],
+#                 'nombre_taller': row[2],
+#                 'year_proceso': row[3],
+#                 'id_departamento': row[4],
+#                 'objetivo_taller': row[5],
+#                 'fec_inicio': row[6].strftime('%Y-%m-%d') if row[6] else None,
+#                 'fec_termino': row[7].strftime('%Y-%m-%d') if row[7] else None,
+#                 'nro_minutos': row[8],
+#                 'nro_clases_anual': row[9],
+#                 'horas_totales': row[10],
+#                 'id_estado_taller': row[11],
+#                 'fec_estado_taller': row[12].strftime('%Y-%m-%d') if row[12] else None,
+#                 'observacion': row[13],
+#                 'lugar': row[14],
+#                 'minimo_estudiante': row[15],
+#                 'maximo_estudiante': row[16],
+#                 'personas_inscritas': row[17],
+#                 'requisito': row[18] if len(row) > 18 else '',
+#                 'edad_minima': row[19] if len(row) > 19 else 0,
+#                 'edad_maxima': row[20] if len(row) > 20 else 0,
+#                 'material': row[21] if len(row) > 21 else ''
+#             }
+#             return resultado
+#         else:
+#             print(f"DEBUG - No se encontró el taller ID {id_taller} o no está activo")
+#             return None
+#     except Exception as e:
+#         print(f"Error en ver_taller: {e}")
+#         import traceback
+#         print(f"Traceback: {traceback.format_exc()}")
+#         return None
+#     finally:
+#         cursor.close()
+#         conn.close()
+
 def ver_taller(id_taller):
     conn = get_connection()
     if not conn:
@@ -525,64 +606,39 @@ def ver_taller(id_taller):
     cursor = conn.cursor()
     try:
         print(f"DEBUG - Consultando taller ID: {id_taller}")
-        query = f"""
-        SELECT 
-            T.ID_TALLER,
-            T.ID_CATEGORIA,
-            T.NOMBRE_TALLER,
-            T.ID_DEPARTAMENTO,
-            T.OBJETIVO_TALLER,
-            T.FEC_INICIO,
-            T.FEC_TERMINO,
-            T.NRO_MINUTOS,
-            T.NRO_CLASES_ANUAL,
-            T.HORAS_TOTALES,
-            T.ID_ESTADO_TALLER,
-            T.FEC_ESTADO_TALLER,
-            T.OBSERVACION,
-            T.LUGAR,
-            T.MINIMO_ESTUDIANTE,
-            T.MAXIMO_ESTUDIANTE,
-            ISNULL((
-                SELECT COUNT(*) 
-                FROM SGT_INTEGRANTE_TALLER E 
-                WHERE E.ID_TALLER = T.ID_TALLER 
-                AND E.IND_ESTADO_INTEGRANTE = 1
-            ), 0) as personas_inscritas,
-            T.REQUISITO,
-            T.EDAD_MINIMA,
-            T.EDAD_MAXIMA,
-            T.MATERIAL
-        FROM SGT_TALLER T
-        WHERE T.ID_TALLER = {id_taller}
-          AND T.ID_ESTADO_TALLER IN (1,2,3,4)
-        """
+        query = f"""{{CALL VER_TALLERES({id_taller})}}"""
         cursor.execute(query)
         row = cursor.fetchone()
         if row:
             #print(f"DEBUG - Taller encontrado: ID={row[0]}, Nombre={row[2]}")
             resultado = {
                 'id_taller': row[0],
-                'id_categoria': row[1],
-                'nombre_taller': row[2],
-                'id_departamento': row[3],
-                'objetivo_taller': row[4],
-                'fec_inicio': row[5].strftime('%Y-%m-%d') if row[5] else None,
-                'fec_termino': row[6].strftime('%Y-%m-%d') if row[6] else None,
-                'nro_minutos': row[7],
-                'nro_clases_anual': row[8],
-                'horas_totales': row[9],
-                'id_estado_taller': row[10],
-                'fec_estado_taller': row[11].strftime('%Y-%m-%d') if row[11] else None,
-                'observacion': row[12],
-                'lugar': row[13],
-                'minimo_estudiante': row[14],
-                'maximo_estudiante': row[15],
-                'personas_inscritas': row[16],
-                'requisito': row[17] if len(row) > 17 else '',
-                'edad_minima': row[18] if len(row) > 18 else 0,
-                'edad_maxima': row[19] if len(row) > 19 else 0,
-                'material': row[20] if len(row) > 20 else ''
+                'year_proceso': row[1],
+                'id_categoria': row[2],
+                'nombre_taller': row[3],
+                'id_departamento': row[4],
+                'objetivo_taller': row[5],
+                'fec_inicio': row[6].strftime('%Y-%m-%d') if row[6] else None,
+                'fec_termino': row[7].strftime('%Y-%m-%d') if row[7] else None,
+                'nro_minutos': row[8],
+                'nro_clases_anual': row[9],
+                'horas_totales': row[10],
+                'id_estado_taller': row[11],
+                'fec_estado_taller': row[12].strftime('%Y-%m-%d') if row[12] else None,
+                'observacion': row[13],
+                'lugar': row[14],
+                'minimo_estudiante': row[15],
+                'maximo_estudiante': row[16],
+                'personas_inscritas': row[17],
+                'requisito': row[18] if len(row) > 18 else '',
+                'edad_minima': row[19] if len(row) > 19 else 0,
+                'edad_maxima': row[20] if len(row) > 20 else 0,
+                'material': row[21] if len(row) > 21 else '',
+                'ind_tipo_taller': row[22],
+                'aud_usuario_ingreso': row[23],
+                'aud_fec_ingreso': row[24].strftime('%Y-%m-%d %H:%M:%S') if row[24] else None,
+                'aud_usuario_modifica': row[25],
+                'aud_fec_modifica': row[26].strftime('%Y-%m-%d %H:%M:%S') if row[26] else None
             }
             return resultado
         else:
@@ -692,94 +748,85 @@ def buscar_talleres(termino, categoria=None, año=None, estados=None, limite=999
 
 # https://chat.deepseek.com/a/chat/s/41bd757f-e9a6-4a0f-8955-d845b025fe5a
 
-def ac_taller(id_taller,
-            #   id_estado_taller,
-            #   year_proceso,
-            #   id_categoria,
-            #   nombre_taller,
-            #   id_departamento,
-            # objetivo_taller,
-            fec_inicio,
-            #   fec_termino,
-            #   nro_minutos,
-            #   nro_clases_anual,
-            #   horas_totales,
-            #   fec_estado_taller,
-            #   observacion,
-            #   lugar,
-            #   minimo_estudiante,
-            #   maximo_estudiante,
-            #   requisito,
-            edad_minima):
-            #   edad_maxima,
-            #   material,
-            #   ind_tipo_taller,
-            #   aud_usuario_ingreso,
-            #   aud_fec_ingreso,
-            #   aud_usuario_modifica):
+def ac_taller_fecha(id_taller,fec_inicio,fec_termino,fec_estado_taller):
     conn = get_connection()
     if not conn:
         return False
     cursor = conn.cursor()
     try:
-        # fecha = fec_estado_taller if fec_estado_taller else datetime.now().strftime('%Y-%m-%d')
-        fecha_inicio = fec_inicio
-        # fecha_termino = fec_termino
-        # observacion = observacion.replace("'", "''") if observacion else '-'
-        
-        # query = f"""
-        #     UPDATE SGT_TALLER 
-        #     SET ID_ESTADO_TALLER = {id_estado_taller},
-        #         YEAR_PROCESO = {year_proceso},
-        #         ID_CATEGORIA = {id_categoria},
-        #         NOMBRE_TALLER = '{nombre_taller}',
-        #         ID_DEPARTAMENTO = {id_categoria},
-        #         
-        #         FEC_INICIO = '{fecha_inicio}',
-        #         FEC_TERMINO = '{fecha_termino}',
-        #         NRO_MINUTOS = {nro_minutos},
-        #         NRO_CLASES_ANUAL = {nro_clases_anual},
-        #         HORAS_TOTALES = {horas_totales},
-        #         ID_ESTADO_TALLER = {id_estado_taller},
-        #         FEC_ESTADO_TALLER = '{fecha}',
-        #         LUGAR = '{lugar}',
-        #         MINIMO_ESTUDIANTE = {minimo_estudiante},
-        #         MAXIMO_ESTUDIANTE = {maximo_estudiante},
-        #         REQUISITO = '{requisito}',
-        #         EDAD_MINIMA = {edad_minima},
-        #         EDAD_MAXIMA = {edad_maxima},
-        #         MATERIAL = '{material}',
-        #         IND_TIPO_TALLER = {ind_tipo_taller},
-        #         OBSERVACION = '{observacion}',
-        #         AUD_USUARIO_INGRESO = '{aud_usuario_ingreso}'
-        #         AUD_FEC_INGRESO = '{aud_fec_ingreso}'
-        #         AUD_USUARIO_MODIFICA = '{aud_usuario_modifica}',
-        #         AUD_FEC_MODIFICA = GETDATE()
-        #     WHERE ID_TALLER = {id_taller}
-        # """
+        print(f"DEBUG - TALLER ID: {id_taller}")
+        print(f"DEBUG - FECHA INICIO: {fec_inicio}")
+        print(f"DEBUG - FECHA TERMINO: {fec_termino}")
+        print(f"DEBUG - FECHA ESTADO: {fec_estado_taller}")
+        print(f"DEBUG - FECHA INICIO TIPO: {type(fec_inicio)}, FECHA TERMINO TIPO: {type(fec_termino)}, FECHA ESTADO TIPO: {type(fec_estado_taller)}")
+        query = f"""{{CALL AC_TALLER_FECHA(
+        {id_taller},
+        '{fec_inicio}'
+        )}}"""
+        print(f"DEBUG - : {query}")
+        cursor.execute(query)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error en AC_TALLER_FECHA: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
-        # query = f"""
-        #         UPDATE SGT_TALLER SET
-        #             FEC_INICIO = CAST('{fecha_inicio}' AS DATE),
-        #             FEC_TERMINO = CAST('{fecha_termino}' AS DATE)
-        #         WHERE ID_TALLER = {id_taller}
-        # """
-
-        # query = f"""
-        #     UPDATE SGT_TALLER SET
-        #         FEC_INICIO = CONVERT(DATE, '{fecha_inicio}', 23),
-        #         FEC_TERMINO = CONVERT(DATE, '{fecha_termino}', 23)
-        #     WHERE ID_TALLER = {id_taller}
-        # """
-
-        # lo que pasa aqui es que al poner en edad minima un valor int fijo se coloca pero no deberia ser asi, tendria que ser que al colocar la variable esta se tome el numero que tiene
-        # y se coloque en lugar del valor fijo, este debe ser problema del app_funcionario o administracion_taller
-        query = f"""
-                UPDATE SGT_TALLER SET
-                    FEC_INICIO = CAST('{fecha_inicio}' AS DATE),
-                    EDAD_MINIMA = {edad_minima}
-                WHERE ID_TALLER = {id_taller}
-        """
+def ac_taller(id_taller,
+            year_proceso,
+            id_categoria,
+            nombre_taller,
+            id_departamento,
+            objetivo_taller,
+            fec_inicio,
+            fec_termino,
+            nro_minutos,
+            nro_clases_anual,
+            horas_totales,
+            id_estado_taller,
+            fec_estado_taller,
+            observacion,
+            lugar,
+            minimo_estudiante,
+            maximo_estudiante,
+            requisito,
+            edad_minima,
+            edad_maxima,
+            material,
+            ind_tipo_taller):
+    conn = get_connection()
+    if not conn:
+        return False
+    cursor = conn.cursor()
+    try:
+        query = f"""{{CALL AC_TALLER(
+        {id_taller},
+        {year_proceso},
+        {id_categoria},
+        '{nombre_taller}',
+        {id_departamento},
+        '{objetivo_taller}',
+        '{fec_termino}',
+        '{fec_inicio}',
+        {nro_minutos},
+        {nro_clases_anual},
+        {horas_totales},
+        {id_estado_taller},
+        '{fec_estado_taller}',
+        '{observacion}',
+        '{lugar}',
+        {minimo_estudiante},
+        {maximo_estudiante},
+        '{requisito}',
+        {edad_minima},
+        {edad_maxima},
+        '{material}',
+        {ind_tipo_taller}
+        )}}"""
+        print(f"DEBUG - : {query}")
         cursor.execute(query)
         conn.commit()
         return True

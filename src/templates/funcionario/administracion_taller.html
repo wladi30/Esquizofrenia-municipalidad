@@ -138,6 +138,7 @@
                             <th>Inscritos/Cupos</th>
                             <th>Estado</th>
                             <th>Fechas</th>
+                            <th>Año del Proceso</th>
                             <th class="text-end pe-4">Acciones</th>
                         </tr>
                     </thead>
@@ -216,6 +217,10 @@
                         <label class="form-label fw-semibold">Objetivo del Taller</label>
                         <textarea class="form-control" id="objetivo" rows="2" maxlength="500"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Observacion del Taller</label>
+                        <textarea class="form-control" id="observacion" rows="2" maxlength="500"></textarea>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -225,6 +230,10 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha Término <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fecTermino" >
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha Estado Taller <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecEstado" >
                         </div>
                     </div>
 
@@ -240,6 +249,10 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-semibold">Minutos por clase</label>
                             <input type="number" class="form-control" id="nroMinutos" min="1" value="90">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Horas en total</label>
+                            <input type="number" class="form-control" id="horasTotales" min="12" value="80">
                         </div>
                     </div>
 
@@ -280,6 +293,16 @@
                                 <option value="2">CALENDARIZADO</option>
                                 <option value="3">CERRADO</option>
                                 <option value="4">DE BAJA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Tipo de Taller <span class="text-danger">*</span></label>
+                            <select class="form-select" id="tipoTaller" >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="8">4</option>
+                                <option value="9">5</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">

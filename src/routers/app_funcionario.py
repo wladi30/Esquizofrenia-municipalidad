@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from flask import abort, flash, jsonify, redirect, url_for, session, redirect, url_for, render_template , Blueprint , request
 import functools
 from src.utils.loggers import Logger
@@ -7,6 +8,7 @@ url_funcionario = Blueprint('url_funcionario', __name__, template_folder='src/te
 
 from db_test import (
     ac_taller,
+    ac_taller_fecha,
     borrar_estudiante,
     inscribir_el_taller,
     inscribir_taller_o_espera,
@@ -213,15 +215,33 @@ def api_crear_taller():
         # return print("ZA WARUDOO!!")
 
 # -- API TALLER C(R)UD , V2 --
+# @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])
+# @funcionario_required
+# def api_get_taller_id(id_taller): #C(R)UD
+#     try:
+#         taller = ver_taller(id_taller)
+#         if not taller:
+#             return jsonify({"success": False, "message": "taller no encontrado"}), 404
+#         estudiantes = obtener_estudiantes_por_taller(id_taller)
+#         taller['personas_inscritas'] = len(estudiantes)
+#         #aqui numero 11 chupalo entonce intentando hacer que llame a los estudiantes wuap
+#         return jsonify({"success": True, "data": taller})
+#         # return print("ZA WARUDOO!!")
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)}), 500
+#         # return print("ZA WARUDOO!!")
+
+# -- API TALLER C(R)UD , V3 --
 @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])
 @funcionario_required
 def api_get_taller_id(id_taller): #C(R)UD
     try:
-        taller = ver_taller(id_taller)
-        if not taller:
-            return jsonify({"success": False, "message": "taller no encontrado"}), 404
-        estudiantes = obtener_estudiantes_por_taller(id_taller)
-        taller['personas_inscritas'] = len(estudiantes)
+        if request.method == 'GET':
+            taller = ver_taller(id_taller)
+            if not taller:
+                return jsonify({"success": False, "message": "taller no encontrado"}), 404
+            estudiantes = obtener_estudiantes_por_taller(id_taller)
+            taller['personas_inscritas'] = len(estudiantes)
         #aqui numero 11 chupalo entonce intentando hacer que llame a los estudiantes wuap
         return jsonify({"success": True, "data": taller})
         # return print("ZA WARUDOO!!")
@@ -236,28 +256,66 @@ def api_actualizar_taller(id_taller): #CR(U)D
     try:
         if request.method ==  'PUT':
             data = request.json
-            print(f'METODO: {request.method}')
-            edad = data.get('edad_minima')
-            fecha_ini = data.get('fec_inicio')
-          
-            if not edad:
-                return jsonify({"success": False, "message": "error falta datos de ingreso"}), 400 
+            year_proceso_v2 = data.get('year_proceso')
+            id_categoria_v2 = data.get('id_categoria')
+            nombre_taller_v2 = data.get('nombre_taller')
+            id_departamento_v2 = data.get('id_departamento')
+            objetivo = data.get('objetivo_taller')
+            
+            fecha_inicio = data.get('fecha_inicio',False)
+            fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
 
+            fecha_termino = data.get('fecha_termino',False)
+            fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
 
+            numero_minutos = data.get('nro_minutos')
+            numero_clases_anual = data.get('nro_clases_anual')
+            horas_totales_v2 = data.get('horas_totales')
+            estado = data.get('id_estado_taller')
+
+            fecha_estado = data.get('fecha_estado',False)
+            fecha_estado = datetime.strptime(fecha_estado, "%Y-%m-%d").date()
+
+            observacion_v2 = data.get('observacion')
+            lugar_v2 = data.get('lugar')
+            min_estudiante = data.get('minimo_estudiante')
+            max_estudiante = data.get('maximo_estudiante')
+            requisito_v2 = data.get('requisito')
+            edad_min = data.get('edad_minima')
+            edad_max = data.get('edad_maxima')
+            material_v2 = data.get('material')
+            tipo_taller = data.get('ind_tipo_taller')
+            usuario_ingreso = data.get('aud_usuario_ingreso')
+            fecha_ingreso = data.get('aud_fec_ingreso')
+            usuario_modifica = data.get('aud_usuario_modifica')
+            fecha_modifica = date.today()
             resultado = ac_taller(
                 id_taller=id_taller,
-                # id_estado_taller=data.get('id_estado_taller'),
-                # fec_estado_taller=data.get('fec_estado_taller') or data.get('fec_inicio'),
-                fec_inicio=fecha_ini,
-                # fec_termino=data.get('fec_termino')
-                # objetivo_taller=('objetivo_taller'),
-                # observacion=data.get('observacion', ''),
-                edad_minima= edad
-                # edad_maxima=data.get('edad_maxima')
-                # aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-                # aud_fec_ingreso=None,
-                # aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-                # aud_fec_modifica=None
+                year_proceso=year_proceso_v2,
+                id_categoria=id_categoria_v2,
+                nombre_taller=nombre_taller_v2,
+                id_departamento=id_departamento_v2,
+                objetivo_taller=objetivo,
+                fec_inicio=fecha_inicio,
+                fec_termino=fecha_termino,
+                nro_minutos=numero_minutos,
+                nro_clases_anual=numero_clases_anual,
+                horas_totales=horas_totales_v2,
+                id_estado_taller=estado,
+                fec_estado_taller=fecha_estado,
+                observacion=observacion_v2,
+                lugar=lugar_v2,
+                minimo_estudiante=min_estudiante,
+                maximo_estudiante=max_estudiante,
+                requisito=requisito_v2,
+                edad_minima=edad_min,
+                edad_maxima=edad_max,
+                material=material_v2,
+                ind_tipo_taller=tipo_taller,
+                aud_usuario_ingreso=usuario_ingreso,
+                aud_fec_ingreso=fecha_ingreso,
+                aud_usuario_modifica=usuario_modifica,
+                aud_fec_modifica=fecha_modifica
             )
             if resultado:  
                 return jsonify({"success": True, "message": "taller actualizado correctamente"})

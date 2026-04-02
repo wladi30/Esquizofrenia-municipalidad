@@ -184,10 +184,10 @@ const GestionTalleres = {
     },
     // esto genera un html para la fila de tabla taller, esto deberia dar pie a que en la lista se muestren bien los talleres
     generarFilaTaller: function(t){
-        const inscritos = t.personas_inscritas || 0;
-        const maximo = t.MAXIMO_ESTUDIANTE || 20;
+        const inscritos = t.personas_inscritas;
+        const maximo = t.MAXIMO_ESTUDIANTE;
         const porcentaje = maximo > 0 ? (inscritos / maximo) * 100 : 0;
-        let estadoClass = '', estado = '';
+        let estadoClass = '';
         // aqui pondre todos los estados de taller , son solo 4 por defecto pondre el estado 3(cerrado) como el predeterminado
         // ESTA WEA ESTA ENTERA MALA 'GUTS'(palabra clave), por alguna razon que desconozco completamente el estado que se muestra en pantalla es el mismo al ultimo estado que dejo habilitado
         // un ejemplo de esto, ahora mismo existen 4 case y un default, si dejo el default habiltado todos mostraran el estado 'CERRADO' por que es el texto que le puse
@@ -223,6 +223,7 @@ const GestionTalleres = {
                     <small>${t.FEC_INICIO ? t.FEC_INICIO.substring(0,10) : '-'}</small><br>
                     <small class="text-muted">al ${t.FEC_TERMINO ? t.FEC_TERMINO.substring(0,10) : '-'}</small>
                 </td>
+                <td><span>${t.YEAR_PROCESO}</span></td>
                 <td class="text-end pe-4">
                     <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
                         <i class="bi bi-eye"></i>
@@ -322,27 +323,6 @@ const GestionTalleres = {
         this.configuracion.filtros = {year: '', estado: '', busqueda: '', busqueda_id: '', busqueda_lugar: '', categoria: ''};
         this.cargarTalleres();
     },
-    // abre el modal de taller para crear y editar
-    // abrirModalNuevoTaller: function() {
-    //     // se reinicia el formulario
-    //     document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
-    //     document.getElementById('formTaller').reset();
-    //     document.getElementById('tallerId').value = '';
-    //     // cambio del este de categoria, en este caso voy a aplicar el select-categoria
-    //     // document.getElementById('categoria').value = '';
-    //     const selectCategoriaModal = document.querySelector('.select-categoria');
-    //     if (selectCategoriaModal) {selectCategoriaModal.value = '';}
-    //     document.getElementById('yearProceso').value = '';
-    //     document.getElementById('minEstudiantes').value = '5';
-    //     document.getElementById('maxEstudiantes').value = '20';
-    //     document.getElementById('estadoTaller').value = '1';
-    //     document.getElementById('edadMinima').value = '0';
-    //     document.getElementById('edadMaxima').value = '99';
-    //     document.getElementById('nroClases').value = '1';
-    //     document.getElementById('nroMinutos').value = '90';
-    //     // le aplico sus iconos causa
-    //     new bootstrap.Modal(document.getElementById('modalTaller')).show();
-    // },
 
 abrirModalNuevoTaller: function() {
     document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
@@ -367,106 +347,34 @@ abrirModalNuevoTaller: function() {
     new bootstrap.Modal(document.getElementById('modalTaller')).show();
 },
 
-    // guarda el taller creado o actualizado, puede que la actualziacion no funcione de inmediato
-    // guardarTaller: function() {
-    //     const id = document.getElementById('tallerId').value;
-    //     // se recolectan los datos del formulario
-    //     // aqui se pondra una const que sera para el categoria taller
-    //     const selectCategoriaModal = document.querySelector('.select-categoria')
-    //     // estoy solucionando el tema de las fechas , asi que estoy probando codigo nuevo
-    //     let fecInicio = document.getElementById('fecInicio').value;
-    //     let fecTermino = document.getElementById('fecTermino').value;
-    //     // con los if obtengo las fechas y envio null si estan vacios, sin embargo la base de datos no acepta un Null
-    //     // por ahora lo dejare como Null, cuando me asegure que no fallara es cuando le pondre la fecha predeterminada de 1900 y algo que esta por alli
-    //     // if (!fecInicio) fecInicio = null;
-    //     // if (!fecTermino) fecTermino = null;
-    //     if (!fecInicio || !fecTermino) {this.mostrarError('Las fechas de inicio y termino son obligatorias');return;}
-    //     const data = {
-    //         year_proceso: parseInt(document.getElementById('yearProceso').value),
-    //         id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value:0),
-    //         nombre_taller: document.getElementById('nombreTaller').value,
-    //         id_departamento: parseInt(document.getElementById('departamento').value || '169'),
-    //         objetivo_taller: document.getElementById('objetivo').value,
-    //         // en fechas ocurre el cambio
-    //         // fec_inicio: document.getElementById('fecInicio').value,
-    //         // fec_termino: document.getElementById('fecTermino').value,
-    //         fec_inicio: fecInicio,
-    //         fec_termino: fecTermino,
-    //         nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
-    //         nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
-    //         horas_totales: 0, // se puede hacer el calculo despues, esto lo tengo que tener presente
-    //         id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
-    //         lugar: document.getElementById('lugar').value,
-    //         minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
-    //         maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
-    //         requisito: document.getElementById('requisitos').value,
-    //         edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
-    //         edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
-    //         material: document.getElementById('material').value,
-    //         ind_tipo_taller: 1
-    //     };
-    //     // pongo esto para que no se creen talleres sin todos los datos basicos(que son casi todos) es una validador de campos
-    //     // if (!data.nombre_taller || !data.fec_inicio || !data.fec_termino) {
-    //     //     this.mostrarError('Complete los campos obligatorios (*)');
-    //     //     return;
-    //     // }
-    //     if (!data.nombre_taller) {
-    //         this.mostrarError('Complete los campos obligatorios (*)');
-    //         return;
-    //     }
-    //     // se entiende poco, pero esto deberia determinar la url y el metodo que se esta utlizando, en este caso el editando (PUT) y el crear utilizando (POST)
-    //     const url = id ?
-    //         `/api/taller-ac/${id}` :
-    //         '/api/taller-crear';
-    //     const method = id ? 'PUT' : 'POST';
-    //     fetch(url, {
-    //         method: method,
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify(data)
-    //     })
-    //     .then(response => response.json())
-    //     .then(result => {
-    //         if (result.success) {
-    //             // se cierra el modal y se recarga los talleres
-    //             bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
-    //             this.mostrarExito(result.message || 'Operacion exitosa');
-    //             this.cargarTalleres();
-    //         } 
-    //         else {
-    //             this.mostrarError(result.message || 'Error al guardar');
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error('Error en fetch guardarTaller:', error);
-    //         this.mostrarError('Error de conexion al guardar.');
-    //     });
-    // },
-
     guardarTaller: function() {
     const id = document.getElementById('tallerId').value;
     const selectCategoriaModal = document.querySelector('.select-categoria');
+    const nameTaller = document.getElementById('nombreTaller').value.trim().toLowerCase();
+    // validacion nametaller
     
     const data = {
-        // year_proceso: parseInt(document.getElementById('yearProceso').value),
-        // id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value : 0),
-        nombre_taller: document.getElementById('nombreTaller').value,
-        // id_departamento: parseInt(document.getElementById('departamento').value || '169'),
-        // objetivo_taller: document.getElementById('objetivo').value,
-        // VOLVER A LA VERSIÓN QUE FUNCIONABA - ENVIAR LAS FECHAS COMO VIENEN DEL INPUT
+        year_proceso: parseInt(document.getElementById('yearProceso').value),
+        id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value : 0),
+        nombre_taller: nameTaller,
+        id_departamento: parseInt(document.getElementById('departamento').value),
+        objetivo_taller: document.getElementById('objetivo').value,
         fecha_inicio: document.getElementById('fecInicio').value,
         fecha_termino: document.getElementById('fecTermino').value,
-        // nro_minutos: parseInt(document.getElementById('nroMinutos').value || '90'),
-        // nro_clases_anual: parseInt(document.getElementById('nroClases').value || '1'),
-        // horas_totales: 0,
-        // id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
-        // lugar: document.getElementById('lugar').value,
-        // minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
-        // maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
-        // requisito: document.getElementById('requisitos').value,
-        edad_minima: parseInt(document.getElementById('edadMinima').value || '0'),
-        // edad_maxima: parseInt(document.getElementById('edadMaxima').value || '99'),
-        // material: document.getElementById('material').value,
-        // ind_tipo_taller: 1
+        nro_minutos: parseInt(document.getElementById('nroMinutos').value),
+        nro_clases_anual: parseInt(document.getElementById('nroClases').value),
+        horas_totales_v2: parseInt(document.getElementById('nroClases').value),
+        id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
+        fecha_estado: document.getElementById('fecEstado').value,
+        observacion_v2: document.getElementById('observacion').value,
+        lugar: document.getElementById('lugar').value,
+        minimo_estudiante: parseInt(document.getElementById('minEstudiantes').value),
+        maximo_estudiante: parseInt(document.getElementById('maxEstudiantes').value),
+        requisito: document.getElementById('requisitos').value,
+        edad_minima: parseInt(document.getElementById('edadMinima').value),
+        edad_maxima: parseInt(document.getElementById('edadMaxima').value),
+        material: document.getElementById('material').value,
+        ind_tipo_taller: parseInt(document.getElementById('tipoTaller').value),
     };
 
     // Validación simple
@@ -504,30 +412,36 @@ abrirModalNuevoTaller: function() {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    // document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
+                    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
                     document.getElementById('tallerId').value = t.id_taller;
-                    // document.getElementById('yearProceso').value = t.year_proceso || '';
-                    // document.getElementById('nombreTaller').value = t.nombre_taller || '';
+                    document.getElementById('yearProceso').value = t.year_proceso;
+                    const selectCategoriaModal = document.querySelector('.select-categoria');
+                    if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria;}
+                    document.getElementById('nombreTaller').value = t.nombre_taller;
                     // se viene un cambio muchachos
-                    // document.getElementById('categoria').value = t.id_categoria || '';
-                    // const selectCategoriaModal = document.querySelector('.select-categoria');
-                    // if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria || '';}
-                    // document.getElementById('objetivo').value = t.objetivo_taller || 'NADA';
+                    document.getElementById('departamento').value = t.id_departamento;
+                    document.getElementById('objetivo').value = t.objetivo_taller;
                     // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
-                    document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.substring(0,10) : '';
-                    // document.getElementById('fecTermino').value = t.fec_termino ? t.fec_termino.substring(0,10) : '';
-                    // document.getElementById('fecInicio').value = t.fec_inicio ? t.fec_inicio.split('T')[0] : '';
-                    // document.getElementById('fecTermino'). value = t.fec_termino ? t.fec_termino.split('T')[0] : '';
-                    // document.getElementById('lugar').value = t.lugar || '';
-                    // document.getElementById('nroMinutos').value = t.nro_minutos || 90;
-                    // document.getElementById('nroClases').value = t.nro_clases_anual || 1;
-                    document.getElementById('edadMinima').value = t.edad_minima || 0;
-                    // document.getElementById('edadMaxima').value = t.edad_maxima || 99;
-                    // document.getElementById('minEstudiantes').value = t.minimo_estudiante || 5;
-                    // document.getElementById('maxEstudiantes').value = t.maximo_estudiante || 20;
-                    // document.getElementById('material').value = t.material || '';
-                    // document.getElementById('requisitos').value = t.requisito || '';
-                    // document.getElementById('estadoTaller').value = t.id_estado_taller || 1;
+                    document.getElementById('fecInicio').value = t.fec_inicio;
+                    document.getElementById('fecTermino').value = t.fec_termino;
+                    document.getElementById('nroMinutos').value = t.nro_minutos;
+                    document.getElementById('nroClases').value = t.nro_clases_anual;
+                    document.getElementById('horasTotales').value = t.horas_totales;
+                    document.getElementById('estadoTaller').value = t.id_estado_taller;
+                    document.getElementById('fecEstado').value = t.fec_estado_taller
+                    document.getElementById('observacion').value = t.observacion;
+                    document.getElementById('lugar').value = t.lugar;
+                    document.getElementById('minEstudiantes').value = t.minimo_estudiante;
+                    document.getElementById('maxEstudiantes').value = t.maximo_estudiante;
+                    document.getElementById('requisitos').value = t.requisito;
+                    document.getElementById('edadMinima').value = t.edad_minima;
+                    document.getElementById('edadMaxima').value = t.edad_maxima;
+                    document.getElementById('material').value = t.material;
+                    document.getElementById('tipoTaller').value = t.ind_tipo_taller;
+                    // document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
+                    // document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
+                    // document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
+                    // document.getElementById('fecModifica').value = t.aud_fec_modifica;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
                 else {
@@ -546,6 +460,7 @@ abrirModalNuevoTaller: function() {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
+                
                     const inscritos = t.personas_inscritas || 0;
                     const maximo = t.maximo_estudiante || 20;
                     const disponibles = maximo - inscritos;
@@ -567,6 +482,7 @@ abrirModalNuevoTaller: function() {
                                 <table class="table table-sm">
                                     <tr><th>ID:</th><td>${t.id_taller}</td></tr>
                                     <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
+                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso}</td></tr>
                                     <tr><th>Categoría:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
                                     <tr><th>Lugar:</th><td>${t.lugar || '-'}</td></tr>
                                     <tr><th>Estado:</th><td>${estadoBadge}</td></tr>
@@ -579,7 +495,7 @@ abrirModalNuevoTaller: function() {
                                     <tr><th>TErmino:</th><td>${t.fec_termino || '-'}</td></tr>
                                     <tr><th>N° Clases:</th><td>${t.nro_clases_anual || '-'}</td></tr>
                                     <tr><th>Minutos/clase:</th><td>${t.nro_minutos || '-'}</td></tr>
-                                </table>
+                                </table>    
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -595,8 +511,19 @@ abrirModalNuevoTaller: function() {
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Requisitos de Edad</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Edad Mínima:</th><td>${t.edad_minima || 0} años</td></tr>
-                                    <tr><th>Edad Maxima:</th><td>${t.edad_maxima || 99} años</td></tr>
+                                    <tr><th>Edad Mínima:</th><td>${t.edad_minima} años</td></tr>
+                                    <tr><th>Edad Maxima:</th><td>${t.edad_maxima} años</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Informacion Adicional</h6>
+                                <table class="table table-sm">
+                                    <tr><th>ID del Departamento:</th><td>${t.id_departamento} (no se que quieren decir los numeros)</td></tr>
+                                    <tr><th>Tipo de taller:</th><td>${t.ind_tipo_taller} (no se que quieren decir los numeros)</td></tr>
+                                    <tr><th>Usuario que ingreso el taller:</th><td>${t.aud_usuario_ingreso}</td></tr>
+                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
+                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
+                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
                                 </table>
                             </div>
                         </div>
