@@ -52,6 +52,7 @@ const GestionTalleres = {
     // para por toda una sesion de busqueda de dicha cosa
     cargarDatosIniciales: function() {
         this.cargarCategorias();
+        // this.CargarDepartamentos();
         this.cargarTalleristasSelect();
     },
     cargarCategorias: function() {
@@ -90,6 +91,38 @@ const GestionTalleres = {
             this.mostrarError('No se pudieron cargar las categorías.');
         });
     },
+    // cargarDepartamentos: function() {
+    //     fetch('/api/departamento')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             this.configuracion.datos.departamentos = data;
+    //             const selectsModal = document.querySelectorAll('.select-departamento');
+    //             selectsModal.forEach(select => {
+    //                 select.innerHTML = '<option value="">Seleccione departamento...</option>';
+    //                 data.forEach(cat => { 
+    //                     const option = document.createElement('option');
+    //                     option.value = cat.ID_DEPARTAMENTO;
+    //                     option.textContent = cat.DESCRIPCION_CATEGORIA;
+    //                     select.appendChild(option);
+    //                 });
+    //             });
+    //             const selectsFiltro = document.querySelectorAll('.select-departamento-filtro');
+    //             selectsFiltro.forEach(select => {
+    //                 select.innerHTML = '<option value="">Todos los departamentos</option>';
+    //                 data.forEach(cat => {
+    //                     const option = document.createElement('option');
+    //                     option.value = cat.ID_DEPARTAMENTO;
+    //                     option.textContent = cat.DESCRIPCION_CATEGORIA;
+    //                     select.appendChild(option);
+    //                 });
+    //             });
+    //         })
+    //     .catch(error => {
+    //         console.error('Error cargando departamentos:', error);
+    //         this.mostrarError('No se pudieron cargar las departamentos.');
+    //     });
+    // },
+
     // aqui va la parte d elos talleristas
     cargarTalleristasSelect: function(){
         // contruire primero las urls despues seguimos con los filtros
@@ -357,13 +390,13 @@ abrirModalNuevoTaller: function() {
         year_proceso: parseInt(document.getElementById('yearProceso').value),
         id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value : 0),
         nombre_taller: nameTaller,
-        id_departamento: parseInt(document.getElementById('departamento').value),
+        // id_departamento: parseInt(document.getElementById('departamento').value),
         objetivo_taller: document.getElementById('objetivo').value,
         fecha_inicio: document.getElementById('fecInicio').value,
         fecha_termino: document.getElementById('fecTermino').value,
         nro_minutos: parseInt(document.getElementById('nroMinutos').value),
         nro_clases_anual: parseInt(document.getElementById('nroClases').value),
-        horas_totales_v2: parseInt(document.getElementById('nroClases').value),
+        horas_totales_v2: parseInt(document.getElementById('horasTotales').value),
         id_estado_taller: parseInt(document.getElementById('estadoTaller').value),
         fecha_estado: document.getElementById('fecEstado').value,
         observacion_v2: document.getElementById('observacion').value,
@@ -375,6 +408,11 @@ abrirModalNuevoTaller: function() {
         edad_maxima: parseInt(document.getElementById('edadMaxima').value),
         material: document.getElementById('material').value,
         ind_tipo_taller: parseInt(document.getElementById('tipoTaller').value),
+        // aud_usuario_ingreso: document.getElementById('usuarioIngreso').value,
+        // fec_ingreso: document.getElementById('fecIngreso').value,
+        aud_usuario_modifica: document.getElementById('usuarioModifica').value,
+        // fec_modifica: document.getElementById('fecModifica').value
+        
     };
 
     // Validación simple
@@ -419,7 +457,7 @@ abrirModalNuevoTaller: function() {
                     if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria;}
                     document.getElementById('nombreTaller').value = t.nombre_taller;
                     // se viene un cambio muchachos
-                    document.getElementById('departamento').value = t.id_departamento;
+                    // document.getElementById('departamento').value = t.id_departamento;
                     document.getElementById('objetivo').value = t.objetivo_taller;
                     // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
                     document.getElementById('fecInicio').value = t.fec_inicio;
@@ -438,10 +476,10 @@ abrirModalNuevoTaller: function() {
                     document.getElementById('edadMaxima').value = t.edad_maxima;
                     document.getElementById('material').value = t.material;
                     document.getElementById('tipoTaller').value = t.ind_tipo_taller;
-                    // document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
-                    // document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
-                    // document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
-                    // document.getElementById('fecModifica').value = t.aud_fec_modifica;
+                    document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
+                    document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
+                    document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
+                    document.getElementById('fecModifica').value = t.aud_fec_modifica;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
                 else {
@@ -460,9 +498,8 @@ abrirModalNuevoTaller: function() {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                
-                    const inscritos = t.personas_inscritas || 0;
-                    const maximo = t.maximo_estudiante || 20;
+                    const inscritos = t.personas_inscritas;
+                    const maximo = t.maximo_estudiante;
                     const disponibles = maximo - inscritos;
                     // SE DETERMINA EL BADGE DEL ESTADO DEL TALLER, DIFERENTE AL DE ARRIBA POR QUE ESTO ES LO QUE TIENE QUE VER EL USUARIO, LO DE ARRIBA SON LAS IDS
                     let estadoBadge = '';
@@ -495,6 +532,7 @@ abrirModalNuevoTaller: function() {
                                     <tr><th>TErmino:</th><td>${t.fec_termino || '-'}</td></tr>
                                     <tr><th>N° Clases:</th><td>${t.nro_clases_anual || '-'}</td></tr>
                                     <tr><th>Minutos/clase:</th><td>${t.nro_minutos || '-'}</td></tr>
+                                    <tr><th>Horas Totales:</th><td>${t.horas_totales || '-'}</td></tr>
                                 </table>    
                             </div>
                         </div>
@@ -632,7 +670,6 @@ abrirModalNuevoTaller: function() {
         // como el HTML tiene onclick, tambiEn funciona. pero para mantener la consistencia, lo vinculamos tambiEn aqui.
     }
 };
-
 // inicializacion cuando el DOM estE completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     GestionTalleres.inicializando();
@@ -640,8 +677,4 @@ document.addEventListener('DOMContentLoaded', function() {
 // dxponer funciones necesarias para los onclick en el HTML (si los hay)
 // dsto permite que los botones con onclick="GestionTalleres.funcion()" sigan funcionando.
 window.GestionTalleres = GestionTalleres;
-
-
-const name = ()=> { 
-
-}
+const name = ()=> {}

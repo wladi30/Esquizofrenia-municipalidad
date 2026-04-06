@@ -250,7 +250,7 @@ def api_get_taller_id(id_taller): #C(R)UD
         # return print("ZA WARUDOO!!")
 
 # -- API TALLER CR(U)D --
-@url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT'])
+@url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT','POST'])
 @funcionario_required
 def api_actualizar_taller(id_taller): #CR(U)D
     try:
@@ -259,24 +259,24 @@ def api_actualizar_taller(id_taller): #CR(U)D
             year_proceso_v2 = data.get('year_proceso')
             id_categoria_v2 = data.get('id_categoria')
             nombre_taller_v2 = data.get('nombre_taller')
-            id_departamento_v2 = data.get('id_departamento')
+            # id_departamento_v2 = data.get('id_departamento')
             objetivo = data.get('objetivo_taller')
             
-            fecha_inicio = data.get('fecha_inicio',False)
-            fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            # fecha_inicio = data.get('fecha_inicio',False)
+            # fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
 
-            fecha_termino = data.get('fecha_termino',False)
-            fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
+            # fecha_termino = data.get('fecha_termino',False)
+            # fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
 
             numero_minutos = data.get('nro_minutos')
             numero_clases_anual = data.get('nro_clases_anual')
-            horas_totales_v2 = data.get('horas_totales')
+            horas_totales_v2 = data.get('horas_totales_v2')
             estado = data.get('id_estado_taller')
 
             fecha_estado = data.get('fecha_estado',False)
             fecha_estado = datetime.strptime(fecha_estado, "%Y-%m-%d").date()
 
-            observacion_v2 = data.get('observacion')
+            observacion_v2 = data.get('observacion_v2')
             lugar_v2 = data.get('lugar')
             min_estudiante = data.get('minimo_estudiante')
             max_estudiante = data.get('maximo_estudiante')
@@ -285,19 +285,20 @@ def api_actualizar_taller(id_taller): #CR(U)D
             edad_max = data.get('edad_maxima')
             material_v2 = data.get('material')
             tipo_taller = data.get('ind_tipo_taller')
-            usuario_ingreso = data.get('aud_usuario_ingreso')
-            fecha_ingreso = data.get('aud_fec_ingreso')
             usuario_modifica = data.get('aud_usuario_modifica')
-            fecha_modifica = date.today()
+            
+            # fec_modifica = date.today()
+            # fec_modifica = datetime.strptime(fec_modifica, "%Y-%m-%d %H:%M:%S").date()
+
             resultado = ac_taller(
                 id_taller=id_taller,
                 year_proceso=year_proceso_v2,
                 id_categoria=id_categoria_v2,
                 nombre_taller=nombre_taller_v2,
-                id_departamento=id_departamento_v2,
+                # id_departamento=id_departamento_v2,
                 objetivo_taller=objetivo,
-                fec_inicio=fecha_inicio,
-                fec_termino=fecha_termino,
+                # fec_inicio=fecha_inicio,
+                # fec_termino=fecha_termino,
                 nro_minutos=numero_minutos,
                 nro_clases_anual=numero_clases_anual,
                 horas_totales=horas_totales_v2,
@@ -312,10 +313,8 @@ def api_actualizar_taller(id_taller): #CR(U)D
                 edad_maxima=edad_max,
                 material=material_v2,
                 ind_tipo_taller=tipo_taller,
-                aud_usuario_ingreso=usuario_ingreso,
-                aud_fec_ingreso=fecha_ingreso,
-                aud_usuario_modifica=usuario_modifica,
-                aud_fec_modifica=fecha_modifica
+                aud_usuario_modifica=usuario_modifica
+                # aud_fec_modifica=fec_modifica
             )
             if resultado:  
                 return jsonify({"success": True, "message": "taller actualizado correctamente"})
@@ -582,3 +581,19 @@ def api_categoria_taller():
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")
 #-- FIN DE CATEGORIA --
+
+# -- API DEPARTAMENTO --
+@url_funcionario.route('/api/departamento', methods=['GET'])
+@funcionario_required
+def api_departamento_taller():
+    try:
+        departamentos = [
+            {"ID_DEPARTAMENTO": 169, "DESCRIPCION_DEPARTAMENTO": "desconocido"},
+            {"ID_DEPARTAMENTO": 22, "DESCRIPCION_DEPARTAMENTO": "desconocido"},
+            {"ID_DEPARTAMENTO": 104, "DESCRIPCION_DEPARTAMENTO": "desconocido"}
+        ]
+        return jsonify(departamentos)
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+#-- FIN DE DEPARTAMENTO --
+#-- FIN RUTAS ADICIONALES --

@@ -211,6 +211,24 @@
                                 <option value="">Seleccione tallerista...</option>
                             </select>
                         </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Usuario que ingreso el taller<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="usuarioIngreso" rows="1" maxlength="20" disabled></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha del ingreso <span class="text-danger">*</span></label>
+                            <input type="datetime" class="form-control" id="fecIngreso" disabled>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="usuarioModifica" rows="1" maxlength="20" disabled></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha de la ultima modificación <span class="text-danger">*</span></label>
+                            <input type="datetime" class="form-control" id="fecModifica" disabled>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -225,15 +243,15 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha Inicio <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="fecInicio" >
+                            <input type="date" class="form-control" id="fecInicio">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha Término <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="fecTermino" >
+                            <input type="date" class="form-control" id="fecTermino">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha Estado Taller <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="fecEstado" >
+                            <input type="date" class="form-control" id="fecEstado">
                         </div>
                     </div>
 
@@ -288,7 +306,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
-                            <select class="form-select" id="estadoTaller" >
+                            <select class="form-select" id="estadoTaller">
                                 <option value="1">INGRESADO</option>
                                 <option value="2">CALENDARIZADO</option>
                                 <option value="3">CERRADO</option>
@@ -297,22 +315,24 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Tipo de Taller <span class="text-danger">*</span></label>
-                            <select class="form-select" id="tipoTaller" >
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="8">4</option>
-                                <option value="9">5</option>
+                            <select class="form-select" id="tipoTaller">
+                                <option value="1">Desconocido (1)</option>
+                                <option value="2">Desconocido (2)</option>
+                                <option value="3">Desconocido (3)</option>
+                                <option value="8">Desconocido (8)</option>
+                                <option value="9">Desconocido (9)</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <!-- el tema del departamento lo voy a sacar, son mas de 500 ids y no sirven si es que se coloca la id correcta, lo dejare en el crear taller y ver el taller
+                        pero no estara en el editar taler. -->
+                        <!-- <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Departamento</label>
                             <select class="form-select" id="departamento">
                                 <option value="169">169 desconocido</option>
                                 <option value="22">22 desconocido</option>
                                 <option value="104">104 desconocido</option>
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="modal-footer">

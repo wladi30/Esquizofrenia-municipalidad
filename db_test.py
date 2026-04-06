@@ -779,10 +779,8 @@ def ac_taller(id_taller,
             year_proceso,
             id_categoria,
             nombre_taller,
-            id_departamento,
+            # id_departamento,
             objetivo_taller,
-            fec_inicio,
-            fec_termino,
             nro_minutos,
             nro_clases_anual,
             horas_totales,
@@ -796,35 +794,37 @@ def ac_taller(id_taller,
             edad_minima,
             edad_maxima,
             material,
-            ind_tipo_taller):
+            ind_tipo_taller,
+            # aud_usuario_ingreso,
+            # aud_fec_ingreso,
+            aud_usuario_modifica
+            ):
     conn = get_connection()
     if not conn:
         return False
     cursor = conn.cursor()
     try:
         query = f"""{{CALL AC_TALLER(
-        {id_taller},
-        {year_proceso},
-        {id_categoria},
-        '{nombre_taller}',
-        {id_departamento},
-        '{objetivo_taller}',
-        '{fec_termino}',
-        '{fec_inicio}',
-        {nro_minutos},
-        {nro_clases_anual},
-        {horas_totales},
-        {id_estado_taller},
-        '{fec_estado_taller}',
-        '{observacion}',
-        '{lugar}',
-        {minimo_estudiante},
-        {maximo_estudiante},
-        '{requisito}',
-        {edad_minima},
-        {edad_maxima},
-        '{material}',
-        {ind_tipo_taller}
+            {id_taller},
+            {year_proceso},
+            {id_categoria},
+            '{nombre_taller}',
+            '{objetivo_taller}',
+            {nro_minutos},
+            {nro_clases_anual},
+            {horas_totales},
+            {id_estado_taller},
+            '{fec_estado_taller}',
+            '{observacion}',
+            '{lugar}',
+            {minimo_estudiante},
+            {maximo_estudiante},
+            '{requisito}',
+            {edad_minima},
+            {edad_maxima},
+            '{material}',
+            {ind_tipo_taller},
+            '{aud_usuario_modifica}'
         )}}"""
         print(f"DEBUG - : {query}")
         cursor.execute(query)
