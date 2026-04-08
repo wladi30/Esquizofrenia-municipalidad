@@ -8,8 +8,9 @@ url_funcionario = Blueprint('url_funcionario', __name__, template_folder='src/te
 
 from db_test import (
     ac_taller,
-    ac_taller_fecha,
+    # ac_taller_fecha,
     borrar_estudiante,
+    cambiar_estado_taller_de_baja,
     inscribir_el_taller,
     inscribir_taller_o_espera,
     obtener_profesores,
@@ -156,53 +157,55 @@ def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui es
 @funcionario_required
 def api_crear_taller():
     try:
-        data = request.json # duerman a michelo
-        year_proceso = data.get('year_proceso')
-        id_categoria = data.get('id_categoria')
-        nombre_taller = data.get('nombre_taller')
-        id_departamento = data.get('id_departamento', 169)
-        objetivo_taller = data.get('objetivo_taller', '')
-        # la fecha estaba dando problemas  asi que busque como solucionar el tema de  que no me deja subir ni tampoco actualziar ningun taller al momento de dale submit
-        # por lo cual ahora mismo voy a a aplicar algo que vi en internet especifico para sql server
-        fec_inicio = data.get('fec_inicio')
-        fec_termino = data.get('fec_termino')
-        if fec_inicio: fec_inicio = fec_inicio
-        if fec_termino: fec_termino = fec_termino
-        # lo de aqui arriba es el tema que voy a intentar, si ya viene como yyyy-mm-dd se usara el input date y si entrega none o estan vacias usara None, ahora claro la
-        # base d edatos o acepta un none pero tampoco se permite que en la cosa de la pagina les permitira dejar el campo de fecha vacio asi que no creo que sea problema
-        nro_minutos = data.get('nro_minutos', 90)
-        nro_clases_anual = data.get('nro_clases_anual', 1)
-        horas_totales = data.get('horas_totales', 0)
-        id_estado_taller = data.get('id_estado_taller', 1)
-        lugar = data.get('lugar', '')
-        minimo_estudiante = data.get('minimo_estudiante', 5)
-        maximo_estudiante = data.get('maximo_estudiante', 20)
-        requisito = data.get('requisito', '')
-        edad_minima = data.get('edad_minima', 0)
-        edad_maxima = data.get('edad_maxima', 99)
-        material = data.get('material', '')
-        ind_tipo_taller = data.get('ind_tipo_taller', 1)
-        resultado = inscribir_el_taller(
-            year_proceso,
-            id_categoria,
-            nombre_taller,
-            id_departamento,
-            objetivo_taller,
-            fec_inicio,
-            fec_termino,
-            nro_minutos,
-            nro_clases_anual,
-            horas_totales,
-            id_estado_taller,
-            lugar,
-            minimo_estudiante,
-            maximo_estudiante,
-            requisito,
-            edad_minima,
-            edad_maxima,
-            material,
-            ind_tipo_taller
-        )
+        if request.method == 'POST':
+            data = request.json
+            year_proceso_v2 = data.get('year_proceso')
+            id_categoria_v2 = data.get('id_categoria')
+            nombre_taller_v2 = data.get('nombre_taller')
+            objetivo = data.get('objetivo_taller')
+            
+            # fecha_inicio = data.get('fecha_inicio',False)
+            # fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+
+            # fecha_termino = data.get('fecha_termino',False)
+            # fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
+
+            numero_minutos = data.get('nro_minutos')
+            numero_clases_anual = data.get('nro_clases_anual')
+            horas_totales_v2 = data.get('horas_totales_v2')
+
+            observacion_v2 = data.get('observacion_v2')
+            lugar_v2 = data.get('lugar')
+            min_estudiante = data.get('minimo_estudiante')
+            max_estudiante = data.get('maximo_estudiante')
+            requisito_v2 = data.get('requisito')
+            edad_min = data.get('edad_minima')
+            edad_max = data.get('edad_maxima')
+            material_v2 = data.get('material')
+            tipo_taller = data.get('ind_tipo_taller')
+            usuario_ingreso = session.get('nombre_persona', session.get('id_usuario'))
+
+            resultado = inscribir_el_taller(
+                year_proceso=year_proceso_v2,
+                id_categoria=id_categoria_v2,
+                nombre_taller=nombre_taller_v2,
+                objetivo_taller=objetivo,
+                fec_inicio=fecha_inicio,
+                fec_termino=fecha_termino,
+                nro_minutos=numero_minutos,
+                nro_clases_anual=numero_clases_anual,
+                horas_totales=horas_totales_v2,
+                observacion=observacion_v2,
+                lugar=lugar_v2,
+                minimo_estudiante=min_estudiante,
+                maximo_estudiante=max_estudiante,
+                requisito=requisito_v2,
+                edad_minima=edad_min,
+                edad_maxima=edad_max,
+                material=material_v2,
+                ind_tipo_taller=tipo_taller,
+                aud_usuario_ingreso=usuario_ingreso
+            )
         #primero defino que son cada dato y despues los meto todos en el 'resultado'
         if resultado.get('success'):
             return jsonify({"success": True, "message": "taller creado", "id_taller": resultado.get('id_taller')}), 201
@@ -213,23 +216,6 @@ def api_crear_taller():
         logger.add_to_log("error", f"error en funcionario.api_crear_taller: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")
-
-# -- API TALLER C(R)UD , V2 --
-# @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])
-# @funcionario_required
-# def api_get_taller_id(id_taller): #C(R)UD
-#     try:
-#         taller = ver_taller(id_taller)
-#         if not taller:
-#             return jsonify({"success": False, "message": "taller no encontrado"}), 404
-#         estudiantes = obtener_estudiantes_por_taller(id_taller)
-#         taller['personas_inscritas'] = len(estudiantes)
-#         #aqui numero 11 chupalo entonce intentando hacer que llame a los estudiantes wuap
-#         return jsonify({"success": True, "data": taller})
-#         # return print("ZA WARUDOO!!")
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)}), 500
-#         # return print("ZA WARUDOO!!")
 
 # -- API TALLER C(R)UD , V3 --
 @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])
@@ -259,22 +245,18 @@ def api_actualizar_taller(id_taller): #CR(U)D
             year_proceso_v2 = data.get('year_proceso')
             id_categoria_v2 = data.get('id_categoria')
             nombre_taller_v2 = data.get('nombre_taller')
-            # id_departamento_v2 = data.get('id_departamento')
             objetivo = data.get('objetivo_taller')
             
-            # fecha_inicio = data.get('fecha_inicio',False)
-            # fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            fecha_inicio = data.get('fecha_inicio',False)
+            fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
 
-            # fecha_termino = data.get('fecha_termino',False)
-            # fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
+            fecha_termino = data.get('fecha_termino',False)
+            fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
 
             numero_minutos = data.get('nro_minutos')
             numero_clases_anual = data.get('nro_clases_anual')
             horas_totales_v2 = data.get('horas_totales_v2')
             estado = data.get('id_estado_taller')
-
-            fecha_estado = data.get('fecha_estado',False)
-            fecha_estado = datetime.strptime(fecha_estado, "%Y-%m-%d").date()
 
             observacion_v2 = data.get('observacion_v2')
             lugar_v2 = data.get('lugar')
@@ -285,25 +267,20 @@ def api_actualizar_taller(id_taller): #CR(U)D
             edad_max = data.get('edad_maxima')
             material_v2 = data.get('material')
             tipo_taller = data.get('ind_tipo_taller')
-            usuario_modifica = data.get('aud_usuario_modifica')
-            
-            # fec_modifica = date.today()
-            # fec_modifica = datetime.strptime(fec_modifica, "%Y-%m-%d %H:%M:%S").date()
+            usuario_modifica = session.get('nombre_persona', session.get('id_usuario'))
 
             resultado = ac_taller(
                 id_taller=id_taller,
                 year_proceso=year_proceso_v2,
                 id_categoria=id_categoria_v2,
                 nombre_taller=nombre_taller_v2,
-                # id_departamento=id_departamento_v2,
                 objetivo_taller=objetivo,
-                # fec_inicio=fecha_inicio,
-                # fec_termino=fecha_termino,
+                fec_inicio=fecha_inicio,
+                fec_termino=fecha_termino,
                 nro_minutos=numero_minutos,
                 nro_clases_anual=numero_clases_anual,
                 horas_totales=horas_totales_v2,
                 id_estado_taller=estado,
-                fec_estado_taller=fecha_estado,
                 observacion=observacion_v2,
                 lugar=lugar_v2,
                 minimo_estudiante=min_estudiante,
@@ -314,7 +291,6 @@ def api_actualizar_taller(id_taller): #CR(U)D
                 material=material_v2,
                 ind_tipo_taller=tipo_taller,
                 aud_usuario_modifica=usuario_modifica
-                # aud_fec_modifica=fec_modifica
             )
             if resultado:  
                 return jsonify({"success": True, "message": "taller actualizado correctamente"})
@@ -326,27 +302,19 @@ def api_actualizar_taller(id_taller): #CR(U)D
         # return print("ZA WARUDOO!!")
 
 # -- API TALLER CRU(D)? , ES UN UPDATE DISFRAZADO DE DELETE --
-# @url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['DELETE'])
-# @funcionario_required
-# def api_delete_taller(id_taller): # CRU(D)
-#     try:
-#         resultado = ac_taller(
-#             id_taller=id_taller,
-#             id_estado_taller=4,
-#             fec_estado_taller=None, #deberia haber un getdate()
-#             observacion="-",
-#             aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-#             aud_fec_ingreso=None,
-#             aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-#             aud_fec_modifica=None
-#         )
-#         if resultado:
-#             return jsonify({"success": True, "message": "Taller cambiado a no usado/suspendido"})
-#         else:
-#             return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)}), 500
-#         # return print("ZA WARUDOO!!")
+@url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['PUT'])
+@funcionario_required
+def api_delete_taller(id_taller): # CRU(D)
+    try:
+        if request.method == 'PUT':
+            resultado = cambiar_estado_taller_de_baja(id_taller)
+            if resultado:
+                return jsonify({"success": True, "message": "Taller cambiado a no usado/suspendido"})
+            else:
+                return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+        # return print("ZA WARUDOO!!")
     
 # -- API TALLER CRU(D) --
 @url_funcionario.route('/api/taller-delete/<int:id_taller>', methods=['DELETE'])
@@ -354,11 +322,12 @@ def api_actualizar_taller(id_taller): #CR(U)D
 def api_delete_verdadero_taller(id_taller): #este delete cumple con el crud, sin embargo existe uno que solo modifica y deshabilita en vez de eliminar.
     #estoy creando este por si acaso lo que se busca es hacer desaparecer los datos.
     try:
-        resultado = borrar_taller(id_taller)
-        if resultado:
-            return jsonify({"success": True, "message": "Taller eliminado de la base de datos"})
-        else:
-            return jsonify({"success": False, "message": "error al eliminar el taller. esta cosa es simple por lo cual se tiene que rvisar principalmente la base de datos"}), 400
+        if request.method == 'DELETE':
+            resultado = borrar_taller(id_taller)
+            if resultado:
+                return jsonify({"success": True, "message": "Taller eliminado de la base de datos"})
+            else:
+                return jsonify({"success": False, "message": "error al eliminar el taller. esta cosa es simple por lo cual se tiene que rvisar principalmente la base de datos"}), 400
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 # -- FIN DE APIS DE TALLER --

@@ -213,20 +213,20 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que ingreso el taller<span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Usuario que ingreso el taller<span class="text-danger"></span></label>
                             <textarea class="form-control" id="usuarioIngreso" rows="1" maxlength="20" disabled></textarea>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Fecha del ingreso <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Fecha del ingreso <span class="text-danger"></span></label>
                             <input type="datetime" class="form-control" id="fecIngreso" disabled>
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación<span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación<span class="text-danger"></span></label>
                             <textarea class="form-control" id="usuarioModifica" rows="1" maxlength="20" disabled></textarea>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Fecha de la ultima modificación <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Fecha de la ultima modificación <span class="text-danger"></span></label>
                             <input type="datetime" class="form-control" id="fecModifica" disabled>
                         </div>
                     </div>
@@ -250,8 +250,8 @@
                             <input type="date" class="form-control" id="fecTermino">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Fecha Estado Taller <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="fecEstado">
+                            <label class="form-label fw-semibold">Fecha Estado Taller <span class="text-danger"></span></label>
+                            <input type="date" class="form-control" id="fecEstado" disabled>
                         </div>
                     </div>
 
@@ -262,34 +262,34 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-semibold">N° Clases</label>
-                            <input type="number" class="form-control" id="nroClases" min="1" value="5">
+                            <input type="number" class="form-control" id="nroClases" min="0" placeholder="Ej: 3">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-semibold">Minutos por clase</label>
-                            <input type="number" class="form-control" id="nroMinutos" min="1" value="90">
+                            <input type="number" class="form-control" id="nroMinutos" min="0" placeholder="Ej: 90">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-semibold">Horas en total</label>
-                            <input type="number" class="form-control" id="horasTotales" min="12" value="80">
+                            <input type="number" class="form-control" id="horasTotales" min="0" placeholder="Ej: 80">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Edad Mínima</label>
-                            <input type="number" class="form-control" id="edadMinima" min="1" value="18">
+                            <input type="number" class="form-control" id="edadMinima" min="0" placeholder="Ej: 16">
                         </div>
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Edad Máxima</label>
-                            <input type="number" class="form-control" id="edadMaxima" min="1" value="75">
+                            <input type="number" class="form-control" id="edadMaxima" min="0" placeholder="Ej: 75">
                         </div>
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Cupo Mínimo</label>
-                            <input type="number" class="form-control" id="minEstudiantes" min="1" value="5">
+                            <input type="number" class="form-control" id="minEstudiantes" min="0" placeholder="Ej: 2">
                         </div>
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Cupo Máximo</label>
-                            <input type="number" class="form-control" id="maxEstudiantes" min="1" value="40">
+                            <input type="number" class="form-control" id="maxEstudiantes" min="0" placeholder="Ej: 40">
                         </div>
                     </div>
 

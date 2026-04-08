@@ -31,8 +31,10 @@ FLASK_APP
             -funcionario.js
             -general.js
             -login.js
+        -3-logo-muniquilicura.png
         -20241216_180631.jpg
         -images.png
+        -logoEscudo.png
         -sm_5b348d4c557a7.jpg
     -templates
         -error
@@ -80,9 +82,14 @@ FLASK_APP
 -db_test.py
 -requerimientos.txt
 
-hasta ahora este proyecto lo hemos hecho tu y yo, te dire que hacer ahora, tengo un problema con los href en dashboard del funcionario, no puedo redirigir a nada por que no encuentra el la url, 
-la idea es que esta plataforma tenga de usuario al funcionario y al admin(el admin lo dejaremos al final asi que no lo incluyas por ahora pero lo puedes preparar un poco) el nombre de esta
-app es Administracion Taller de la municipalidad de quilicura o Administracion Taller para abreviar, el fin de esto es hacer un crud de esto: 
+este proyecto esta bastante avanzado, le falta seguridad a su vez que falta completar ciertos tramos, por ejemplo en el app_funcionario.py la funcion api_actualizar_taller me falla el tema de
+poder subir la fecha_inicio, fecha_termino, fec_modifica y fecha_estado, los demas parametros son capaz de actualizarce bien pero las fecha me arroja errores, tambien necesito que la fec_modifica
+se cambie automaticamente apenas realize un cambio , ya que esta fecha marca cuando se realizo el ultimo cambio, a su vez necesito que el usuario_modifica se cambie por si solo, utilizando
+el usuario el cual inicio sesion, de este modo queda registro inalterable de quien realiza los cambios, tambien necesito solucionar el tema del delete para taller, ya sea borrar el taller o
+cambiarlo a cerrado/de baja para que se demuestre que ya no sera utilizado, necesito ambas. tambien necesito que se termine el masivo talleres ya sea eliminacion masiva y subida masiva.
+todo tiene que ser con procedimientos almacenados para mayor seguridad, tambien se tienen que aplicar bastantes seguridades ya que este proyecto sera atacado a modo de prueba, pero primero
+centremosnos en terminar bien lo de taller
+
 Administracion de talleres
 1.- Revision de inscripciones
 2.- Mantenedores 

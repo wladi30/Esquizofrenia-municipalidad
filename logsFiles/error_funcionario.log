@@ -109,3 +109,10 @@
 2026-03-25 12:14:27 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _id_categoria_
 2026-03-30 08:45:12 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ inscribir_el_taller__ missing 2 required positional arguments_ _material_ and _ind_tipo_taller_
 2026-03-30 08:54:32 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ inscribir_el_taller__ missing 2 required positional arguments_ _material_ and _ind_tipo_taller_
+2026-04-08 16:47:25 | Thread-34 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ inscribir_el_taller__ missing 1 required positional argument_ _id_departamento_
+2026-04-08 16:48:11 | Thread-35 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ inscribir_el_taller__ missing 1 required positional argument_ _id_departamento_
+2026-04-08 17:12:57 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ inscribir_el_taller__ got an unexpected keyword argument _fec_inicio_
+2026-04-08 17:13:17 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
+2026-04-08 17:13:37 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
+2026-04-08 17:13:46 | Thread-4 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
+2026-04-08 17:13:54 | Thread-5 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined

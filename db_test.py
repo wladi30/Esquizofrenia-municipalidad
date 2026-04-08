@@ -735,57 +735,17 @@ def buscar_talleres(termino, categoria=None, año=None, estados=None, limite=999
         cursor.close()
         conn.close()
 
-# fec_inicio recibido: 'None'
-# fec_termino recibido: 'None'
-# Tipo fec_inicio: <class 'NoneType'>
-# Query:
-#             UPDATE SGT_TALLER SET
-#                 FEC_INICIO = CAST('None' AS DATE),
-#                 FEC_TERMINO = CAST('None' AS DATE)
-#             WHERE ID_TALLER = 1
-
-# Error en AC_TALLER: ('22007', '[22007] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Error al convertir una cadena de caracteres en fecha y/u hora. (241) (SQLExecDirectW)')
-
-# https://chat.deepseek.com/a/chat/s/41bd757f-e9a6-4a0f-8955-d845b025fe5a
-
-def ac_taller_fecha(id_taller,fec_inicio,fec_termino,fec_estado_taller):
-    conn = get_connection()
-    if not conn:
-        return False
-    cursor = conn.cursor()
-    try:
-        print(f"DEBUG - TALLER ID: {id_taller}")
-        print(f"DEBUG - FECHA INICIO: {fec_inicio}")
-        print(f"DEBUG - FECHA TERMINO: {fec_termino}")
-        print(f"DEBUG - FECHA ESTADO: {fec_estado_taller}")
-        print(f"DEBUG - FECHA INICIO TIPO: {type(fec_inicio)}, FECHA TERMINO TIPO: {type(fec_termino)}, FECHA ESTADO TIPO: {type(fec_estado_taller)}")
-        query = f"""{{CALL AC_TALLER_FECHA(
-        {id_taller},
-        '{fec_inicio}'
-        )}}"""
-        print(f"DEBUG - : {query}")
-        cursor.execute(query)
-        conn.commit()
-        return True
-    except Exception as e:
-        print(f"Error en AC_TALLER_FECHA: {e}")
-        conn.rollback()
-        return False
-    finally:
-        cursor.close()
-        conn.close()
-
 def ac_taller(id_taller,
             year_proceso,
             id_categoria,
             nombre_taller,
-            # id_departamento,
             objetivo_taller,
+            fec_inicio,
+            fec_termino,
             nro_minutos,
             nro_clases_anual,
             horas_totales,
             id_estado_taller,
-            fec_estado_taller,
             observacion,
             lugar,
             minimo_estudiante,
@@ -795,8 +755,6 @@ def ac_taller(id_taller,
             edad_maxima,
             material,
             ind_tipo_taller,
-            # aud_usuario_ingreso,
-            # aud_fec_ingreso,
             aud_usuario_modifica
             ):
     conn = get_connection()
@@ -810,11 +768,12 @@ def ac_taller(id_taller,
             {id_categoria},
             '{nombre_taller}',
             '{objetivo_taller}',
+            '{fec_inicio}',
+            '{fec_termino}',
             {nro_minutos},
             {nro_clases_anual},
             {horas_totales},
             {id_estado_taller},
-            '{fec_estado_taller}',
             '{observacion}',
             '{lugar}',
             {minimo_estudiante},
@@ -838,7 +797,7 @@ def ac_taller(id_taller,
         cursor.close()
         conn.close()
 
-def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,id_departamento,objetivo_taller,fec_inicio,fec_termino,nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller):
+def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,nro_minutos,nro_clases_anual,horas_totales,observacion,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller,aud_usuario_ingreso):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
@@ -847,17 +806,12 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,id_departamento,
         query = f"""{{CALL INSCRIBIR_EL_TALLER(
             {year_proceso}, 
             {id_categoria}, 
-            '{nombre_taller}', 
-            {id_departamento},
+            '{nombre_taller}',
             '{objetivo_taller}', 
-            '{fec_inicio}, 
-            '{fec_termino}', 
             {nro_minutos},
             {nro_clases_anual},
             {horas_totales}, 
-            {id_estado_taller}, 
-            GETDATE(), 
-            '-',
+            '{observacion}',
             '{lugar}', 
             {minimo_estudiante}, 
             {maximo_estudiante}, 
@@ -866,11 +820,9 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,id_departamento,
             {edad_maxima}, 
             '{material}', 
             {ind_tipo_taller}, 
-            '', 
-            '1900-01-01 00:00:00.000',
-            '', 
-            '1900-01-01 00:00:00.000'
+            '{aud_usuario_ingreso}',
         )}}"""
+        print(f"DEBUG - : {query}")
         cursor.execute(query)
         resultado = cursor.fetchone()
         conn.commit()
@@ -889,21 +841,40 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,id_departamento,
         conn.close()
 
 def borrar_taller(id_taller):
-     conn = get_connection()
-     if not conn:
-           return False
-     cursor = conn.cursor()
-     try:
-          cursor.execute(f"{{CALL BORRAR_TALLER({id_taller})}}")
-          conn.commit()
-          return True
-     except Exception as e:
-          print(f"Error en BORRAR_TALLER: {e}")
-          conn.rollback()
-          return False
-     finally:
-          cursor.close()
-          conn.close()
+    conn = get_connection()
+    if not conn:
+        return False
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"{{CALL BORRAR_TALLER({id_taller})}}")
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error en BORRAR_TALLER: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def cambiar_estado_taller_de_baja(id_taller):
+    conn = get_connection()
+    if not conn:
+        return False
+    cursor = conn.cursor()
+    try:
+        query = f"""{{CALL DE_BAJA_ESTADO_TALLER({id_taller})}}"""
+        print(f"DEBUG - : {query}")
+        cursor.execute(query)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error en DE_BAJA_ESTADO_TALLER: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
 #--TALLERISTA(ANTIGUAMENTE PROFESOR)--
 def ver_profesor(id_profesor):
