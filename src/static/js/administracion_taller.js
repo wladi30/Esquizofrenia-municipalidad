@@ -386,8 +386,8 @@ abrirModalNuevoTaller: function() {
     const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
     const yearProceso = parseInt(document.getElementById('yearProceso').value);
     const objTaller = document.getElementById('objetivo').value.trim().toUpperCase();
-    // const fechaInicio = document.getElementById('fecInicio').value;
-    // const fechaTermino = document.getElementById('fecTermino').value;
+    const fechaInicio = document.getElementById('fecInicio').value;
+    const fechaTermino = document.getElementById('fecTermino').value;
     const numeroDeMinutos = parseInt(document.getElementById('nroMinutos').value);
     const numeroDeClasesAnuales = parseInt(document.getElementById('nroClases').value);
     const numeroHorasTotales = parseInt(document.getElementById('horasTotales').value);
@@ -405,25 +405,25 @@ abrirModalNuevoTaller: function() {
     // validacion nametaller
     
     const data = {
-        year_proceso: yearProceso,
-        id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value : 0),
+        year_proceso: yearProceso || new Date().getFullYear(),
+        id_categoria: selectCategoriaModal ? parseInt(selectCategoriaModal.value) : 0,
         nombre_taller: nameTaller,
-        objetivo_taller: objTaller,
-        // fecha_inicio: fechaInicio,
-        // fecha_termino: fechaTermino,
-        nro_minutos: numeroDeMinutos,
-        nro_clases_anual: numeroDeClasesAnuales,
-        horas_totales_v2: numeroHorasTotales,
-        id_estado_taller: numeroIdEstadoTaller,
-        observacion_v2: observacionTaller,
-        lugar: lugarTaller,
-        minimo_estudiante: minimoEstudiante,
-        maximo_estudiante: maximoEstudiante,
-        requisito: requisitosTaller,
-        edad_minima: edadMinimaTaller,
-        edad_maxima: edadMaximaTaller,
-        material: materialTaller,
-        ind_tipo_taller: idTipoTaller,
+        objetivo_taller: objTaller || '',
+        fecha_inicio: fechaInicio || null,
+        fecha_termino: fechaTermino || null,
+        nro_minutos: numeroDeMinutos || 90,
+        nro_clases_anual: numeroDeClasesAnuales || 1,
+        horas_totales_v2: numeroHorasTotales || 0,
+        id_estado_taller: numeroIdEstadoTaller || 1,
+        observacion_v2: observacionTaller || '',
+        lugar: lugarTaller || '',
+        minimo_estudiante: minimoEstudiante || 5,
+        maximo_estudiante: maximoEstudiante || 20,
+        requisito: requisitosTaller || '',
+        edad_minima: edadMinimaTaller || 18,
+        edad_maxima: edadMaximaTaller || 99,
+        material: materialTaller || '',
+        ind_tipo_taller: idTipoTaller || 1,
     };
     const url = id ? `/api/taller-ac/${id}` : '/api/taller-crear';
     const method = id ? 'PUT' : 'POST';

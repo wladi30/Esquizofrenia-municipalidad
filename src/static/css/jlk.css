@@ -1,0 +1,13 @@
+:root {
+  --color-primario: #15438b;
+  --color-secondary : #8b267f;
+  --espaciado: 16px;
+}
+
+
+
+
+.test{
+    background: var()
+}
+

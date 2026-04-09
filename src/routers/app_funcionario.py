@@ -153,69 +153,152 @@ def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui es
         return jsonify({"success": False, "message": str(e)}), 500
 
 # -- API TALLER (C)RUD --
+
 @url_funcionario.route('/api/taller-crear', methods=['POST'])
 @funcionario_required
 def api_crear_taller():
     try:
-        if request.method == 'POST':
-            data = request.json
-            year_proceso_v2 = data.get('year_proceso')
-            id_categoria_v2 = data.get('id_categoria')
-            nombre_taller_v2 = data.get('nombre_taller')
-            objetivo = data.get('objetivo_taller')
-            
-            # fecha_inicio = data.get('fecha_inicio',False)
-            # fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
-
-            # fecha_termino = data.get('fecha_termino',False)
-            # fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
-
-            numero_minutos = data.get('nro_minutos')
-            numero_clases_anual = data.get('nro_clases_anual')
-            horas_totales_v2 = data.get('horas_totales_v2')
-
-            observacion_v2 = data.get('observacion_v2')
-            lugar_v2 = data.get('lugar')
-            min_estudiante = data.get('minimo_estudiante')
-            max_estudiante = data.get('maximo_estudiante')
-            requisito_v2 = data.get('requisito')
-            edad_min = data.get('edad_minima')
-            edad_max = data.get('edad_maxima')
-            material_v2 = data.get('material')
-            tipo_taller = data.get('ind_tipo_taller')
-            usuario_ingreso = session.get('nombre_persona', session.get('id_usuario'))
-
-            resultado = inscribir_el_taller(
-                year_proceso=year_proceso_v2,
-                id_categoria=id_categoria_v2,
-                nombre_taller=nombre_taller_v2,
-                objetivo_taller=objetivo,
-                fec_inicio=fecha_inicio,
-                fec_termino=fecha_termino,
-                nro_minutos=numero_minutos,
-                nro_clases_anual=numero_clases_anual,
-                horas_totales=horas_totales_v2,
-                observacion=observacion_v2,
-                lugar=lugar_v2,
-                minimo_estudiante=min_estudiante,
-                maximo_estudiante=max_estudiante,
-                requisito=requisito_v2,
-                edad_minima=edad_min,
-                edad_maxima=edad_max,
-                material=material_v2,
-                ind_tipo_taller=tipo_taller,
-                aud_usuario_ingreso=usuario_ingreso
-            )
-        #primero defino que son cada dato y despues los meto todos en el 'resultado'
+        data = request.json
+        year_proceso_v2 = data.get('year_proceso')
+        id_categoria_v2 = data.get('id_categoria')
+        nombre_taller_v2 = data.get('nombre_taller')
+        objetivo = data.get('objetivo_taller', '')
+        
+        fecha_inicio = data.get('fecha_inicio')
+        fecha_termino = data.get('fecha_termino')
+        
+        if fecha_inicio == '' or fecha_inicio is None:
+            fecha_inicio = None
+        if fecha_termino == '' or fecha_termino is None:
+            fecha_termino = None
+        
+        numero_minutos = data.get('nro_minutos', 90)
+        numero_clases_anual = data.get('nro_clases_anual', 1)
+        horas_totales_v2 = data.get('horas_totales_v2', 0)
+        estado = data.get('id_estado_taller', 1)
+        observacion_v2 = data.get('observacion_v2', '')
+        lugar_v2 = data.get('lugar', '')
+        min_estudiante = data.get('minimo_estudiante', 5)
+        max_estudiante = data.get('maximo_estudiante', 20)
+        requisito_v2 = data.get('requisito', '')
+        edad_min = data.get('edad_minima', 18)
+        edad_max = data.get('edad_maxima', 99)
+        material_v2 = data.get('material', '')
+        tipo_taller = data.get('ind_tipo_taller', 1)
+        usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        if not nombre_taller_v2:
+            return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
+        if not id_categoria_v2:
+            return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
+        resultado = inscribir_el_taller(
+            year_proceso=year_proceso_v2,
+            id_categoria=id_categoria_v2,
+            nombre_taller=nombre_taller_v2,
+            objetivo_taller=objetivo,
+            fec_inicio=fecha_inicio,
+            fec_termino=fecha_termino,
+            nro_minutos=numero_minutos,
+            nro_clases_anual=numero_clases_anual,
+            horas_totales=horas_totales_v2,
+            id_estado_taller=estado,
+            observacion=observacion_v2,
+            lugar=lugar_v2,
+            minimo_estudiante=min_estudiante,
+            maximo_estudiante=max_estudiante,
+            requisito=requisito_v2,
+            edad_minima=edad_min,
+            edad_maxima=edad_max,
+            material=material_v2,
+            ind_tipo_taller=tipo_taller,
+            aud_usuario_ingreso=usuario_ingreso
+        )
         if resultado.get('success'):
-            return jsonify({"success": True, "message": "taller creado", "id_taller": resultado.get('id_taller')}), 201
+            return jsonify({
+                "success": True,
+                "message": resultado.get('message'),
+                "id_taller": resultado.get('id_taller')
+            }), 201
         else:
-            return jsonify({"success": False, "message": resultado.get('message', 'Error al crear taller')}), 400
-        # return print("ZA WARUDOO!!")
+            return jsonify({
+                "success": False,
+                "message": resultado.get('message', 'Error al crear taller')
+            }), 400
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_crear_taller: {e}", "error_funcionario")
+        logger.add_to_log("error", f"error en api_crear_taller: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
-        # return print("ZA WARUDOO!!")
+
+# @url_funcionario.route('/api/taller-crear', methods=['POST'])
+# @funcionario_required
+# def api_crear_taller():
+#     try:
+#         if request.method == 'POST':
+#             data = request.json
+#             year_proceso_v2 = data.get('year_proceso')
+#             id_categoria_v2 = data.get('id_categoria',False) #si no optiene nada es false el validador se vuelve mas simple
+#             nombre_taller_v2 = data.get('nombre_taller')
+#             objetivo = data.get('objetivo_taller')
+            
+#             fecha_inicio = data.get('fecha_inicio',False)
+#             fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+
+#             fecha_termino = data.get('fecha_termino',False)
+#             fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
+
+#             numero_minutos = data.get('nro_minutos')
+#             numero_clases_anual = data.get('nro_clases_anual')
+#             horas_totales_v2 = data.get('horas_totales_v2')
+#             estado = data.get('id_estado_taller')
+
+#             observacion_v2 = data.get('observacion_v2')
+#             lugar_v2 = data.get('lugar')
+#             min_estudiante = data.get('minimo_estudiante')
+#             max_estudiante = data.get('maximo_estudiante')
+#             requisito_v2 = data.get('requisito')
+#             edad_min = data.get('edad_minima')
+#             edad_max = data.get('edad_maxima')
+#             material_v2 = data.get('material')
+#             tipo_taller = data.get('ind_tipo_taller')
+#             usuario_ingreso = session.get('nombre_persona', session.get('id_usuario'))
+
+#             if year_proceso_v2 == '' or year_proceso_v2 == None:
+#                 print('falta el year_proceso_v2')
+#                 pass
+                
+#             if not id_categoria_v2:
+#                 pass
+
+#             resultado = inscribir_el_taller(
+#                 year_proceso=year_proceso_v2,
+#                 id_categoria=id_categoria_v2,
+#                 nombre_taller=nombre_taller_v2,
+#                 objetivo_taller=objetivo,
+#                 fec_inicio=fecha_inicio,
+#                 fec_termino=fecha_termino,
+#                 nro_minutos=numero_minutos,
+#                 nro_clases_anual=numero_clases_anual,
+#                 horas_totales=horas_totales_v2,
+#                 id_estado_taller=estado,
+#                 observacion=observacion_v2,
+#                 lugar=lugar_v2,
+#                 minimo_estudiante=min_estudiante,
+#                 maximo_estudiante=max_estudiante,
+#                 requisito=requisito_v2,
+#                 edad_minima=edad_min,
+#                 edad_maxima=edad_max,
+#                 material=material_v2,
+#                 ind_tipo_taller=tipo_taller,
+#                 aud_usuario_ingreso=usuario_ingreso
+#             )
+#         #primero defino que son cada dato y despues los meto todos en el 'resultado'
+#         if resultado.get('success'):
+#             return jsonify({"success": True, "message": "taller creado", "id_taller": resultado.get('id_taller')}), 201
+#         else:
+#             return jsonify({"success": False, "message": resultado.get('message', 'Error al crear taller')}), 400
+#         # return print("ZA WARUDOO!!")
+#     except Exception as e:
+#         logger.add_to_log("error", f"error en funcionario.api_crear_taller: {e}", "error_funcionario")
+#         return jsonify({"success": False, "message": str(e)}), 500
+#         # return print("ZA WARUDOO!!")
 
 # -- API TALLER C(R)UD , V3 --
 @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])

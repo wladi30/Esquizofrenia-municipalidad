@@ -116,3 +116,9 @@
 2026-04-08 17:13:37 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
 2026-04-08 17:13:46 | Thread-4 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
 2026-04-08 17:13:54 | Thread-5 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
+2026-04-09 08:52:51 | Thread-23 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ name _fecha_inicio_ is not defined
+2026-04-09 09:01:34 | Thread-10 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ inscribir_el_taller__ got an unexpected keyword argument _id_estado_taller_. Did you mean _ind_tipo_taller__
+2026-04-09 09:45:13 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ _NoneType_ object has no attribute _get_
+2026-04-09 09:45:33 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ _NoneType_ object has no attribute _get_
+2026-04-09 10:51:43 | Thread-13 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ time data __ does not match format __Y-_m-_d_
+2026-04-09 10:51:53 | Thread-14 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_taller_ time data __ does not match format __Y-_m-_d_
