@@ -162,34 +162,34 @@ def api_crear_taller():
         year_proceso_v2 = data.get('year_proceso')
         id_categoria_v2 = data.get('id_categoria')
         nombre_taller_v2 = data.get('nombre_taller')
-        objetivo = data.get('objetivo_taller', '')
+        objetivo = data.get('objetivo_taller')
         
         fecha_inicio = data.get('fecha_inicio')
         fecha_termino = data.get('fecha_termino')
         
-        if fecha_inicio == '' or fecha_inicio is None:
-            fecha_inicio = None
-        if fecha_termino == '' or fecha_termino is None:
-            fecha_termino = None
+        if fecha_inicio == 'nop' or fecha_inicio is None:
+            fecha_inicio = '1900-01-01'
+        if fecha_termino == 'nop' or fecha_termino is None:
+            fecha_termino = '1900-01-01'
         
-        numero_minutos = data.get('nro_minutos', 90)
-        numero_clases_anual = data.get('nro_clases_anual', 1)
-        horas_totales_v2 = data.get('horas_totales_v2', 0)
-        estado = data.get('id_estado_taller', 1)
-        observacion_v2 = data.get('observacion_v2', '')
-        lugar_v2 = data.get('lugar', '')
-        min_estudiante = data.get('minimo_estudiante', 5)
-        max_estudiante = data.get('maximo_estudiante', 20)
-        requisito_v2 = data.get('requisito', '')
-        edad_min = data.get('edad_minima', 18)
-        edad_max = data.get('edad_maxima', 99)
-        material_v2 = data.get('material', '')
-        tipo_taller = data.get('ind_tipo_taller', 1)
-        usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-        if not nombre_taller_v2:
-            return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
-        if not id_categoria_v2:
-            return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
+        numero_minutos = data.get('nro_minutos')
+        numero_clases_anual = data.get('nro_clases_anual')
+        horas_totales_v2 = data.get('horas_totales_v2')
+        estado = data.get('id_estado_taller')
+        observacion_v2 = data.get('observacion_v2')
+        lugar_v2 = data.get('lugar')
+        min_estudiante = data.get('minimo_estudiante')
+        max_estudiante = data.get('maximo_estudiante')
+        requisito_v2 = data.get('requisito')
+        edad_min = data.get('edad_minima')
+        edad_max = data.get('edad_maxima')
+        material_v2 = data.get('material')
+        tipo_taller = data.get('ind_tipo_taller')
+        # usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        # if not nombre_taller_v2:
+        #     return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
+        # if not id_categoria_v2:
+        #     return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
         resultado = inscribir_el_taller(
             year_proceso=year_proceso_v2,
             id_categoria=id_categoria_v2,
@@ -209,8 +209,8 @@ def api_crear_taller():
             edad_minima=edad_min,
             edad_maxima=edad_max,
             material=material_v2,
-            ind_tipo_taller=tipo_taller,
-            aud_usuario_ingreso=usuario_ingreso
+            ind_tipo_taller=tipo_taller
+            # aud_usuario_ingreso=usuario_ingreso
         )
         if resultado.get('success'):
             return jsonify({

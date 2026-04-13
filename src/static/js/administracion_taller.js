@@ -408,21 +408,21 @@ abrirModalNuevoTaller: function() {
         year_proceso: yearProceso || new Date().getFullYear(),
         id_categoria: selectCategoriaModal ? parseInt(selectCategoriaModal.value) : 0,
         nombre_taller: nameTaller,
-        objetivo_taller: objTaller || '',
-        fecha_inicio: fechaInicio || null,
-        fecha_termino: fechaTermino || null,
-        nro_minutos: numeroDeMinutos || 90,
-        nro_clases_anual: numeroDeClasesAnuales || 1,
+        objetivo_taller: objTaller,
+        fecha_inicio: fechaInicio || 'nop',
+        fecha_termino: fechaTermino || 'nop',
+        nro_minutos: numeroDeMinutos || 0,
+        nro_clases_anual: numeroDeClasesAnuales || 0,
         horas_totales_v2: numeroHorasTotales || 0,
         id_estado_taller: numeroIdEstadoTaller || 1,
-        observacion_v2: observacionTaller || '',
-        lugar: lugarTaller || '',
-        minimo_estudiante: minimoEstudiante || 5,
-        maximo_estudiante: maximoEstudiante || 20,
-        requisito: requisitosTaller || '',
-        edad_minima: edadMinimaTaller || 18,
-        edad_maxima: edadMaximaTaller || 99,
-        material: materialTaller || '',
+        observacion_v2: observacionTaller,
+        lugar: lugarTaller,
+        minimo_estudiante: minimoEstudiante || 0,
+        maximo_estudiante: maximoEstudiante || 0,
+        requisito: requisitosTaller,
+        edad_minima: edadMinimaTaller || 0,
+        edad_maxima: edadMaximaTaller || 0,
+        material: materialTaller,
         ind_tipo_taller: idTipoTaller || 1,
     };
     const url = id ? `/api/taller-ac/${id}` : '/api/taller-crear';
@@ -464,8 +464,8 @@ abrirModalNuevoTaller: function() {
                     // se viene un cambio muchachos
                     document.getElementById('objetivo').value = t.objetivo_taller;
                     // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
-                    document.getElementById('fecInicio').value = t.fec_inicio;
-                    document.getElementById('fecTermino').value = t.fec_termino;
+                    // document.getElementById('fecInicio').value = t.fec_inicio;
+                    // document.getElementById('fecTermino').value = t.fec_termino;
                     document.getElementById('nroMinutos').value = t.nro_minutos;
                     document.getElementById('nroClases').value = t.nro_clases_anual;
                     document.getElementById('horasTotales').value = t.horas_totales;
@@ -481,9 +481,9 @@ abrirModalNuevoTaller: function() {
                     document.getElementById('material').value = t.material;
                     document.getElementById('tipoTaller').value = t.ind_tipo_taller;
                     document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
-                    document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
+                    // document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
                     document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
-                    document.getElementById('fecModifica').value = t.aud_fec_modifica;
+                    // document.getElementById('fecModifica').value = t.aud_fec_modifica;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
                 else {

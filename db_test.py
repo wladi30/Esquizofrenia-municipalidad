@@ -797,128 +797,143 @@ def ac_taller(id_taller,
         cursor.close()
         conn.close()
 
-# def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,fec_inicio,fec_termino,nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,observacion,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller,aud_usuario_ingreso):
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexión"}
-#     cursor = conn.cursor()
-#     try:
-#         query = f"""{{CALL INSCRIBIR_EL_TALLER(
-#             {year_proceso}, 
-#             {id_categoria}, 
-#             '{nombre_taller}',
-#             '{objetivo_taller}',
-#             '{fec_inicio}',
-#             '{fec_termino}',
-#             {nro_minutos},
-#             {nro_clases_anual},
-#             {horas_totales},
-#             {id_estado_taller},
-#             '{observacion}',
-#             '{lugar}', 
-#             {minimo_estudiante}, 
-#             {maximo_estudiante}, 
-#             '{requisito}',
-#             {edad_minima}, 
-#             {edad_maxima}, 
-#             '{material}', 
-#             {ind_tipo_taller},
-#             '{aud_usuario_ingreso}',
-#         )}}"""
-#         print(f"DEBUG - : {query}")
-#         print(f"DEBUG - : year_proceso{type(year_proceso)},id_categoria{type(id_categoria)},nombre_taller{type(nombre_taller)},objetivo_taller{type(objetivo_taller)},fec_inicio{type(fec_inicio)},fec_termino{type(fec_termino)}")
-#         print(f"DEBUG - : nro_minutos{type(nro_minutos)},nro_clases_anual{type(nro_clases_anual)},horas_totales{type(horas_totales)},id_estado_taller{type(id_estado_taller)},observacion{type(observacion)},lugar{type(lugar)}")
-#         print(f"DEBUG - : minimo_estudiante{type(minimo_estudiante)},maximo_estudiante{type(maximo_estudiante)},requisito{type(requisito)},edad_minima{type(edad_minima)},edad_maxima{type(edad_maxima)},material{type(material)}")
-#         print(f"DEBUG - : ind_tipo_taller{type(ind_tipo_taller)},aud_usuario_ingreso{type(aud_usuario_ingreso)}")
-#         cursor.execute(query)
-#         resultado = cursor.fetchone()
-#         conn.commit()
-#         return {
-#             "success": True,
-#             "message": "Taller creado exitosamente",
-#             "id_taller": resultado[0] if resultado else None,
-#             "nombre_taller": resultado[1] if resultado else nombre_taller
-#         }
-#     except Exception as e:
-#         print(f"Error en INSCRIBIR_EL_TALLER: {e}")
-#         conn.rollback()
-#         return {"success": False, "message": str(e)}
-#     finally:
-#         cursor.close()
-#         conn.close()
-
-def inscribir_el_taller(year_proceso, 
-                        id_categoria, 
-                        nombre_taller, 
-                        objetivo_taller, 
-                        fec_inicio, 
-                        fec_termino, 
-                        nro_minutos, 
-                        nro_clases_anual, 
-                        horas_totales, 
-                        id_estado_taller, 
-                        observacion, 
-                        lugar, 
-                        minimo_estudiante, 
-                        maximo_estudiante, 
-                        requisito, 
-                        edad_minima, 
-                        edad_maxima, 
-                        material, 
-                        ind_tipo_taller, 
-                        aud_usuario_ingreso):
+def inscribir_el_taller(year_proceso,
+                        id_categoria,
+                        nombre_taller,
+                        objetivo_taller,
+                        fec_inicio,
+                        fec_termino,
+                        nro_minutos,
+                        nro_clases_anual,
+                        horas_totales,
+                        id_estado_taller,
+                        observacion,
+                        lugar,
+                        minimo_estudiante,
+                        maximo_estudiante,
+                        requisito,
+                        edad_minima,
+                        edad_maxima,
+                        material,
+                        ind_tipo_taller):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        params = (
-            year_proceso if year_proceso is not None else 2026,
-            id_categoria,
-            nombre_taller,
-            objetivo_taller if objetivo_taller else '-',
-            fec_inicio if fec_inicio else None,
-            fec_termino if fec_termino else None,
-            nro_minutos if nro_minutos is not None else 0,
-            nro_clases_anual if nro_clases_anual is not None else 0,
-            horas_totales if horas_totales is not None else 0,
-            id_estado_taller if id_estado_taller is not None else 1,
-            observacion if observacion else '-',
-            lugar if lugar else '-',
-            minimo_estudiante if minimo_estudiante is not None else 5,
-            maximo_estudiante if maximo_estudiante is not None else 20,
-            requisito if requisito else '-',
-            edad_minima if edad_minima is not None else 18,
-            edad_maxima if edad_maxima is not None else 99,
-            material if material else '-',
-            ind_tipo_taller if ind_tipo_taller is not None else 1,
-            aud_usuario_ingreso if aud_usuario_ingreso else 'SISTEMA'
-        )
-        output_id = pyodbc.Output(0)
-        cursor.execute("""
-            CALL INSCRIBIR_EL_TALLER
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ? OUTPUT
-        """, (*params, output_id))
+        query = f"""{{CALL INSCRIBIR_EL_TALLER(
+            {year_proceso},
+            {id_categoria},
+            '{nombre_taller}',
+            '{objetivo_taller}',
+            '{fec_inicio}',
+            '{fec_termino}',
+            {nro_minutos},
+            {nro_clases_anual},
+            {horas_totales},
+            {id_estado_taller},
+            '{observacion}',
+            '{lugar}',
+            {minimo_estudiante},
+            {maximo_estudiante},
+            '{requisito}',
+            {edad_minima},
+            {edad_maxima},
+            '{material}',
+            {ind_tipo_taller}
+        )}}"""
+        print(f"DEBUG - : {query}")
+        print(f"DEBUG - : year_proceso{type(year_proceso)},ID_CATEGORIA{type(id_categoria)},OBJ_TALLER{type(objetivo_taller)},fecha_inicio{type(fec_inicio)},fecha_inicio{type(fec_termino)}")
+        print(f"DEBUG - : numero_minutos{type(nro_minutos)},nro_clases_anual{type(nro_clases_anual)},horas_totales{type(horas_totales)},id_estado_taller{type(id_estado_taller)},observacion{type(observacion)},lugar{type(lugar)}")
+        print(f"DEBUG - : minimo_estudiante{type(minimo_estudiante)},maximo_estudiante{type(maximo_estudiante)},requisito{type(requisito)},edad_minima{type(edad_minima)},edad_maxima{type(edad_maxima)},material{type(material)},ind_tipo_taller{type(ind_tipo_taller)}")
+        cursor.execute(query)
+        resultado = cursor.fetchone()
         conn.commit()
-        nuevo_id = output_id.value
-        if nuevo_id and nuevo_id > 0:
-            return {
-                "success": True,
-                "message": "Taller creado exitosamente",
-                "id_taller": nuevo_id,
-                "nombre_taller": nombre_taller
-            }
-        else:
-            return {"success": False, "message": "No se pudo obtener el ID del taller"}
+        return {
+            "success": True,
+            "message": "Taller creado exitosamente",
+            "id_taller": resultado[0] if resultado else None
+        }
     except Exception as e:
-        print(f"Error en inscribir_el_taller: {e}")
+        print(f"Error en INSCRIBIR_EL_TALLER: {e}")
         conn.rollback()
         return {"success": False, "message": str(e)}
     finally:
         cursor.close()
         conn.close()
+
+# def inscribir_el_taller(year_proceso, 
+#                         id_categoria, 
+#                         nombre_taller, 
+#                         objetivo_taller, 
+#                         fec_inicio, 
+#                         fec_termino, 
+#                         nro_minutos, 
+#                         nro_clases_anual, 
+#                         horas_totales, 
+#                         id_estado_taller, 
+#                         observacion, 
+#                         lugar, 
+#                         minimo_estudiante, 
+#                         maximo_estudiante, 
+#                         requisito, 
+#                         edad_minima, 
+#                         edad_maxima, 
+#                         material, 
+#                         ind_tipo_taller, 
+#                         aud_usuario_ingreso):
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexión"}
+#     cursor = conn.cursor()
+#     try:
+#         params = (
+#             year_proceso if year_proceso is not None else 2026,
+#             id_categoria,
+#             nombre_taller,
+#             objetivo_taller if objetivo_taller else '-',
+#             fec_inicio if fec_inicio else None,
+#             fec_termino if fec_termino else None,
+#             nro_minutos if nro_minutos is not None else 0,
+#             nro_clases_anual if nro_clases_anual is not None else 0,
+#             horas_totales if horas_totales is not None else 0,
+#             id_estado_taller if id_estado_taller is not None else 1,
+#             observacion if observacion else '-',
+#             lugar if lugar else '-',
+#             minimo_estudiante if minimo_estudiante is not None else 5,
+#             maximo_estudiante if maximo_estudiante is not None else 20,
+#             requisito if requisito else '-',
+#             edad_minima if edad_minima is not None else 18,
+#             edad_maxima if edad_maxima is not None else 99,
+#             material if material else '-',
+#             ind_tipo_taller if ind_tipo_taller is not None else 1,
+#             aud_usuario_ingreso if aud_usuario_ingreso else 'SISTEMA'
+#         )
+#         output_id = pyodbc.Output(0)
+#         cursor.execute("""
+#             CALL INSCRIBIR_EL_TALLER
+#                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+#                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+#                 ? OUTPUT
+#         """, (*params, output_id))
+#         conn.commit()
+#         nuevo_id = output_id.value
+#         if nuevo_id and nuevo_id > 0:
+#             return {
+#                 "success": True,
+#                 "message": "Taller creado exitosamente",
+#                 "id_taller": nuevo_id,
+#                 "nombre_taller": nombre_taller
+#             }
+#         else:
+#             return {"success": False, "message": "No se pudo obtener el ID del taller"}
+#     except Exception as e:
+#         print(f"Error en inscribir_el_taller: {e}")
+#         conn.rollback()
+#         return {"success": False, "message": str(e)}
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 def borrar_taller(id_taller):
     conn = get_connection()

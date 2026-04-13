@@ -21,6 +21,7 @@ def pagina_login():
         return redirect(url_for('url_principal.index'))
     return render_template('principal/login.html')
 
+# DD JWT token firmados, investigar, probar unitest , pasar datos como url , usar postman, token , pytest
 @url_principal.route('/login', methods=['GET'])
 def login():
     if 'id_usuario' in session:
