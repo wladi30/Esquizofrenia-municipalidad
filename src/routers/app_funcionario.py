@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import pyodbc
 from flask import abort, flash, jsonify, redirect, url_for, session, redirect, url_for, render_template , Blueprint , request
 import functools
 from src.utils.loggers import Logger
@@ -16,7 +17,7 @@ from db_test import (
     obtener_profesores,
     obtener_estudiantes_por_taller,
     obtener_talleres,
-    borrar_taller,
+    # borrar_taller,
     ver_taller
 )
 
@@ -64,7 +65,7 @@ def funcionario_admin_taller():
 def funcionario_gestion_tallerista():
     try:
         tallerista = obtener_profesores()
-        return render_template("funcionario/gestion_tallerista.html", tallerista=tallerista)
+        return render_template("funcionario/administracion_tallerista.html", tallerista=tallerista)
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_gestion_tallerista: {e}", "error_funcionario")
         return render_template("error/500.html"), 500
@@ -185,11 +186,10 @@ def api_crear_taller():
         edad_max = data.get('edad_maxima')
         material_v2 = data.get('material')
         tipo_taller = data.get('ind_tipo_taller')
-        # usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-        # if not nombre_taller_v2:
-        #     return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
-        # if not id_categoria_v2:
-        #     return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
+        usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        if not nombre_taller_v2: return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
+        if not id_categoria_v2: return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
+        # if not tallerista: return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
         resultado = inscribir_el_taller(
             year_proceso=year_proceso_v2,
             id_categoria=id_categoria_v2,
@@ -209,8 +209,8 @@ def api_crear_taller():
             edad_minima=edad_min,
             edad_maxima=edad_max,
             material=material_v2,
-            ind_tipo_taller=tipo_taller
-            # aud_usuario_ingreso=usuario_ingreso
+            ind_tipo_taller=tipo_taller,
+            aud_usuario_ingreso=usuario_ingreso
         )
         if resultado.get('success'):
             return jsonify({
@@ -226,79 +226,6 @@ def api_crear_taller():
     except Exception as e:
         logger.add_to_log("error", f"error en api_crear_taller: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
-
-# @url_funcionario.route('/api/taller-crear', methods=['POST'])
-# @funcionario_required
-# def api_crear_taller():
-#     try:
-#         if request.method == 'POST':
-#             data = request.json
-#             year_proceso_v2 = data.get('year_proceso')
-#             id_categoria_v2 = data.get('id_categoria',False) #si no optiene nada es false el validador se vuelve mas simple
-#             nombre_taller_v2 = data.get('nombre_taller')
-#             objetivo = data.get('objetivo_taller')
-            
-#             fecha_inicio = data.get('fecha_inicio',False)
-#             fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
-
-#             fecha_termino = data.get('fecha_termino',False)
-#             fecha_termino = datetime.strptime(fecha_termino, "%Y-%m-%d").date()
-
-#             numero_minutos = data.get('nro_minutos')
-#             numero_clases_anual = data.get('nro_clases_anual')
-#             horas_totales_v2 = data.get('horas_totales_v2')
-#             estado = data.get('id_estado_taller')
-
-#             observacion_v2 = data.get('observacion_v2')
-#             lugar_v2 = data.get('lugar')
-#             min_estudiante = data.get('minimo_estudiante')
-#             max_estudiante = data.get('maximo_estudiante')
-#             requisito_v2 = data.get('requisito')
-#             edad_min = data.get('edad_minima')
-#             edad_max = data.get('edad_maxima')
-#             material_v2 = data.get('material')
-#             tipo_taller = data.get('ind_tipo_taller')
-#             usuario_ingreso = session.get('nombre_persona', session.get('id_usuario'))
-
-#             if year_proceso_v2 == '' or year_proceso_v2 == None:
-#                 print('falta el year_proceso_v2')
-#                 pass
-                
-#             if not id_categoria_v2:
-#                 pass
-
-#             resultado = inscribir_el_taller(
-#                 year_proceso=year_proceso_v2,
-#                 id_categoria=id_categoria_v2,
-#                 nombre_taller=nombre_taller_v2,
-#                 objetivo_taller=objetivo,
-#                 fec_inicio=fecha_inicio,
-#                 fec_termino=fecha_termino,
-#                 nro_minutos=numero_minutos,
-#                 nro_clases_anual=numero_clases_anual,
-#                 horas_totales=horas_totales_v2,
-#                 id_estado_taller=estado,
-#                 observacion=observacion_v2,
-#                 lugar=lugar_v2,
-#                 minimo_estudiante=min_estudiante,
-#                 maximo_estudiante=max_estudiante,
-#                 requisito=requisito_v2,
-#                 edad_minima=edad_min,
-#                 edad_maxima=edad_max,
-#                 material=material_v2,
-#                 ind_tipo_taller=tipo_taller,
-#                 aud_usuario_ingreso=usuario_ingreso
-#             )
-#         #primero defino que son cada dato y despues los meto todos en el 'resultado'
-#         if resultado.get('success'):
-#             return jsonify({"success": True, "message": "taller creado", "id_taller": resultado.get('id_taller')}), 201
-#         else:
-#             return jsonify({"success": False, "message": resultado.get('message', 'Error al crear taller')}), 400
-#         # return print("ZA WARUDOO!!")
-#     except Exception as e:
-#         logger.add_to_log("error", f"error en funcionario.api_crear_taller: {e}", "error_funcionario")
-#         return jsonify({"success": False, "message": str(e)}), 500
-#         # return print("ZA WARUDOO!!")
 
 # -- API TALLER C(R)UD , V3 --
 @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])
@@ -319,7 +246,7 @@ def api_get_taller_id(id_taller): #C(R)UD
         # return print("ZA WARUDOO!!")
 
 # -- API TALLER CR(U)D --
-@url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT','POST'])
+@url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT'])
 @funcionario_required
 def api_actualizar_taller(id_taller): #CR(U)D
     try:
@@ -378,19 +305,30 @@ def api_actualizar_taller(id_taller): #CR(U)D
             if resultado:  
                 return jsonify({"success": True, "message": "taller actualizado correctamente"})
             else:
-                return jsonify({"success": False, "message": "eeror al actualizar el tallere"}), 400
-            # return print("ZA WARUDOO!!")
+                return jsonify({"success": False, "message": "Error al actualizar el taller"}), 400
+    # except pyodbc.Error as e:
+    #     sqlstate = e.args[0]
+    #     if sqlstate == '42000':
+    #         mensaje = "Error de configuración: El servidor denegó el acceso o la consulta es inválida."
+    #         codigo_interno = "DB_42000"
+    #     else:
+    #         mensaje = "Hubo un problema de comunicación con la base de datos."
+    #         codigo_interno = f"DB_{sqlstate}"
+    #     return jsonify({"error": mensaje, "code": codigo_interno}), 500
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
-        # return print("ZA WARUDOO!!")
 
 # -- API TALLER CRU(D)? , ES UN UPDATE DISFRAZADO DE DELETE --
 @url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['PUT'])
 @funcionario_required
 def api_delete_taller(id_taller): # CRU(D)
     try:
-        if request.method == 'PUT':
-            resultado = cambiar_estado_taller_de_baja(id_taller)
+        if request.method ==  'PUT':
+            usuario_modifica = session.get('nombre_persona', session.get('id_usuario'))
+            resultado = cambiar_estado_taller_de_baja(
+                id_taller=id_taller,
+                aud_usuario_modifica=usuario_modifica
+            )
             if resultado:
                 return jsonify({"success": True, "message": "Taller cambiado a no usado/suspendido"})
             else:
@@ -398,23 +336,6 @@ def api_delete_taller(id_taller): # CRU(D)
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")
-    
-# -- API TALLER CRU(D) --
-@url_funcionario.route('/api/taller-delete/<int:id_taller>', methods=['DELETE'])
-@funcionario_required
-def api_delete_verdadero_taller(id_taller): #este delete cumple con el crud, sin embargo existe uno que solo modifica y deshabilita en vez de eliminar.
-    #estoy creando este por si acaso lo que se busca es hacer desaparecer los datos.
-    try:
-        if request.method == 'DELETE':
-            resultado = borrar_taller(id_taller)
-            if resultado:
-                return jsonify({"success": True, "message": "Taller eliminado de la base de datos"})
-            else:
-                return jsonify({"success": False, "message": "error al eliminar el taller. esta cosa es simple por lo cual se tiene que rvisar principalmente la base de datos"}), 400
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
-# -- FIN DE APIS DE TALLER --
-
 # -- APIS TALLERISTAS --
 # -- API TALLERISTA C(R)UD --
 @url_funcionario.route('/api/tallerista-lista', methods=['GET'])

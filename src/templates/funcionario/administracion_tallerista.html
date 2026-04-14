@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Administracion de Talleres - Municipalidad de Quilicura{% endblock %}
+{% block title %}Administracion de Talleristas - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_taller.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_tallerista.css') }}">
 {% endblock %}
 {% block content %}
 <div class="funcionario-container">
@@ -13,23 +13,23 @@
                     <i class="bi bi-house-door"></i> Inicio
                 </a>
             </li>
-            <li class="breadcrumb-item active">Gestión de Talleres</li>
+            <li class="breadcrumb-item active">Gestión de Talleristas</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="ms-4">
             <h2 class="h4 text-primary mb-1">
                 <i class="bi bi-calendar-check me-2"></i>
-                Gestión de Talleres
+                Gestión de Talleristas
             </h2>
             <p class="text-muted small mb-0">
-                Administra talleres, estados y asignaciones
+                Administra talleristas, informacion, estados y asignaciones
             </p>
         </div>
         <div class="d-grid gap-2 me-3">
-            <button class="btn btn-primary" onclick="GestionTalleres.abrirModalNuevoTaller()">
+            <button class="btn btn-primary" onclick="GestionTalleres.abrirModalNuevoTallerista()">
                 <i class="bi bi-plus-lg me-1"></i>
-                Nuevo Taller
+                Nuevo Profesor
             </button>
             <div class="dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -54,9 +54,9 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-1">
-                    <label class="form-label small fw-semibold">Año</label>
+                    <label class="form-label small fw-semibold">Comuna</label>
                     <select class="form-select form-select-sm" id="filtroAnio">
-                        <option value="" selected>Todos</option>
+                        <option value="" selected>Todas</option>
                         <option value="2026">2026</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
@@ -66,28 +66,23 @@
                         <option value="2020">2020</option>
                         <option value="2019">2019</option>
                         <option value="2018">2018</option>
-                        <!-- <option value="0">0, existe solo un taller asi</option> -->
-                        <!-- actualmente no funciona el buscar por año ai que tengo que resolverlo, por lo demas se muestran todos
-                        los talleres asi que ese es un avanze gordo -->
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small fw-semibold">Estado</label>
+                    <label class="form-label small fw-semibold">Indicador de Estado</label>
                     <select class="form-select form-select-sm" id="filtroEstado">
                         <option value="">Todos</option>
-                        <option value="1">INGRESADO</option>
-                        <option value="2">CALENDARIZADO</option>
-                        <option value="3">CERRADO</option>
-                        <option value="4">DE BAJA</option>
+                        <option value="1">EN SERVICIO</option>
+                        <option value="2">FUERA DE SERVICIO</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Búsqueda por Nombre</label>
+                    <label class="form-label small fw-semibold">Búsqueda por Nombre/Apellido</label>
                     <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-white">
+                        <span class="input-group-text bg-white">    
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="busqueda" placeholder="Nombre del taller...">
+                        <input type="text" class="form-control" id="busqueda" placeholder="Nombre de la persona...">
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -96,16 +91,16 @@
                         <span class="input-group-text bg-white">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="busqueda_id" placeholder="ID del taller...">
+                        <input type="text" class="form-control" id="busqueda_id" placeholder="ID de la persona...">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Búsqueda por Lugar</label>
+                    <label class="form-label small fw-semibold">Búsqueda por Correo electronico</label>
                     <div class="input-group input-group-sm">
                         <span class="input-group-text bg-white">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="busqueda_lugar" placeholder="Lugar del taller...">
+                        <input type="text" class="form-control" id="busqueda_lugar" placeholder="Correo de la Persona...">
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -134,7 +129,7 @@
                             <th class="ps-4" width="60">ID</th>
                             <th>Taller</th>
                             <th>Categoría</th>
-                            <th>Observacion</th>
+                            <th>Tallerista</th>
                             <th>Inscritos/Cupos</th>
                             <th>Estado</th>
                             <th>Fechas</th>
@@ -169,7 +164,7 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="modalTallerTitulo">
                     <i class="bi bi-plus-circle me-2"></i>
-                    Nuevo Taller
+                    Nuevo Tallerista
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -178,7 +173,7 @@
                     <input type="hidden" id="tallerId">
                     <div class="row">
                         <div class="col-md-8 mb-3">
-                            <label class="form-label fw-semibold">Nombre del Taller <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Nombre del/la Tallerista <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="nombreTaller"  maxlength="80">
                         </div>
                         <div class="col-md-4 mb-3">

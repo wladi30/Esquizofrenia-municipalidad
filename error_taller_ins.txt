@@ -1,14 +1,34 @@
--- db_test.py --
-
-def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,fec_inicio,fec_termino,nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,observacion,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller,aud_usuario_ingreso):
+def ac_taller(id_taller,
+            year_proceso,
+            id_categoria,
+            nombre_taller,
+            objetivo_taller,
+            fec_inicio,
+            fec_termino,
+            nro_minutos,
+            nro_clases_anual,
+            horas_totales,
+            id_estado_taller,
+            observacion,
+            lugar,
+            minimo_estudiante,
+            maximo_estudiante,
+            requisito,
+            edad_minima,
+            edad_maxima,
+            material,
+            ind_tipo_taller,
+            aud_usuario_modifica
+            ):
     conn = get_connection()
     if not conn:
-        return {"success": False, "message": "Error de conexión"}
+        return False
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL INSCRIBIR_EL_TALLER(
-            {year_proceso}, 
-            {id_categoria}, 
+        query = f"""{{CALL AC_TALLER(
+            {id_taller},
+            {year_proceso},
+            {id_categoria},
             '{nombre_taller}',
             '{objetivo_taller}',
             '{fec_inicio}',
@@ -18,50 +38,55 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,
             {horas_totales},
             {id_estado_taller},
             '{observacion}',
-            '{lugar}', 
-            {minimo_estudiante}, 
-            {maximo_estudiante}, 
+            '{lugar}',
+            {minimo_estudiante},
+            {maximo_estudiante},
             '{requisito}',
-            {edad_minima}, 
-            {edad_maxima}, 
-            '{material}', 
+            {edad_minima},
+            {edad_maxima},
+            '{material}',
             {ind_tipo_taller},
-            '{aud_usuario_ingreso}',
+            '{aud_usuario_modifica}'
         )}}"""
         print(f"DEBUG - : {query}")
-        print(f"DEBUG - : year_proceso{type(year_proceso)},id_categoria{type(id_categoria)},nombre_taller{type(nombre_taller)},objetivo_taller{type(objetivo_taller)},fec_inicio{type(fec_inicio)},fec_termino{type(fec_termino)}")
-        print(f"DEBUG - : nro_minutos{type(nro_minutos)},nro_clases_anual{type(nro_clases_anual)},horas_totales{type(horas_totales)},id_estado_taller{type(id_estado_taller)},observacion{type(observacion)},lugar{type(lugar)}")
-        print(f"DEBUG - : minimo_estudiante{type(minimo_estudiante)},maximo_estudiante{type(maximo_estudiante)},requisito{type(requisito)},edad_minima{type(edad_minima)},edad_maxima{type(edad_maxima)},material{type(material)}")
-        print(f"DEBUG - : ind_tipo_taller{type(ind_tipo_taller)},aud_usuario_ingreso{type(aud_usuario_ingreso)}")
         cursor.execute(query)
-        resultado = cursor.fetchone()
         conn.commit()
-        return {
-            "success": True,
-            "message": "Taller creado exitosamente",
-            "id_taller": resultado[0] if resultado else None,
-            "nombre_taller": resultado[1] if resultado else nombre_taller
-        }
+        return True
     except Exception as e:
-        print(f"Error en INSCRIBIR_EL_TALLER: {e}")
+        print(f"Error en AC_TALLER: {e}")
         conn.rollback()
-        return {"success": False, "message": str(e)}
+        return False
     finally:
         cursor.close()
         conn.close()
 
------
-
--- app_funcionario.py --
-
-@url_funcionario.route('/api/taller-crear', methods=['POST'])
-@funcionario_required
-def api_crear_taller():
+def cambiar_estado_taller_de_baja(id_taller,aud_usuario_modifica):
+    conn = get_connection()
+    if not conn:
+        return False
+    cursor = conn.cursor()
     try:
-        if request.method == 'POST':
+        query = f"""{{CALL DE_BAJA_ESTADO_TALLER({id_taller},'{aud_usuario_modifica}')}}"""
+        print(f"DEBUG - : {query}")
+        cursor.execute(query)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error en DE_BAJA_ESTADO_TALLER: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+@url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT','POST'])
+@funcionario_required
+def api_actualizar_taller(id_taller): #CR(U)D
+    try:
+        if request.method ==  'PUT':
             data = request.json
             year_proceso_v2 = data.get('year_proceso')
-            id_categoria_v2 = data.get('id_categoria',False) #si no optiene nada es false el validador se vuelve mas simple
+            id_categoria_v2 = data.get('id_categoria')
             nombre_taller_v2 = data.get('nombre_taller')
             objetivo = data.get('objetivo_taller')
             
@@ -85,16 +110,10 @@ def api_crear_taller():
             edad_max = data.get('edad_maxima')
             material_v2 = data.get('material')
             tipo_taller = data.get('ind_tipo_taller')
-            usuario_ingreso = session.get('nombre_persona', session.get('id_usuario'))
+            usuario_modifica = session.get('nombre_persona', session.get('id_usuario'))
 
-            if year_proceso_v2 == '' or year_proceso_v2 == None:
-                print('falta el year_proceso_v2')
-                pass
-                
-            if not id_categoria_v2:
-                pass
-
-            resultado = inscribir_el_taller(
+            resultado = ac_taller(
+                id_taller=id_taller,
                 year_proceso=year_proceso_v2,
                 id_categoria=id_categoria_v2,
                 nombre_taller=nombre_taller_v2,
@@ -114,362 +133,32 @@ def api_crear_taller():
                 edad_maxima=edad_max,
                 material=material_v2,
                 ind_tipo_taller=tipo_taller,
-                aud_usuario_ingreso=usuario_ingreso
+                aud_usuario_modifica=usuario_modifica
             )
-        #primero defino que son cada dato y despues los meto todos en el 'resultado'
-        if resultado.get('success'):
-            return jsonify({"success": True, "message": "taller creado", "id_taller": resultado.get('id_taller')}), 201
-        else:
-            return jsonify({"success": False, "message": resultado.get('message', 'Error al crear taller')}), 400
-        # return print("ZA WARUDOO!!")
+            if resultado:  
+                return jsonify({"success": True, "message": "taller actualizado correctamente"})
+            else:
+                return jsonify({"success": False, "message": "eeror al actualizar el tallere"}), 400
+            # return print("ZA WARUDOO!!")
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_crear_taller: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")
 
-----
-
--- administracion_taller.js --
-
-abrirModalNuevoTaller: function() {
-    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
-    document.getElementById('formTaller').reset();
-    document.getElementById('tallerId').value = '';
-    
-    const selectCategoriaModal = document.querySelector('.select-categoria');
-    if (selectCategoriaModal) {
-        selectCategoriaModal.value = '';
-    }
-    
-    const currentYear = new Date().getFullYear();
-    document.getElementById('yearProceso').value = currentYear;
-    document.getElementById('minEstudiantes').value;
-    document.getElementById('maxEstudiantes').value;
-    document.getElementById('estadoTaller').value;
-    document.getElementById('edadMinima').value;
-    document.getElementById('edadMaxima').value;
-    document.getElementById('nroClases').value;
-    document.getElementById('nroMinutos').value;
-    
-    new bootstrap.Modal(document.getElementById('modalTaller')).show();
-},
-
-    guardarTaller: function() {
-    const id = document.getElementById('tallerId').value;
-    const selectCategoriaModal = document.querySelector('.select-categoria');
-    const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
-    const yearProceso = parseInt(document.getElementById('yearProceso').value);
-    const objTaller = document.getElementById('objetivo').value.trim().toUpperCase();
-    const fechaInicio = document.getElementById('fecInicio').value;
-    const fechaTermino = document.getElementById('fecTermino').value;
-    const numeroDeMinutos = parseInt(document.getElementById('nroMinutos').value);
-    const numeroDeClasesAnuales = parseInt(document.getElementById('nroClases').value);
-    const numeroHorasTotales = parseInt(document.getElementById('horasTotales').value);
-    const numeroIdEstadoTaller = parseInt(document.getElementById('estadoTaller').value);
-    const observacionTaller = document.getElementById('observacion').value.trim().toUpperCase();
-    const lugarTaller = document.getElementById('lugar').value.trim().toUpperCase();
-    const minimoEstudiante = parseInt(document.getElementById('minEstudiantes').value);
-    const maximoEstudiante = parseInt(document.getElementById('maxEstudiantes').value);
-    const requisitosTaller = document.getElementById('requisitos').value.trim().toUpperCase();
-    const edadMinimaTaller = parseInt(document.getElementById('edadMinima').value);
-    const edadMaximaTaller = parseInt(document.getElementById('edadMaxima').value);
-    const materialTaller = document.getElementById('material').value.trim().toUpperCase();
-    const idTipoTaller = parseInt(document.getElementById('tipoTaller').value);
-
-    // validacion nametaller
-    
-    const data = {
-        year_proceso: yearProceso,
-        id_categoria: parseInt(selectCategoriaModal ? selectCategoriaModal.value : 0),
-        nombre_taller: nameTaller,
-        objetivo_taller: objTaller,
-        fecha_inicio: fechaInicio,
-        fecha_termino: fechaTermino,
-        nro_minutos: numeroDeMinutos,
-        nro_clases_anual: numeroDeClasesAnuales,
-        horas_totales_v2: numeroHorasTotales,
-        id_estado_taller: numeroIdEstadoTaller,
-        observacion_v2: observacionTaller,
-        lugar: lugarTaller,
-        minimo_estudiante: minimoEstudiante,
-        maximo_estudiante: maximoEstudiante,
-        requisito: requisitosTaller,
-        edad_minima: edadMinimaTaller,
-        edad_maxima: edadMaximaTaller,
-        material: materialTaller,
-        ind_tipo_taller: idTipoTaller,
-    };
-    const url = id ? `/api/taller-ac/${id}` : '/api/taller-crear';
-    const method = id ? 'PUT' : 'POST';
-    fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
-            this.mostrarExito(result.message || 'Operacion exitosa');
-            this.cargarTalleres();
-        } else {
-            this.mostrarError(result.message || 'Error al guardar');
-        }
-    })
-    .catch(error => {
-        console.error('Error en fetch guardarTaller:', error);
-        this.mostrarError('Error de conexion al guardar.');
-    });
-},
-
-    // carga los datos de un taller en el formulario para editar
-    editarTaller: function(id) {
-        fetch(`/api/taller-get/${id}`)
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    const t = result.data;
-                    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Taller';
-                    document.getElementById('tallerId').value = t.id_taller;
-                    document.getElementById('yearProceso').value = t.year_proceso;
-                    const selectCategoriaModal = document.querySelector('.select-categoria');
-                    if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria;}
-                    document.getElementById('nombreTaller').value = t.nombre_taller;
-                    // se viene un cambio muchachos
-                    document.getElementById('objetivo').value = t.objetivo_taller;
-                    // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
-                    document.getElementById('fecInicio').value = t.fec_inicio;
-                    document.getElementById('fecTermino').value = t.fec_termino;
-                    document.getElementById('nroMinutos').value = t.nro_minutos;
-                    document.getElementById('nroClases').value = t.nro_clases_anual;
-                    document.getElementById('horasTotales').value = t.horas_totales;
-                    document.getElementById('estadoTaller').value = t.id_estado_taller;
-                    document.getElementById('fecEstado').value = t.fec_estado_taller;
-                    document.getElementById('observacion').value = t.observacion;
-                    document.getElementById('lugar').value = t.lugar;
-                    document.getElementById('minEstudiantes').value = t.minimo_estudiante;
-                    document.getElementById('maxEstudiantes').value = t.maximo_estudiante;
-                    document.getElementById('requisitos').value = t.requisito;
-                    document.getElementById('edadMinima').value = t.edad_minima;
-                    document.getElementById('edadMaxima').value = t.edad_maxima;
-                    document.getElementById('material').value = t.material;
-                    document.getElementById('tipoTaller').value = t.ind_tipo_taller;
-                    document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
-                    document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
-                    document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
-                    document.getElementById('fecModifica').value = t.aud_fec_modifica;
-                    new bootstrap.Modal(document.getElementById('modalTaller')).show();
-                } 
-                else {
-                    this.mostrarError('No se pudo cargar el taller para editar.');
-                }
-            })
-            .catch(error => {
-                console.error('Error en fetch editarTaller:', error);
-                this.mostrarError('Error de conexion al cargar datos del taller.');
-            });
-    },
-    // AQUI VA LO DEL VER DETALLES , ESTO DEBERIA MOSTRAR TODO LO NECESARIO TANTO FECHA DE CREACION, TALLERISTA, NRO DE ALUMNOS, ETC
-    verDetalles: function(id) {
-        fetch(`/api/taller-get/${id}`)
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    const t = result.data;
-                    const inscritos = t.personas_inscritas;
-                    const maximo = t.maximo_estudiante;
-                    const disponibles = maximo - inscritos;
-                    // SE DETERMINA EL BADGE DEL ESTADO DEL TALLER, DIFERENTE AL DE ARRIBA POR QUE ESTO ES LO QUE TIENE QUE VER EL USUARIO, LO DE ARRIBA SON LAS IDS
-                    let estadoBadge = '';
-                    switch(t.id_estado_taller) {
-                        case 1: estadoBadge = '<span class="badge bg-success">INGRESADO</span>'; break;
-                        case 2: estadoBadge = '<span class="badge bg-info">CANDALERIZADO</span>'; break;
-                        case 3: estadoBadge = '<span class="badge bg-secondary">CERRADO</span>'; break;
-                        case 4: estadoBadge = '<span class="badge bg-danger">DE BAJA</span>'; break;
-                        default: estadoBadge = '<span class="badge bg-light text-dark">DESCONOCIDO</span>';
-                    }
-                    // TAMADRE QUE ME COSTO ESTA PARTE, TENGO QUE ADMITIR QUE LA MAYORIA DE LO DE AQUI ABAJO LO HIZO CHAT GTP, NO VEIA LA FORMA (no me acordaba del ${} que existia) 
-                    // CABDE DEDCIR QUE CUANDO ME AYUDO CON LO DEL HTML Y JS JUNTO A USA SOLA SCRIPT LO COPIE Y LE PEGUE ARRIBA TAMBIEN ASIQUE SI ME AHORRO COMO 20 MIN DE VIDEO GPT CHAT
-                    let html = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion General</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID:</th><td>${t.id_taller}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
-                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso}</td></tr>
-                                    <tr><th>Categoría:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
-                                    <tr><th>Lugar:</th><td>${t.lugar}</td></tr>
-                                    <tr><th>Estado:</th><td>${estadoBadge}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Fechas y Horarios</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Inicio:</th><td>${t.fec_inicio}</td></tr>
-                                    <tr><th>TErmino:</th><td>${t.fec_termino}</td></tr>
-                                    <tr><th>N° Clases:</th><td>${t.nro_clases_anual}</td></tr>
-                                    <tr><th>Minutos/clase:</th><td>${t.nro_minutos}</td></tr>
-                                    <tr><th>Horas Totales:</th><td>${t.horas_totales}</td></tr>
-                                </table>    
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Cupos</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Inscritos:</th><td>${inscritos}</td></tr>
-                                    <tr><th>Maximo:</th><td>${maximo}</td></tr>
-                                    <tr><th>Disponibles:</th><td class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</td></tr>
-                                    <tr><th>Mínimo:</th><td>${t.minimo_estudiante}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Requisitos de Edad</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Edad Mínima:</th><td>${t.edad_minima} años</td></tr>
-                                    <tr><th>Edad Maxima:</th><td>${t.edad_maxima} años</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion Adicional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID del Departamento:</th><td>${t.id_departamento} (no se que quieren decir los numeros)</td></tr>
-                                    <tr><th>Tipo de taller:</th><td>${t.ind_tipo_taller} (no se que quieren decir los numeros)</td></tr>
-                                    <tr><th>Usuario que ingreso el taller:</th><td>${t.aud_usuario_ingreso}</td></tr>
-                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
-                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación en el estado de taller:</th><td>${t.fec_estado_taller}</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-                    if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="fw-bold">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
-                    if (t.material) html += `<div class="mt-2"><h6 class="fw-bold">Materiales:</h6><p>${t.material}</p></div>`;
-                    if (t.requisito) html += `<div class="mt-2"><h6 class="fw-bold">Requisitos:</h6><p>${t.requisito}</p></div>`;
-                    document.getElementById('detallesTallerBody').innerHTML = html;
-                    window.tallerDetallesId = id; // GUARDA EL BOTON EDITAR PARA VER LOS DETALLES, PERO QUE FUNCIONE SIPO MI CHANCHO
-                    new bootstrap.Modal(document.getElementById('modalDetallesTaller')).show();
-                } 
-                else {
-                    this.mostrarError('No se pudieron cargar los detalles.');
-                }
-            })
-            .catch(error => {
-                console.error('Error en fetch verDetalles:', error);
-                this.mostrarError('Error de conexion al cargar detalles.');
-            });
-    },
-
-    // debo dejar de utilizr la mayuscula jaja
-    abrirModalEditarDesdeDetalles: function() {
-        bootstrap.Modal.getInstance(document.getElementById('modalDetallesTaller')).hide();
-        setTimeout(() => {
-            this.editarTaller(window.tallerDetallesId);
-        }, 500); // un pequeño timer para que no se cierre tan rapido
-    },
-
-    // bueno aqui la idea es que si se elimina un taller se le cambia a suspendido 
-    confirmarEliminar: function(id, nombre) {
-        this.configuracion.EliminacionVerdaderaDeTaller = id;
-        document.getElementById('mensajeConfirmacion').innerHTML =
-            `¿Esta seguro de suspender el taller <strong>${nombre}</strong>?<br>
-            <small class="text-muted">Esta accion cambiara el estado a "Suspendido". Los alumnos no podran inscribirse.</small>`;
-        const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
-        modal.show();
-    },
-
-----
-
--- procedimiento almacenado en la base de datos sql server --
-
-USE GESTION_TALLER;
-
-IF OBJECT_ID('INSCRIBIR_EL_TALLER', 'P') IS NOT NULL
-    DROP PROCEDURE INSCRIBIR_EL_TALLER;
-GO
-CREATE PROCEDURE INSCRIBIR_EL_TALLER
-    @ID_TALLER NUMERIC(10,0),
-    @YEAR_PROCESO INT,
-    @ID_CATEGORIA INT,
-    @NOMBRE_TALLER VARCHAR(80),
-    @OBJETIVO_TALLER VARCHAR(500),
-    @FEC_INICIO DATE,
-    @FEC_TERMINO DATE,
-    @NRO_MINUTOS NUMERIC(10),
-    @NRO_CLASES_ANUAL NUMERIC(10),
-    @HORAS_TOTALES NUMERIC(10),
-    @ID_ESTADO_TALLER INT,
-    @OBSERVACION VARCHAR(50),
-    @LUGAR VARCHAR(100),
-    @MINIMO_ESTUDIANTE INT,
-    @MAXIMO_ESTUDIANTE INT,
-    @REQUISITO VARCHAR(500),
-    @EDAD_MINIMA INT,
-    @EDAD_MAXIMA INT,
-    @MATERIAL VARCHAR(500),
-    @IND_TIPO_TALLER INT,
-    @AUD_USUARIO_INGRESO VARCHAR(20)
-
-AS 
-BEGIN
-SET NOCOUNT ON;
---SET IDENTITY_INSERT SGT_TALLER ON;
-    INSERT INTO SGT_TALLER 
-        (YEAR_PROCESO,
-        ID_CATEGORIA,
-        NOMBRE_TALLER,
-        ID_DEPARTAMENTO,
-        OBJETIVO_TALLER,
-        FEC_INICIO,
-        FEC_TERMINO,
-        NRO_MINUTOS,
-        NRO_CLASES_ANUAL,
-        HORAS_TOTALES,
-        ID_ESTADO_TALLER,
-        FEC_ESTADO_TALLER,
-        OBSERVACION,
-        LUGAR,
-        MINIMO_ESTUDIANTE,
-        MAXIMO_ESTUDIANTE,
-        REQUISITO,
-        EDAD_MINIMA,
-        EDAD_MAXIMA,
-        MATERIAL,
-        IND_TIPO_TALLER,
-        AUD_USUARIO_INGRESO,
-        AUD_FEC_INGRESO,
-        AUD_USUARIO_MODIFICA,
-        AUD_FEC_MODIFICA)
-
-    VALUES (@YEAR_PROCESO,@ID_CATEGORIA,@NOMBRE_TALLER,
-        169,
-        ISNULL(@OBJETIVO_TALLER, '-'),
-        NULLIF(@FEC_INICIO, '1900-01-01'),
-	    NULLIF(@FEC_TERMINO, '1900-01-01'),
-        ISNULL(@NRO_MINUTOS, 0),
-        ISNULL(@NRO_CLASES_ANUAL, 0),
-        ISNULL(@HORAS_TOTALES, 0),
-        ISNULL(@ID_ESTADO_TALLER, 2),
-        GETDATE(),
-        ISNULL(@OBSERVACION, '-'),
-        ISNULL(@LUGAR, '-'),
-        ISNULL(@MINIMO_ESTUDIANTE, 0),
-        ISNULL(@MAXIMO_ESTUDIANTE, 0),
-        ISNULL(@REQUISITO, '-'),
-        ISNULL(@EDAD_MINIMA, 18),
-        ISNULL(@EDAD_MAXIMA, 18),
-        ISNULL(@MATERIAL, '-'),
-        @IND_TIPO_TALLER,
-        ISNULL(@AUD_USUARIO_INGRESO, 'SISTEMA'),
-        GETDATE(),
-        'SISTEMA',
-        CONVERT(DATE, '1900-01-01 00:00:00.000', 121));
-    SET @ID_TALLER = SCOPE_IDENTITY();
-
-SELECT 'El taller a sido ingresado al sistema' AS RESULTADO;
-
-END;
-
-----
+# -- API TALLER CRU(D)? , ES UN UPDATE DISFRAZADO DE DELETE --
+@url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['PUT'])
+@funcionario_required
+def api_delete_taller(id_taller): # CRU(D)
+    try:
+        if request.method ==  'PUT':
+            usuario_modifica = session.get('nombre_persona', session.get('id_usuario'))
+            resultado = cambiar_estado_taller_de_baja(
+                id_taller=id_taller,
+                aud_usuario_modifica=usuario_modifica
+            )
+            if resultado:
+                return jsonify({"success": True, "message": "Taller cambiado a no usado/suspendido"})
+            else:
+                return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+        # return print("ZA WARUDOO!!")
