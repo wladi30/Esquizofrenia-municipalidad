@@ -103,3 +103,12 @@ Administracion de talleres
 
 La base de datos que se esta utilizando es sql server 2008 r2 , en el archivo BASE_DE_DATOS.txt esta lo que tengo en sql server, existen mas cosas que son de la base de datos de por si pero si
 necesitas algo me dices, tambien si tienes que hacer cambios en la base de datos me dices con respecto a realizar cambios en las tablas o procedimientos que te estoy entregando, etc 
+
+
+los talleres pueden tener solo un profesor y multiples estudiantes , pero un profesor puede tener multiples talleres, pero no al mismo tiempo, sin embargo en su historial formula los talleres
+lo que necesito hacer es que al momento de revisar a un profesor se pueda ver todos los talleres que a tenido y tambien cual es el taller que tiene activo, si es que tiene, el ind activo en la tabla
+persona no dice nada de por si solo 1 y 0 , 0 es que esta in activo y 1 lo contrario, la idea es que el front end me muestre algo distinto segun ese numero ya que la tabla de por si no se puede editar
+, se tiene que arreglar lo de mostrar profesor, se tiene que poder ver y que me muestre su talelr act si es que tiene uno, cambiar tambien talleres para hacer que funcione solo con procedimientos
+de otro modo el benja se va a enojar, otro detalle es que los talleres podrian mostrar los ids de estudiantes como un foreshadow de lo que se viene, sin embargo esto solo tiene que ser
+en un pestaña aparte, tal vez podria hacer que cuando se esta viendo el taller tambien tenga otro boton que al presionar me muestre las ids y nombres, claro no van a tener por que solo existen las ids
+lo demas no me lo pasaron pero por lo menos que diga que no se detecto un nombre.

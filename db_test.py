@@ -766,7 +766,7 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,
 def cambiar_estado_taller_de_baja(id_taller,aud_usuario_modifica):
     conn = get_connection()
     if not conn:
-        return False
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
         query = f"""{{CALL DE_BAJA_ESTADO_TALLER({id_taller},'{aud_usuario_modifica}')}}"""
@@ -786,7 +786,7 @@ def cambiar_estado_taller_de_baja(id_taller,aud_usuario_modifica):
 def ver_profesor(id_profesor):
      conn = get_connection()
      if not conn:
-          return None
+          return {"success": False, "message": "Error de conexión"}
      cursor = conn.cursor()
      try:
           cursor.execute(f'{{CALL VER_PROFESOR({id_profesor})}}')
@@ -794,47 +794,55 @@ def ver_profesor(id_profesor):
           for row in cursor:
                profesor={
                     'id_profesor': row[0],
-                    'profesion':row[1],
-                    'resumen_curricular':row[2],
-                    'aud_fec_ingreso':row[3].strftime('%Y-%m-%d %H:%M:%S') if row[3] else None,
-                    'aud_fec_modifica':row[4].strftime('%Y-%m-%d %H:%M:%S') if row[4] else None,
+                    'id_persona' : row[1],
+                    'profesion':row[2],
+                    'resumen_curricular':row[3],
+                    'id_taller': row[4],
+                    'nombre_taller': row[5],
+                    'aud_fec_ingreso':row[6].strftime('%Y-%m-%d %H:%M:%S') if row[6] else None,
+                    'aud_fec_modifica':row[7].strftime('%Y-%m-%d %H:%M:%S') if row[7] else None,
                }
           resultados.append(profesor)
-          return resultados
+          return True
      except Exception as e:
           print(f"Error en VER_PROFESOR. revisa las urls o la ID: {e}")
-          return None
+          return False
      finally:
           cursor.close()
           conn.close()
 
-def obtener_profesores():
+def obtener_profesores(id_profesor):
     conn = get_connection()
     if not conn:
-        return []
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     # tengo que crear un procedimiento para obtener a los profesores, esta madre no me sirve si morande y compañia me la atacan en 5 segundos
     try:
-        sql = "SELECT p.ID_PROFESOR, pe.ID_PERSONA, pe.NOMBRE_PERSONA, pe.APELLIDO_PATERNO, pe.APELLIDO_MATERNO, pe.CORREO_ELECTRONICO FROM SGT_PROFESOR p JOIN SGT_PERSONA_TALLER pe ON p.ID_PERSONA = pe.ID_PERSONA"
-        cursor.execute(sql)
-        cols = [c[0] for c in cursor.description]
-        return [dict(zip(cols, row)) for row in cursor.fetchall()]
+        query = f"""{{CALL VER_PROFESOR(
+        {id_profesor}
+        )}}"""
+        cursor.execute(query)
+        conn.commit()
+        return True
     except Exception as e:
-        print(f"Error obteniendo profesores: {e}")
-        return []
+        print(f"Error VER_PROFESOR: {e}")
+        conn.rollback()
+        return False
     finally:
         cursor.close()
         conn.close()
 
-def ac_profesor(id_persona,profesion,resumen_curricular,aud_usuario_ingreso,aud_fec_ingreso,aud_usuario_modifica,aud_fec_modifica):
+def ac_profesor(id_persona,profesion,resumen_curricular,aud_usuario_modifica):
     conn = get_connection()
     if not conn:
-        return False
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        aud_fec_ingreso_str = f"'{aud_fec_ingreso}'" if aud_fec_ingreso else "NULL"
-        aud_fec_modifica_str = f"'{aud_fec_modifica}'" if aud_fec_modifica else "NULL"
-        query = f"""{{CALL AC_TALLERISTAS({id_persona}, '{profesion}', '{resumen_curricular}','{aud_usuario_ingreso}', {aud_fec_ingreso_str},'{aud_usuario_modifica}', {aud_fec_modifica_str})}}"""
+        query = f"""{{CALL AC_TALLERISTAS(
+        {id_persona}, 
+        '{profesion}', 
+        '{resumen_curricular}',
+        '{aud_usuario_modifica}')}}"""
         cursor.execute(query)
         conn.commit()
         return True
@@ -846,22 +854,21 @@ def ac_profesor(id_persona,profesion,resumen_curricular,aud_usuario_ingreso,aud_
         cursor.close()
         conn.close()
 
-def inscribir_profesores(id_persona,profesion,resumen_curricular):
+def inscribir_profesores(id_persona,profesion,resumen_curricular,aud_usuario_ingreso):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL INSCRIBIR_TALLERISTAS({id_persona}, '{profesion}', '{resumen_curricular}','', '1900-01-01 00:00:00.000', '', '1900-01-01 00:00:00.000')}}"""
+        query = f"""{{CALL INSCRIBIR_TALLERISTAS(
+        {id_persona}, 
+        '{profesion}', 
+        '{resumen_curricular}',
+        '{aud_usuario_ingreso}'
+        )}}"""
         cursor.execute(query)
-        resultado = cursor.fetchone()
         conn.commit()
-        return {
-            "success": True,
-            "message": "Profesor creado exitosamente",
-            "id_profesor": resultado[0] if resultado else None,
-            "id_persona": resultado[1] if resultado else id_persona
-        }
+        return True
     except Exception as e:
         print(f"Error en INSCRIBIR_TALLERISTAS: {e}")
         conn.rollback()
@@ -870,14 +877,17 @@ def inscribir_profesores(id_persona,profesion,resumen_curricular):
         cursor.close()
         conn.close()
 
-def suspender_tallerista(id_profesor):
+def suspender_tallerista(id_profesor,aud_usuario_modifica):
     conn = get_connection()
     if not conn:
-        return False
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        cursor.execute(f"{{CALL SUSPENDER_TALLERISTA({id_profesor})}}")
-        conn.commit()
+        query = f"""{{CALL SUSPENDER_TALLERISTA(
+        {id_profesor}, 
+        '{aud_usuario_modifica}'
+        )}}"""
+        conn.commit(query)
         return True
     except Exception as e:
         print(f"Error en SUSPENDER_TALLERISTA: {e}")

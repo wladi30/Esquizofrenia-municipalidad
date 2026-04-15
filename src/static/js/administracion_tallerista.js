@@ -46,7 +46,6 @@ const GestionTalleristas = {
         } else {
             tbody.innerHTML = datosPagina.map(t => this.generarFila(t)).join('');
         }
-        
         this.actualizarPaginacion();
         document.getElementById('infoPaginacion').innerText = `Mostrando ${inicio + 1}-${Math.min(fin, this.configuracion.datos.length)} de ${this.configuracion.datos.length} resultados`;
     },
@@ -54,11 +53,10 @@ const GestionTalleristas = {
     generarFila: function(t) {
         const nombreCompleto = `${t.NOMBRE_PERSONA || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
         const tallerAsignado = t.NOMBRE_TALLER_ASIGNADO || 'Desconocido';
-        
         return `
             <tr>
                 <td class="ps-4 fw-semibold">${t.ID_PROFESOR}</td>
-                <td>${nombreCompleto || 'Sin nombre, eso esta mal'}</td>
+                <td>${nombreCompleto || 'Sin nombre, eso esta mal por que se supone QUE NO ACEPTA NULL , ASI QUE DIMELO YUYI , TAMO AQUI CON MAJITO, MAJITO? QUEN ES ESE MI BRODEL, MAJITO EL KE PARECE MUJEL, AY SI QUE ESA VAINA A MI ME GUTA'}</td>
                 <td>${t.CORREO_ELECTRONICO || '-'}</td>
                 <td>${t.PROFESION || '-'}</td>
                 <td>${tallerAsignado}</td>
@@ -178,13 +176,13 @@ const GestionTalleristas = {
                     const t = result.data;
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
                     document.getElementById('idProfesor').value = t.ID_PROFESOR;
-                    document.getElementById('nombre').value = t.NOMBRE_PERSONA || '';
-                    document.getElementById('apellidoPaterno').value = t.APELLIDO_PATERNO || '';
-                    document.getElementById('apellidoMaterno').value = t.APELLIDO_MATERNO || '';
-                    document.getElementById('correo').value = t.CORREO_ELECTRONICO || '';
-                    document.getElementById('telefono').value = t.TELEFONO || '';
-                    document.getElementById('profesion').value = t.PROFESION || '';
-                    document.getElementById('resumenCurricular').value = t.RESUMEN_CURRICULAR || '';
+                    document.getElementById('nombre').value = t.NOMBRE_PERSONA;
+                    document.getElementById('apellidoPaterno').value = t.APELLIDO_PATERNO;
+                    document.getElementById('apellidoMaterno').value = t.APELLIDO_MATERNO;
+                    document.getElementById('correo').value = t.CORREO_ELECTRONICO;
+                    document.getElementById('telefono').value = t.TELEFONO;
+                    document.getElementById('profesion').value = t.PROFESION;
+                    document.getElementById('resumenCurricular').value = t.RESUMEN_CURRICULAR;
                     new bootstrap.Modal(document.getElementById('modalTallerista')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el tallerista');

@@ -18,6 +18,7 @@ from db_test import (
     obtener_estudiantes_por_taller,
     obtener_talleres,
     suspender_tallerista,
+    ver_profesor,
     # borrar_taller,
     ver_taller
 )
@@ -328,57 +329,57 @@ def api_delete_taller(id_taller): # CRU(D)
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
         # return print("ZA WARUDOO!!")
+        
 # -- APIS TALLERISTAS --
 # -- API TALLERISTA C(R)UD --
-
-# ================== TALLERISTAS ==================
-
 @url_funcionario.route('/api/tallerista-lista', methods=['GET'])
 @funcionario_required
 def api_tallerista_lista():
     try:
-        nombre = request.args.get('nombre', '')
-        id_filter = request.args.get('id', '')
-        id_filter = int(id_filter) if id_filter and id_filter.isdigit() else None
-        data = listar_talleristas(nombre if nombre else None, id_filter)
-        return jsonify({"success": True, "data": data, "total": len(data)})
+        resultado = ver_profesor(
+            id_profesor = request.args.get('id_profesor')
+        )
+        profesores = ver_profesor(id_profesor, )
+        if resultado:
+            return jsonify({"success": True, "data": profesores, "total": len(profesores)})
+        else:
+            return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
     except Exception as e:
-        logger.add_to_log("error", f"api_tallerista_lista: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
 
 @url_funcionario.route('/api/tallerista-get/<int:id_profesor>', methods=['GET'])
 @funcionario_required
 def api_tallerista_get(id_profesor):
     try:
-        data = obtener_tallerista_por_id(id_profesor)
+        data = obtener_profesores(id_profesor)
         if data:
             return jsonify({"success": True, "data": data})
         return jsonify({"success": False, "message": "No encontrado"}), 404
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
-@url_funcionario.route('/api/tallerista-crear', methods=['POST'])
-@funcionario_required
-def api_tallerista_crear():
-    try:
-        data = request.json
-        usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-        resultado = crear_tallerista(
-            nombre=data.get('nombre'),
-            apellido_paterno=data.get('apellido_paterno', ''),
-            apellido_materno=data.get('apellido_materno', ''),
-            correo=data.get('correo'),
-            telefono=data.get('telefono', ''),
-            profesion=data.get('profesion', ''),
-            resumen_curricular=data.get('resumen_curricular', ''),
-            aud_usuario_ingreso=usuario
-        )
-        if resultado['success']:
-            return jsonify({"success": True, "message": resultado['message'], "id_profesor": resultado['id_profesor']}), 201
-        else:
-            return jsonify({"success": False, "message": resultado['message']}), 400
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+# @url_funcionario.route('/api/tallerista-crear', methods=['POST'])
+# @funcionario_required
+# def api_tallerista_crear():
+#     try:
+#         data = request.json
+#         usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+#         resultado = crear_tallerista(
+#             nombre=data.get('nombre'),
+#             apellido_paterno=data.get('apellido_paterno', ''),
+#             apellido_materno=data.get('apellido_materno', ''),
+#             correo=data.get('correo'),
+#             telefono=data.get('telefono', ''),
+#             profesion=data.get('profesion', ''),
+#             resumen_curricular=data.get('resumen_curricular', ''),
+#             aud_usuario_ingreso=usuario
+#         )
+#         if resultado['success']:
+#             return jsonify({"success": True, "message": resultado['message'], "id_profesor": resultado['id_profesor']}), 201
+#         else:
+#             return jsonify({"success": False, "message": resultado['message']}), 400
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)}), 500
 
 @url_funcionario.route('/api/tallerista-actualizar/<int:id_profesor>', methods=['PUT'])
 @funcionario_required
@@ -626,6 +627,7 @@ def api_categoria_taller():
             {"ID_CATEGORIA": 31, "DESCRIPCION_CATEGORIA": "OTEC"},
             {"ID_CATEGORIA": 32, "DESCRIPCION_CATEGORIA": "OLIMPIADA"}
         ]
+        # YUYI LA PTMADRE QUE ETA VAINA NO LA TOY USANDO GOKU ETA VAINA ES SERIA
         #por el momento lo dejare asi el tema de las categorias, ya que no existiran mas categorias(probablemente) no creo que sea un problema por el momento simplente dejarlo asi
         #el tema esta en que esta parte se tiene que hacer manual asi que esera un tanot complicado el tener que cambiar lo hago lector de dastos por el momento
         return jsonify(categorias)
