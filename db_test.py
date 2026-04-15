@@ -813,6 +813,7 @@ def obtener_profesores():
     if not conn:
         return []
     cursor = conn.cursor()
+    # tengo que crear un procedimiento para obtener a los profesores, esta madre no me sirve si morande y compañia me la atacan en 5 segundos
     try:
         sql = "SELECT p.ID_PROFESOR, pe.ID_PERSONA, pe.NOMBRE_PERSONA, pe.APELLIDO_PATERNO, pe.APELLIDO_MATERNO, pe.CORREO_ELECTRONICO FROM SGT_PROFESOR p JOIN SGT_PERSONA_TALLER pe ON p.ID_PERSONA = pe.ID_PERSONA"
         cursor.execute(sql)
@@ -869,20 +870,37 @@ def inscribir_profesores(id_persona,profesion,resumen_curricular):
         cursor.close()
         conn.close()
 
-def borrar_profesor(id_profesor):
+def suspender_tallerista(id_profesor):
     conn = get_connection()
     if not conn:
         return False
     cursor = conn.cursor()
     try:
-        cursor.execute(f"{{CALL BORRAR_PROFESOR({id_profesor})}}")
+        cursor.execute(f"{{CALL SUSPENDER_TALLERISTA({id_profesor})}}")
         conn.commit()
         return True
     except Exception as e:
-        print(f"Error en BORRAR_PROFESOR: {e}")
+        print(f"Error en SUSPENDER_TALLERISTA: {e}")
         conn.rollback()
         return False
     finally:
         cursor.close()
         conn.close()
+
+# def borrar_profesor(id_profesor):
+#     conn = get_connection()
+#     if not conn:
+#         return False
+#     cursor = conn.cursor()
+#     try:
+#         cursor.execute(f"{{CALL BORRAR_PROFESOR({id_profesor})}}")
+#         conn.commit()
+#         return True
+#     except Exception as e:
+#         print(f"Error en BORRAR_PROFESOR: {e}")
+#         conn.rollback()
+#         return False
+#     finally:
+#         cursor.close()
+#         conn.close()
 #--AQUI TERMINA--

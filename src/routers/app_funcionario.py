@@ -17,6 +17,7 @@ from db_test import (
     obtener_profesores,
     obtener_estudiantes_por_taller,
     obtener_talleres,
+    suspender_tallerista,
     # borrar_taller,
     ver_taller
 )
@@ -306,15 +307,6 @@ def api_actualizar_taller(id_taller): #CR(U)D
                 return jsonify({"success": True, "message": "taller actualizado correctamente"})
             else:
                 return jsonify({"success": False, "message": "Error al actualizar el taller"}), 400
-    # except pyodbc.Error as e:
-    #     sqlstate = e.args[0]
-    #     if sqlstate == '42000':
-    #         mensaje = "Error de configuración: El servidor denegó el acceso o la consulta es inválida."
-    #         codigo_interno = "DB_42000"
-    #     else:
-    #         mensaje = "Hubo un problema de comunicación con la base de datos."
-    #         codigo_interno = f"DB_{sqlstate}"
-    #     return jsonify({"error": mensaje, "code": codigo_interno}), 500
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
@@ -338,6 +330,93 @@ def api_delete_taller(id_taller): # CRU(D)
         # return print("ZA WARUDOO!!")
 # -- APIS TALLERISTAS --
 # -- API TALLERISTA C(R)UD --
+
+# ================== TALLERISTAS ==================
+
+@url_funcionario.route('/api/tallerista-lista', methods=['GET'])
+@funcionario_required
+def api_tallerista_lista():
+    try:
+        nombre = request.args.get('nombre', '')
+        id_filter = request.args.get('id', '')
+        id_filter = int(id_filter) if id_filter and id_filter.isdigit() else None
+        data = listar_talleristas(nombre if nombre else None, id_filter)
+        return jsonify({"success": True, "data": data, "total": len(data)})
+    except Exception as e:
+        logger.add_to_log("error", f"api_tallerista_lista: {e}", "error_funcionario")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@url_funcionario.route('/api/tallerista-get/<int:id_profesor>', methods=['GET'])
+@funcionario_required
+def api_tallerista_get(id_profesor):
+    try:
+        data = obtener_tallerista_por_id(id_profesor)
+        if data:
+            return jsonify({"success": True, "data": data})
+        return jsonify({"success": False, "message": "No encontrado"}), 404
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@url_funcionario.route('/api/tallerista-crear', methods=['POST'])
+@funcionario_required
+def api_tallerista_crear():
+    try:
+        data = request.json
+        usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        resultado = crear_tallerista(
+            nombre=data.get('nombre'),
+            apellido_paterno=data.get('apellido_paterno', ''),
+            apellido_materno=data.get('apellido_materno', ''),
+            correo=data.get('correo'),
+            telefono=data.get('telefono', ''),
+            profesion=data.get('profesion', ''),
+            resumen_curricular=data.get('resumen_curricular', ''),
+            aud_usuario_ingreso=usuario
+        )
+        if resultado['success']:
+            return jsonify({"success": True, "message": resultado['message'], "id_profesor": resultado['id_profesor']}), 201
+        else:
+            return jsonify({"success": False, "message": resultado['message']}), 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@url_funcionario.route('/api/tallerista-actualizar/<int:id_profesor>', methods=['PUT'])
+@funcionario_required
+def api_tallerista_actualizar(id_profesor):
+    try:
+        data = request.json
+        usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        resultado = ac_taller(
+            id_profesor=id_profesor,
+            nombre=data.get('nombre'),
+            apellido_paterno=data.get('apellido_paterno', ''),
+            apellido_materno=data.get('apellido_materno', ''),
+            correo=data.get('correo'),
+            telefono=data.get('telefono', ''),
+            profesion=data.get('profesion', ''),
+            resumen_curricular=data.get('resumen_curricular', ''),
+            aud_usuario_modifica=usuario
+        )
+        if resultado:
+            return jsonify({"success": True, "message": "Tallerista actualizado correctamente"})
+        else:
+            return jsonify({"success": False, "message": "Error al actualizar"}), 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@url_funcionario.route('/api/tallerista-suspender/<int:id_profesor>', methods=['PUT'])
+@funcionario_required
+def api_tallerista_suspender(id_profesor):
+    try:
+        usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        resultado = suspender_tallerista(id_profesor, usuario)
+        if resultado:
+            return jsonify({"success": True, "message": "Tallerista suspendido correctamente"})
+        else:
+            return jsonify({"success": False, "message": "Error al suspender"}), 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
 @url_funcionario.route('/api/tallerista-lista', methods=['GET'])
 @funcionario_required
 def api_lista_tallerista():

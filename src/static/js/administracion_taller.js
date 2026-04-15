@@ -241,7 +241,7 @@ const GestionTalleres = {
                     <small class="text-muted">${t.LUGAR || 'Sin lugar'}</small>
                 </td>
                 <td>${this.obtenerNombreCategoria(t.ID_CATEGORIA) || t.ID_CATEGORIA || '-'}</td>
-                <td>${t.OBSERVACION && t.OBSERVACION !== '-' ? 'Asignado' : 'Pendiente'}</td>
+                <td>${t.OBSERVACION && t.OBSERVACION.trim() !== '' && t.OBSERVACION !== '-' ? 'Asignado' : 'Pendiente'}</td>
                 <td style="min-width: 120px;">
                     <div class="d-flex justify-content-between small">
                         <span>${inscritos}/${maximo}</span>

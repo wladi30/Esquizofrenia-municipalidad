@@ -33,3 +33,18 @@ def filtro_alternativo(s):
 def repetir(s, veces=2):
     # repetir es las veces que algo se tiene que repetir, aun no se muy bien como se puede aplicar en los filtros pero alli esta, aun por definir
     return s * veces
+
+# lo que quiero que ocurra aqui en un futuro, es hacer un generador de datos que me pueda poblar la base de datos de datos aleatorios
+# el cometido es simple, persona no tiene datos y para ello necesito poblarlo para ponerle los datos despues a los talleres, crear taller, tallerista y inscripciones solo crea datos solos
+# 
+@url_admin.route('/gd_taller')
+def generador_taller():
+    return None
+
+@url_admin.route('/gd_tallerista')
+def generador_tallerista():
+    return None
+
+@url_admin.route('/gd_inscripcion')
+def generador_inscripcion():
+    return None
