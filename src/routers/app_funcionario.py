@@ -18,6 +18,8 @@ from db_test import (
     obtener_estudiantes_por_taller,
     obtener_talleres,
     suspender_tallerista,
+    obtener_historial_talleres_por_tallerista,
+    obtener_estudiantes_por_taller_proc,
     ver_profesor,
     # borrar_taller,
     ver_taller
@@ -66,12 +68,11 @@ def funcionario_admin_taller():
 @funcionario_required
 def funcionario_gestion_tallerista():
     try:
-        tallerista = obtener_profesores()
-        return render_template("funcionario/administracion_tallerista.html", tallerista=tallerista)
+        return render_template("funcionario/administracion_tallerista.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_gestion_tallerista: {e}", "error_funcionario")
         return render_template("error/500.html"), 500
-    
+
 #-- ADMINISTRACION DE INSCRIPCIONES/FUNCIONARIO --
 @url_funcionario.route('/inscripciones')
 @funcionario_required
@@ -122,41 +123,33 @@ def funcionario_masivo_taller():
 # -- API TALLER C(R)UD --
 @url_funcionario.route('/api/taller-lista', methods=['GET'])
 @funcionario_required
-def api_taller_lista(): # contexto para que no te la meten sin pretexto, aqui estoy haciendo una lista de los talleres llamando por id y nombre taller, los uso para obtener la cantidad de alumnos por taller
-    try: # ahora la diferencia es que antes esto lo hacia en js pero encontre la forma de hacerlo aqui, por que aqui? por se puede usar en mas partes de manera mas facil en vez de hacer el llamado por el sucio js todo el rato
-        year = request.args.get('year', '')
-        estado = request.args.get('estado', '')
-        busqueda = request.args.get('busqueda', '')
-        busqueda_id = request.args.get('busqueda_id', '')
-        busqueda_lugar = request.args.get('busqueda_lugar', '')
-        estados = [int(estado)] if estado else None
-        categoria = request.args.get('categoria', '')
-        id_categoria = int(categoria) if categoria and categoria.isdigit() else None
-        año = int(year) if year and year.isdigit() else None #un cambio aqui para validar que sea digito
-        #GUTS, detallazo aqui , el filtro de id no funcion y de lugar tampoco, ahora el filtro de id no funciona por que bueno es un int pero lugar si deberia estar bien asi que tengo que revisar
-        #esto, debo solucionar el tema del filtro de id y filtro de lugar
-        #tambien otro detalle es que la busqueda por categorias no sirve, literal solo estan mal escrita
-        talleres = obtener_talleres(año=año, estados=estados, id_categoria=id_categoria)
+def api_taller_lista():
+    try:
+        year = request.args.get('year')
+        estado = request.args.get('estado')
+        categoria = request.args.get('categoria')
+        id_del_taller = request.args.get('busqueda_id')
+        busqueda_lugar = request.args.get('busqueda_lugar')
+        busqueda_nombre = request.args.get('busqueda_nombre')
 
+        año = int(year) if year and year.isdigit() else None
+        id_estado = int(estado) if estado and estado.isdigit() else None
+        id_categoria = int(categoria) if categoria and categoria.isdigit() else None
+        busqueda_id = int(id_del_taller) if id_del_taller and id_del_taller.isdigit() else None
+
+        lugar = busqueda_lugar if busqueda_lugar and busqueda_lugar.strip() else None
+        nombre = busqueda_nombre if busqueda_nombre and busqueda_nombre.strip() else None
+
+        talleres = obtener_talleres(year_proceso=año,id_categoria=id_categoria,id_estado_taller=id_estado,id_taller=busqueda_id,lugar=lugar,nombre_taller=nombre)
         for taller in talleres:
             estudiantes = obtener_estudiantes_por_taller(taller.get('ID_TALLER'))
             taller['personas_inscritas'] = len(estudiantes)
-        if busqueda:
-            busqueda_lower = busqueda.lower()
-            talleres = [t for t in talleres if busqueda_lower in t.get('NOMBRE_TALLER', '').lower()]
-        if busqueda_id and busqueda_id.isdigit():
-            busqueda_id_int = int(busqueda_id)
-            talleres = [t for t in talleres if t.get('ID_TALLER') == busqueda_id_int]
-        if busqueda_lugar:
-            busqueda_lugar_lower = busqueda_lugar.lower()
-            talleres = [t for t in talleres if busqueda_lugar_lower in t.get('LUGAR', '').lower()]
         return jsonify({"success": True, "data": talleres, "total": len(talleres)})
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_taller_lista: {e}", "error_funcionario")
+        logger.add_to_log("error", f"api_taller_lista: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
 
 # -- API TALLER (C)RUD --
-
 @url_funcionario.route('/api/taller-crear', methods=['POST'])
 @funcionario_required
 def api_crear_taller():
@@ -191,7 +184,6 @@ def api_crear_taller():
         usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
         if not nombre_taller_v2: return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
         if not id_categoria_v2: return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
-        # if not tallerista: return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
         resultado = inscribir_el_taller(
             year_proceso=year_proceso_v2,
             id_categoria=id_categoria_v2,
@@ -332,28 +324,28 @@ def api_delete_taller(id_taller): # CRU(D)
         
 # -- APIS TALLERISTAS --
 # -- API TALLERISTA C(R)UD --
-@url_funcionario.route('/api/tallerista-lista', methods=['GET'])
-@funcionario_required
-def api_tallerista_lista():
-    try:
-        resultado = ver_profesor(
-            id_profesor = request.args.get('id_profesor')
-        )
-        profesores = ver_profesor(id_profesor, )
-        if resultado:
-            return jsonify({"success": True, "data": profesores, "total": len(profesores)})
-        else:
-            return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+# @url_funcionario.route('/api/tallerista-lista', methods=['GET'])
+# @funcionario_required
+# def api_tallerista_lista():
+#     try:
+#         resultado = ver_profesor(
+#             id_profesor = request.args.get('id_profesor')
+#         )
+#         profesores = ver_profesor(id_profesor, )
+#         if resultado:
+#             return jsonify({"success": True, "data": profesores, "total": len(profesores)})
+#         else:
+#             return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)}), 500
 
 @url_funcionario.route('/api/tallerista-get/<int:id_profesor>', methods=['GET'])
 @funcionario_required
 def api_tallerista_get(id_profesor):
     try:
-        data = obtener_profesores(id_profesor)
-        if data:
-            return jsonify({"success": True, "data": data})
+        # data = obtener_profesores(id_profesor)
+        # if data:
+        #     return jsonify({"success": True, "data": data})
         return jsonify({"success": False, "message": "No encontrado"}), 404
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500

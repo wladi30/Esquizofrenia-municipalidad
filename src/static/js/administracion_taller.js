@@ -181,7 +181,7 @@ const GestionTalleres = {
         if (this.configuracion.filtros.year) params.append('year', this.configuracion.filtros.year);
         if (this.configuracion.filtros.estado) params.append('estado', this.configuracion.filtros.estado);
         if (this.configuracion.filtros.categoria) params.append('categoria', this.configuracion.filtros.categoria);
-        if (this.configuracion.filtros.busqueda) params.append('busqueda', this.configuracion.filtros.busqueda);
+        if (this.configuracion.filtros.busqueda) params.append('busqueda_nombre', this.configuracion.filtros.busqueda);
         if (this.configuracion.filtros.busqueda_id) params.append('busqueda_id', this.configuracion.filtros.busqueda_id);
         if (this.configuracion.filtros.busqueda_lugar) params.append('busqueda_lugar', this.configuracion.filtros.busqueda_lugar);
         // html que deberia mostrar el indicador de la carga de la tabla, es solo algo visual debo buscar los iconos en bt
@@ -192,8 +192,6 @@ const GestionTalleres = {
         fetch(`/api/taller-lista?${params.toString()}`)
             .then(response => response.json())
             .then(result => {
-                // ATENCION recuerda que aqui aun no existe nada, tambien los innerHTML de esta funcion aun no tienen nada valido, asi que tengo que solucionarlo
-                // solo deberia poner unos cuantos iconos en los innerHTML, por lo demas debo ver que ocuure de resultado, podria ser mostrarPagina pero lo veo despues.
                 if (result.success) {
                     this.configuracion.datos.talleres = result.data;
                     this.mostrarPagina(1);

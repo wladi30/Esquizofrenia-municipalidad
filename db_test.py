@@ -571,83 +571,79 @@ def ver_taller(id_taller):
         cursor.close()
         conn.close()
 
-def obtener_talleres(año=None, estados=None, id_categoria=None): #esto deberia hacer que los talleres se filtren por año, la idea es que el admin puedan modificar ese año asi de este modo se pueden los talleres anteriores
-    conn = get_connection()
-    if not conn:
-        return []
-    cursor = conn.cursor()
-    try: # falta revisar esto mejor, no se porque params no esta funcionando, tengo que importarlo de algo ?
-        sql = "SELECT * FROM SGT_TALLER WHERE 1=1"
-        # buena cosa tuvo de idea deep seak asi que la aplique
-        parametros = []
-        if año is not None:
-            sql += " AND YEAR_PROCESO = ?"
-            parametros.append(año)
-        if estados:
-            placeholders = ','.join(['?'] * len(estados))
-            sql += f" AND ID_ESTADO_TALLER IN ({placeholders})"
-            parametros.extend(estados)
-        # añadi el tema de buscar por categoria(GUTS) espermos que funcione
-        if id_categoria:
-            sql += f" AND ID_CATEGORIA = ?"
-            parametros.append(id_categoria)
-        cursor.execute(sql, parametros)
-        cols = [c[0] for c in cursor.description]
-        return [dict(zip(cols, row)) for row in cursor.fetchall()]
-    except Exception as e:
-        print(f"Error obteniendo talleres: {e}")
-        return []
-    finally:
-        cursor.close()
-        conn.close()
+# def obtener_talleres(year_proceso=None, id_estado_taller=None, id_categoria=None, id_taller=None, lugar=None, nombre_taller=None):
+#     print(f"DEBUG - : year_proceso{type(year_proceso)}")
+#     print(f"DEBUG - : id_estado_taller{type(id_estado_taller)}")
+#     print(f"DEBUG - : id_categoria{type(id_categoria)}")
+#     print(f"DEBUG - : id_taller{type(id_taller)}")
+#     print(f"DEBUG - : lugar{type(lugar)}")
+#     print(f"DEBUG - : nombre_taller{type(nombre_taller)}")
+#     conn = get_connection()
+#     if not conn:
+#         return []
+#     cursor = conn.cursor()
+#     try:
+#         # estado = id_estado_taller[0] if id_estado_taller else None
+#         cursor.execute("{CALL LISTAR_TALLERES_FILTRADOS(?, ?, ?, ?, ?, ?)}", (year_proceso, id_categoria, id_estado_taller, id_taller, lugar, nombre_taller))
+#         print(f"DEBUG - : year_proceso{type(year_proceso)}")
+#         columns = [c[0] for c in cursor.description]
+#         return [dict(zip(columns, row)) for row in cursor.fetchall()]
+#     except Exception as e:
+#         print(f"Error en obtener_talleres: {e}")
+#         return []
+#     finally:
+#         cursor.close()
+#         conn.close()
 
-def obtener_estudiantes_por_taller(id_taller): #mas que nada para el admin, aun queda mucho por hacer pero vamos progresando
-    conn = get_connection()
-    if not conn:
-        return []
-    cursor = conn.cursor() # 12/03-- le quite que filtrara por id, es redundante ya que se esta obteniendo un taller en especifico, por lo cual no seran tantas personas como para tener que filtrar por quien esta activo y no
-    try:
-        sql = "SELECT pe.NOMBRE_PERSONA, pe.APELLIDO_PATERNO, pe.APELLIDO_MATERNO, pe.EDAD, pe.TELEFONO, pe.CORREO_ELECTRONICO FROM SGT_INTEGRANTE_TALLER it JOIN SGT_PERSONA_TALLER pe ON it.ID_ESTUDIANTE = pe.ID_PERSONA WHERE it.ID_TALLER = ?"
-        cursor.execute(sql, (id_taller,))
-        cols = [c[0] for c in cursor.description]
-        return [dict(zip(cols, row)) for row in cursor.fetchall()]
-    except Exception as e:
-        print(f"Error obteniendo estudiantes de taller: {e}")
-        return []
-    finally:
-        cursor.close()
-        conn.close()
-
-def buscar_talleres(termino, categoria=None, año=None, estados=None, limite=999): #limite infinito para probar
+def obtener_talleres(year_proceso=None, id_categoria=None, id_estado_taller=None, id_taller=None, lugar=None, nombre_taller=None):
+    print(f"DEBUG - : year_proceso{type(year_proceso)}, {(year_proceso)}")
+    print(f"DEBUG - : id_estado_taller{type(id_estado_taller)}, {(id_estado_taller)}")
+    print(f"DEBUG - : id_categoria{type(id_categoria)}, {(id_categoria)}")
+    print(f"DEBUG - : id_taller{type(id_taller)}, {(id_taller)}")
+    print(f"DEBUG - : lugar{type(lugar)}, {(lugar)}")
+    print(f"DEBUG - : nombre_taller{type(nombre_taller)}, {(nombre_taller)}")
     conn = get_connection()
     if not conn:
         return []
     cursor = conn.cursor()
     try:
-        palabras = [p for p in (termino or '').split() if p]
-        donde = []
-        parametros = []
-        
-        if palabras:
-            for p in palabras:
-                donde.append(f"NOMBRE_TALLER LIKE '%{p}%'")
-        if categoria:
-            donde.append(f"ID_CATEGORIA = {categoria}")
-        if año:
-            donde.append(f"YEAR_PROCESO = {año}")
-        if estados:
-            placeholders = ','.join(str(e) for e in estados)
-            donde.append(f"ID_ESTADO_TALLER IN ({placeholders})")
-        sql = "SELECT TOP(?) * FROM SGT_TALLER"
-        if donde:
-            sql += " WHERE " + " AND ".join(donde)
-        sql += " ORDER BY FEC_INICIO DESC"
-        
-        cursor.execute(sql, (limite,))
+        cursor.execute("{CALL LISTAR_TALLERES_FILTRADOS(?, ?, ?, ?, ?, ?)}",(year_proceso, id_categoria, id_estado_taller, id_taller, lugar, nombre_taller))
+        columns = [c[0] for c in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    except Exception as e:
+        print(f"Error en obtener_talleres: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def obtener_estudiantes_por_taller(id_taller):
+    conn = get_connection()
+    if not conn:
+        return []
+    cursor = conn.cursor()
+    try:
+        cursor.execute("{CALL LISTAR_ESTUDIANTES_POR_TALLER(?)}", (id_taller,))
+        columns = [c[0] for c in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    except Exception as e:
+        print(f"Error en obtener_estudiantes_por_taller: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def buscar_talleres(nombre_taller=None, id_categoria=None, year_proceso=None, id_estado_Taller=None, limite=100): #limite infinito para probar
+    conn = get_connection()
+    if not conn:
+        return []
+    cursor = conn.cursor()
+    try:
+        cursor.execute("{CALL BUSCAR_TALLERES(?, ?, ?, ?)}",(nombre_taller, id_categoria, year_proceso, id_estado_Taller))
         cols = [c[0] for c in cursor.description]
         return [dict(zip(cols, row)) for row in cursor.fetchall()]
     except Exception as e:
-        print(f"Error buscando talleres: {e}")
+        print(f"Error en obtener_talleres: {e}")
         return []
     finally:
         cursor.close()
@@ -893,6 +889,38 @@ def suspender_tallerista(id_profesor,aud_usuario_modifica):
         print(f"Error en SUSPENDER_TALLERISTA: {e}")
         conn.rollback()
         return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def obtener_historial_talleres_por_tallerista(id_profesor):
+    conn = get_connection()
+    if not conn:
+        return []
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"{{CALL OBTENER_HISTORIAL_TALLERES_TALLERISTA({id_profesor})}}")
+        columns = [column[0] for column in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    except Exception as e:
+        print(f"Error en obtener_historial_talleres_por_tallerista: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def obtener_estudiantes_por_taller_proc(id_taller):
+    conn = get_connection()
+    if not conn:
+        return []
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"{{CALL OBTENER_ESTUDIANTES_POR_TALLER({id_taller})}}")
+        columns = [column[0] for column in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    except Exception as e:
+        print(f"Error en obtener_estudiantes_por_taller_proc: {e}")
+        return []
     finally:
         cursor.close()
         conn.close()

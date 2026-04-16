@@ -147,3 +147,122 @@
 2026-04-15 16:43:31 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_tallerista_lista_ obtener_profesores__ takes 1 positional argument but 2 were given
 2026-04-15 16:44:03 | Thread-8 (process_request_thread) | MainProcess | ERROR | api_tallerista_lista_ ver_profesor__ takes 1 positional argument but 2 were given
 2026-04-15 16:44:32 | Thread-8 (process_request_thread) | MainProcess | ERROR | api_tallerista_lista_ object of type _bool_ has no len__
+2026-04-16 10:00:31 | Thread-14 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 10:00:45 | Thread-19 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 10:09:57 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 10:09:57 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _nombre_taller_
+2026-04-16 10:10:55 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 11:04:41 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 11:06:58 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 11:16:06 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 11:16:18 | Thread-28 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 11:17:06 | Thread-41 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 11:17:08 | Thread-48 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:20:19 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:20:19 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _estado_. Did you mean _estados__
+2026-04-16 12:28:36 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:33:08 | Thread-14 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:40:27 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:40:57 | Thread-17 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:41:59 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:41:59 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _año_
+2026-04-16 12:42:46 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:42:46 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _estados_
+2026-04-16 12:42:58 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:44:17 | Thread-21 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:44:26 | Thread-29 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:45:12 | Thread-38 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:45:59 | Thread-46 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:46:11 | Thread-54 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:48:04 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:49:16 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:49:48 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:50:01 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 12:50:01 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _year_proceso_, _id_estado_taller_, and _id_categoria_
+2026-04-16 13:07:12 | Thread-16 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:07:12 | Thread-17 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _year_proceso_, _id_estado_taller_, and _id_categoria_
+2026-04-16 13:07:40 | Thread-24 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:07:40 | Thread-25 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _year_proceso_, _id_estado_taller_, and _id_categoria_
+2026-04-16 13:08:00 | Thread-32 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:08:00 | Thread-33 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _year_proceso_, _id_estado_taller_, and _id_categoria_
+2026-04-16 13:08:20 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:08:47 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:09:22 | Thread-16 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:09:58 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:10:45 | Thread-16 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:10:49 | Thread-24 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:10:54 | Thread-32 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:11:04 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:11:04 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _year_proceso_, _id_estado_taller_, and _id_categoria_
+2026-04-16 13:13:49 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:13:49 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _year_proceso_, _id_estado_taller_, and _id_categoria_
+2026-04-16 13:14:06 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:15:53 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:17:39 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:28:12 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:28:48 | Thread-16 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:30:59 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:32:39 | Thread-2 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _lugar_
+2026-04-16 13:32:57 | Thread-3 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _lugar_
+2026-04-16 13:33:01 | Thread-10 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:33:01 | Thread-11 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _lugar_
+2026-04-16 13:33:05 | Thread-18 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:33:05 | Thread-19 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _lugar_
+2026-04-16 13:33:38 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:33:38 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _lugar_
+2026-04-16 13:34:14 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:35:14 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:36:39 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:37:13 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:37:50 | Thread-18 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:38:27 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:38:27 | Thread-10 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ got an unexpected keyword argument _id_taller_
+2026-04-16 13:43:16 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:44:17 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:49:09 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:49:51 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:51:30 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:53:32 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:54:02 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 13:55:10 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:08:10 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:09:57 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:10:22 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:10:59 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:11:47 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:11:47 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _id_taller_, _lugar_, and _nombre_taller_
+2026-04-16 15:13:40 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:13:40 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 3 required positional arguments_ _id_taller_, _lugar_, and _nombre_taller_
+2026-04-16 15:14:29 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:14:29 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 2 required positional arguments_ _id_taller_ and _lugar_
+2026-04-16 15:15:20 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:15:20 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 2 required positional arguments_ _id_taller_ and _lugar_
+2026-04-16 15:15:48 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:15:48 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ obtener_talleres__ missing 1 required positional argument_ _id_taller_
+2026-04-16 15:16:15 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:19:05 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:19:49 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:19:49 | Thread-9 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ _NoneType_ object has no attribute _lower_
+2026-04-16 15:20:06 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:20:49 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:31:01 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:31:33 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:31:35 | Thread-16 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:31:37 | Thread-18 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:31:39 | Thread-19 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:34:11 | Thread-21 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:34:52 | Thread-23 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:37:40 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:37:42 | Thread-14 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 15:39:49 | Thread-22 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:03:00 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:06:08 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:06:13 | Thread-17 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:06:38 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:09:47 | Thread-15 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:09:49 | Thread-23 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:11:17 | Thread-32 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:17:58 | Thread-48 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:18:14 | Thread-55 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:25:11 | Thread-34 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
+2026-04-16 16:25:13 | Thread-42 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ missing 1 required positional argument_ _id_profesor_
