@@ -433,14 +433,14 @@ def inscribir_en_el_taller(id_taller, id_estudiante, year_proceso):
     # inscribir taller ya no la usare, necesito el sistema de gestion de cupos asi que usare el otro, mientras ese deberia de redirigir al nuevo sistema salu2.
     return inscribir_taller_o_espera(id_taller, id_estudiante, year_proceso)
 
-def inscribir_taller_o_espera(id_taller, id_estudiante, year_proceso):
+def inscribir_taller_o_espera(id_taller, id_estudiante, year_proceso, aud_usuario_ingreso):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        print(f"DEBUG - Ejecutando INSCRIBIR_TALLER_O_ESPERA({id_taller}, {id_estudiante}, {year_proceso})")
-        cursor.execute(f"{{CALL INSCRIBIR_TALLER_O_ESPERA({id_taller}, {id_estudiante}, {year_proceso})}}")
+        print(f"DEBUG - Ejecutando INSCRIBIR_TALLER_O_ESPERA({id_taller}, {id_estudiante}, {year_proceso}, '{aud_usuario_ingreso}')")
+        cursor.execute(f"{{CALL INSCRIBIR_TALLER_O_ESPERA({id_taller}, {id_estudiante}, {year_proceso}, '{aud_usuario_ingreso}')}}")
         try:
             row = cursor.fetchone()
             print(f"DEBUG - Resultado obtenido: {row}")
@@ -571,30 +571,6 @@ def ver_taller(id_taller):
         cursor.close()
         conn.close()
 
-# def obtener_talleres(year_proceso=None, id_estado_taller=None, id_categoria=None, id_taller=None, lugar=None, nombre_taller=None):
-#     print(f"DEBUG - : year_proceso{type(year_proceso)}")
-#     print(f"DEBUG - : id_estado_taller{type(id_estado_taller)}")
-#     print(f"DEBUG - : id_categoria{type(id_categoria)}")
-#     print(f"DEBUG - : id_taller{type(id_taller)}")
-#     print(f"DEBUG - : lugar{type(lugar)}")
-#     print(f"DEBUG - : nombre_taller{type(nombre_taller)}")
-#     conn = get_connection()
-#     if not conn:
-#         return []
-#     cursor = conn.cursor()
-#     try:
-#         # estado = id_estado_taller[0] if id_estado_taller else None
-#         cursor.execute("{CALL LISTAR_TALLERES_FILTRADOS(?, ?, ?, ?, ?, ?)}", (year_proceso, id_categoria, id_estado_taller, id_taller, lugar, nombre_taller))
-#         print(f"DEBUG - : year_proceso{type(year_proceso)}")
-#         columns = [c[0] for c in cursor.description]
-#         return [dict(zip(columns, row)) for row in cursor.fetchall()]
-#     except Exception as e:
-#         print(f"Error en obtener_talleres: {e}")
-#         return []
-#     finally:
-#         cursor.close()
-#         conn.close()
-
 def obtener_talleres(year_proceso=None, id_categoria=None, id_estado_taller=None, id_taller=None, lugar=None, nombre_taller=None):
     print(f"DEBUG - : year_proceso{type(year_proceso)}, {(year_proceso)}")
     print(f"DEBUG - : id_estado_taller{type(id_estado_taller)}, {(id_estado_taller)}")
@@ -623,7 +599,7 @@ def obtener_estudiantes_por_taller(id_taller):
         return []
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL LISTAR_ESTUDIANTES_POR_TALLER(?)}", (id_taller,))
+        cursor.execute("{CALL LISTAR_ESTUDIANTES_POR_TALLER(?)}", (id_taller))
         columns = [c[0] for c in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
     except Exception as e:
@@ -807,26 +783,51 @@ def ver_profesor(id_profesor):
           cursor.close()
           conn.close()
 
-def obtener_profesores(id_profesor):
+def obtener_profesores(id_profesor=None, nombre_completo=None, id_taller=None, nombre_taller=None, profesion=None, correo_electronico=None):
+    # basicamente copie el tema de obtener_talleres, el principio es el mismo, lo que necesito es mostrar una lista de todos los talleristas
+    # en el procedimiento tambien se ven muy parecidos, por lo cual es como si fueran lo mismo, eso si lo que quiero hacer es que en un momento
+    # es tambien poner que se le vean el historial de talleres a su vez en talleres(la pag) tambien se pueda ver su tallerista
+    print(f"DEBUG - : id_profesor{type(id_profesor)}, {(id_profesor)}")
+    print(f"DEBUG - : nombre_completo{type(nombre_completo)}, {(nombre_completo)}")
+    print(f"DEBUG - : id_taller{type(id_taller)}, {(id_taller)}")
+    print(f"DEBUG - : nombre_taller{type(nombre_taller)}, {(nombre_taller)}")
+    print(f"DEBUG - : profesion{type(profesion)}, {(profesion)}")
+    print(f"DEBUG - : correo_electronico{type(correo_electronico)}, {(correo_electronico)}")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
-    cursor = conn.cursor()
-    # tengo que crear un procedimiento para obtener a los profesores, esta madre no me sirve si morande y compañia me la atacan en 5 segundos
+    cursor  = conn.cursor()
     try:
-        query = f"""{{CALL VER_PROFESOR(
-        {id_profesor}
-        )}}"""
-        cursor.execute(query)
-        conn.commit()
-        return True
+        cursor.execute("{CALL LISTAR_TALLERISTAS_FILTRADOS(?, ?, ?, ?, ?, ?)}",(id_profesor,nombre_completo,id_taller,nombre_taller,profesion,correo_electronico))
+        if cursor == True:
+            print(f"Si se ve este mensaje entonces el cursor le llegaron datos")
+        columns = [c[0] for c in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
     except Exception as e:
-        print(f"Error VER_PROFESOR: {e}")
-        conn.rollback()
-        return False
+        print(f"Error en la obtener_profesores: {e}")
+        return []
     finally:
         cursor.close()
         conn.close()
+
+# def obtener_profesores(id_profesor):
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexión"}
+#     cursor = conn.cursor()
+#     # tengo que crear un procedimiento para obtener a los profesores, esta madre no me sirve si morande y compañia me la atacan en 5 segundos
+#     try:
+#         query = f"""{{CALL VER_PROFESOR({id_profesor})}}"""
+#         cursor.execute(query)
+#         conn.commit()
+#         return True
+#     except Exception as e:
+#         print(f"Error VER_PROFESOR: {e}")
+#         conn.rollback()
+#         return False
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 def ac_profesor(id_persona,profesion,resumen_curricular,aud_usuario_modifica):
     conn = get_connection()

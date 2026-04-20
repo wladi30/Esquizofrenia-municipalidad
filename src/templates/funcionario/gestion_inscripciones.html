@@ -1,1 +1,389 @@
 {% extends "base.html" %}
+{% block title %}Administracion de Talleres - Municipalidad de Quilicura{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_taller.css') }}">
+{% endblock %}
+{% block content %}
+<div class="funcionario-container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('url_funcionario.funcionario_dashboard') }}">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+            </li>
+            <li class="breadcrumb-item active">Gestión de Talleres</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="ms-4">
+            <h2 class="h4 text-primary mb-1">
+                <i class="bi bi-calendar-check me-2"></i>
+                Gestión de Talleres
+            </h2>
+            <p class="text-muted small mb-0">
+                Administra talleres, estados y asignaciones
+            </p>
+        </div>
+        <div class="d-grid gap-2 me-3">
+            <button class="btn btn-primary" onclick="GestionTalleres.abrirModalNuevoTaller()">
+                <i class="bi bi-plus-lg me-1"></i>
+                Nuevo Taller
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-files me-1"></i> Masivo
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="exportarTalleres()">
+                        <i class="bi bi-download me-2"></i>Exportar Talleres
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" onclick="importarTalleres()">
+                        <i class="bi bi-upload me-2"></i>Importar Talleres
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('url_funcionario.funcionario_masivo_taller') }}">
+                        <i class="bi bi-file-spreadsheet me-2"></i>Carga Masiva
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-1">
+                    <label class="form-label small fw-semibold">Año</label>
+                    <select class="form-select form-select-sm" id="filtroAnio">
+                        <option value="" selected>Todos</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <!-- <option value="0">0, existe solo un taller asi</option> -->
+                        <!-- actualmente no funciona el buscar por año ai que tengo que resolverlo, por lo demas se muestran todos
+                        los talleres asi que ese es un avanze gordo -->
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Estado</label>
+                    <select class="form-select form-select-sm" id="filtroEstado">
+                        <option value="">Todos</option>
+                        <option value="1">INGRESADO</option>
+                        <option value="2">CALENDARIZADO</option>
+                        <option value="3">CERRADO</option>
+                        <option value="4">DE BAJA</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Búsqueda por Nombre</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="busqueda" placeholder="Nombre del taller...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Búsqueda por ID</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="busqueda_id" placeholder="ID del taller...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Búsqueda por Lugar</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="busqueda_lugar" placeholder="Lugar del taller...">
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label fw-semibold">Categoría <span class="text-danger"></span></label>
+                    <select class="form-select select-categoria-filtro" >
+                        <option></option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex h-100" style="margin-top: 50px;">
+                    <button class="btn btn-primary btn-sm w-100" id="aplicarFiltrosBtn">
+                        <i class="bi bi-filter"></i> Filtrar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm ms-2" id="limpiarFiltrosBtn">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4" width="60">ID</th>
+                            <th>Taller</th>
+                            <th>Categoría</th>
+                            <th>Observacion</th>
+                            <th>Inscritos/Cupos</th>
+                            <th>Estado</th>
+                            <th>Fechas</th>
+                            <th>Año del Proceso</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaTalleresCuerpo">
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="bi bi-arrow-repeat me-2"></i>Cargando talleres...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <div class="text-muted small" id="infoPaginacion">
+                Mostrando 0-0 de 0 resultados
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0" id="paginacionTalleres">
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalTaller" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalTallerTitulo">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Nuevo Taller
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formTaller">
+                <div class="modal-body">
+                    <input type="hidden" id="tallerId">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label fw-semibold">Nombre del Taller <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombreTaller"  maxlength="80">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Año Proceso <span class="text-danger">*</span></label>
+                            <select class="form-select" id="yearProceso" >
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Categoría<span class="text-danger">*</span></label>
+                            <select class="form-select select-categoria" >
+                                <option></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Tallerista <span class="text-danger">*</span></label>
+                            <select class="form-select" id="tallerista" >
+                                <option value="">Seleccione tallerista...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Usuario que ingreso el taller<span class="text-danger"></span></label>
+                            <textarea class="form-control" id="usuarioIngreso" rows="1" maxlength="20" disabled></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha del ingreso <span class="text-danger"></span></label>
+                            <input type="datetime" class="form-control" id="fecIngreso" disabled>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación<span class="text-danger"></span></label>
+                            <textarea class="form-control" id="usuarioModifica" rows="1" maxlength="20" disabled></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha de la ultima modificación <span class="text-danger"></span></label>
+                            <input type="datetime" class="form-control" id="fecModifica" disabled>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Objetivo del Taller</label>
+                        <textarea class="form-control" id="objetivo" rows="2" maxlength="500"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Observacion del Taller</label>
+                        <textarea class="form-control" id="observacion" rows="2" maxlength="500"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha Inicio <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecInicio">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha Término <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecTermino">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Fecha Estado Taller <span class="text-danger"></span></label>
+                            <input type="date" class="form-control" id="fecEstado" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Lugar</label>
+                            <input type="text" class="form-control" id="lugar" placeholder="Ej: Sala 101">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">N° Clases</label>
+                            <input type="number" class="form-control" id="nroClases" min="0" placeholder="Ej: 3">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Minutos por clase</label>
+                            <input type="number" class="form-control" id="nroMinutos" min="0" placeholder="Ej: 90">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Horas en total</label>
+                            <input type="number" class="form-control" id="horasTotales" min="0" placeholder="Ej: 80">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Edad Mínima</label>
+                            <input type="number" class="form-control" id="edadMinima" min="0" placeholder="Ej: 16">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Edad Máxima</label>
+                            <input type="number" class="form-control" id="edadMaxima" min="0" placeholder="Ej: 75">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Cupo Mínimo</label>
+                            <input type="number" class="form-control" id="minEstudiantes" min="0" placeholder="Ej: 2">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Cupo Máximo</label>
+                            <input type="number" class="form-control" id="maxEstudiantes" min="0" placeholder="Ej: 40">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Materiales Requeridos</label>
+                        <textarea class="form-control" id="material" rows="2" maxlength="500" placeholder="Lista de materiales necesarios..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Requisitos</label>
+                        <textarea class="form-control" id="requisitos" rows="2" maxlength="500" placeholder="Requisitos para participar..."></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
+                            <select class="form-select" id="estadoTaller">
+                                <option value="1">INGRESADO</option>
+                                <option value="2">CALENDARIZADO</option>
+                                <option value="3">CERRADO</option>
+                                <option value="4">DE BAJA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Tipo de Taller <span class="text-danger">*</span></label>
+                            <select class="form-select" id="tipoTaller">
+                                <option value="1">Desconocido (1)</option>
+                                <option value="2">Desconocido (2)</option>
+                                <option value="3">Desconocido (3)</option>
+                                <option value="8">Desconocido (8)</option>
+                                <option value="9">Desconocido (9)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>
+                        Guardar Taller
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalConfirmacion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Confirmar Acción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeConfirmacion"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnConfirmar">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalDetallesTaller" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Detalles del Taller
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detallesTallerBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="GestionTalleres.abrirModalEditarDesdeDetalles()">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='js/administracion_taller.js') }}"></script>
+{% endblock %}

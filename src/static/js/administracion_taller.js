@@ -1,5 +1,4 @@
 // codigo de busqueda "GUTS" , importante "guts" , baja importancia "Guts" , medianamente importante
-
 // https://youtu.be/l50gnBWHmdA
 // Este video explica vien el tema de los imports y exports ademas de dar muchos ejemplos de como aplicar esto, desde dinamicos a import masivos de un js a otro, recomiendo ver dde nuevo
 // estoy haciendo un import de general que trae la constante '', esta me da el año actual el cual que lo usare como
@@ -27,9 +26,9 @@ const GestionTalleres = {
             year: '',
             estado: '',
             categoria: '',
-            busqueda: '',
             busqueda_id: '',
             busqueda_lugar: '',
+            busqueda_nombre: '',
         },
         // aqui van a almacenar todos los datos de talleres, talleristas y las categorias de las cuales se usaran para los filtros, los otros 2 seran los que se muestren en pantalla
         datos: {
@@ -91,37 +90,6 @@ const GestionTalleres = {
             this.mostrarError('No se pudieron cargar las categorías.');
         });
     },
-    // cargarDepartamentos: function() {
-    //     fetch('/api/departamento')
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             this.configuracion.datos.departamentos = data;
-    //             const selectsModal = document.querySelectorAll('.select-departamento');
-    //             selectsModal.forEach(select => {
-    //                 select.innerHTML = '<option value="">Seleccione departamento...</option>';
-    //                 data.forEach(cat => { 
-    //                     const option = document.createElement('option');
-    //                     option.value = cat.ID_DEPARTAMENTO;
-    //                     option.textContent = cat.DESCRIPCION_CATEGORIA;
-    //                     select.appendChild(option);
-    //                 });
-    //             });
-    //             const selectsFiltro = document.querySelectorAll('.select-departamento-filtro');
-    //             selectsFiltro.forEach(select => {
-    //                 select.innerHTML = '<option value="">Todos los departamentos</option>';
-    //                 data.forEach(cat => {
-    //                     const option = document.createElement('option');
-    //                     option.value = cat.ID_DEPARTAMENTO;
-    //                     option.textContent = cat.DESCRIPCION_CATEGORIA;
-    //                     select.appendChild(option);
-    //                 });
-    //             });
-    //         })
-    //     .catch(error => {
-    //         console.error('Error cargando departamentos:', error);
-    //         this.mostrarError('No se pudieron cargar las departamentos.');
-    //     });
-    // },
 
     // aqui va la parte d elos talleristas
     cargarTalleristasSelect: function(){
@@ -154,9 +122,9 @@ const GestionTalleres = {
     limpiarFiltros: function() {
     document.getElementById('filtroAnio').value = '';
     document.getElementById('filtroEstado').value = '';
-    document.getElementById('busqueda').value = '';
     document.getElementById('busqueda_id').value = '';
     document.getElementById('busqueda_lugar').value = '';
+    document.getElementById('busqueda_nombre').value = '';
     
     // Limpiar el select de categoría filtro
     const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
@@ -167,10 +135,10 @@ const GestionTalleres = {
     this.configuracion.filtros = { 
         year: '', 
         estado: '', 
-        busqueda: '', 
+        categoria: '',
         busqueda_id: '', 
         busqueda_lugar: '',
-        categoria: ''
+        busqueda_nombre: ''
     };
     this.cargarTalleres();
 },
@@ -181,7 +149,7 @@ const GestionTalleres = {
         if (this.configuracion.filtros.year) params.append('year', this.configuracion.filtros.year);
         if (this.configuracion.filtros.estado) params.append('estado', this.configuracion.filtros.estado);
         if (this.configuracion.filtros.categoria) params.append('categoria', this.configuracion.filtros.categoria);
-        if (this.configuracion.filtros.busqueda) params.append('busqueda_nombre', this.configuracion.filtros.busqueda);
+        if (this.configuracion.filtros.busqueda_nombre) params.append('busqueda_nombre', this.configuracion.filtros.busqueda_nombre);
         if (this.configuracion.filtros.busqueda_id) params.append('busqueda_id', this.configuracion.filtros.busqueda_id);
         if (this.configuracion.filtros.busqueda_lugar) params.append('busqueda_lugar', this.configuracion.filtros.busqueda_lugar);
         // html que deberia mostrar el indicador de la carga de la tabla, es solo algo visual debo buscar los iconos en bt
@@ -332,7 +300,7 @@ const GestionTalleres = {
         this.configuracion.filtros.year = document.getElementById('filtroAnio').value;
         this.configuracion.filtros.estado = document.getElementById('filtroEstado').value;
         // this.configuracion.filtros.categoria = document.getElementById('categoria').value;
-        this.configuracion.filtros.busqueda = document.getElementById('busqueda').value;
+        this.configuracion.filtros.busqueda_nombre = document.getElementById('busqueda_nombre').value;
         this.configuracion.filtros.busqueda_id = document.getElementById('busqueda_id').value;
         this.configuracion.filtros.busqueda_lugar = document.getElementById('busqueda_lugar').value;
         // this.cargarTalleres(); // aqui se cargan los datos en la funcion cargarTalleres()
@@ -346,12 +314,12 @@ const GestionTalleres = {
         document.getElementById('filtroAnio').value = '';
         document.getElementById('filtroEstado').value = '';
         // document.getElementById('categoria').value = '';
-        document.getElementById('busqueda').value = '';
+        document.getElementById('busqueda_nombre').value = '';
         document.getElementById('busqueda_id').value = '';
         document.getElementById('busqueda_lugar').value = '';
         const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
         if (selectCategoriaFiltro) {selectCategoriaFiltro.value = '';}
-        this.configuracion.filtros = {year: '', estado: '', busqueda: '', busqueda_id: '', busqueda_lugar: '', categoria: ''};
+        this.configuracion.filtros = {year: '', estado: '', busqueda_nombre: '', busqueda_id: '', busqueda_lugar: '', categoria: ''};
         this.cargarTalleres();
     },
 
@@ -614,9 +582,7 @@ abrirModalNuevoTaller: function() {
         confirmButtonText: 'Sí, suspender',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
-        if (result.isConfirmed) {
-            self.ejecutarEliminacion(id);
-        }
+        if (result.isConfirmed) {self.ejecutarEliminacion(id);}
     });
 },
 
@@ -627,12 +593,13 @@ ejecutarEliminacion: function(id) {
     })
     .then(response => response.json())
     .then(result => {
+        // if (id_estado_taller===4) {
+        //     this.mostrarError(result.message || 'Error al suspender, el taller ya esta "De Baja"');}
         if (result.success) {
             this.mostrarExito(result.message || 'Taller suspendido correctamente');
-            this.cargarTalleres();
-        } else {
-            this.mostrarError(result.message || 'Error al suspender');
-        }
+            this.cargarTalleres();}
+        else {
+            this.mostrarError(result.message || 'Error al suspender');}
     })
     .catch(error => {
         console.error('Error:', error);
@@ -663,7 +630,7 @@ ejecutarEliminacion: function(id) {
         // si algo sale mal asi que pondre mi codigo "GUTS"
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => { this.aplicarFiltros(); });
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => { this.limpiarFiltros(); });
-        document.getElementById('busqueda')?.addEventListener('keypress', (e) => {
+        document.getElementById('busqueda_nombre')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') { this.aplicarFiltros(); }
         });
         document.getElementById('busqueda_id')?.addEventListener('keypress', (e) => {

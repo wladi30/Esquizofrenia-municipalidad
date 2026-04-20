@@ -3,7 +3,14 @@ const GestionTalleristas = {
         paginaActual: 1,
         itemsPorPagina: 20,
         datos: [],
-        filtros: { nombre: '', id: '' }
+        filtros: { 
+            id_profesor: '', 
+            id_taller: '',
+            nombre_taller: '',
+            profesion: '',
+            nombre_completo: '',
+            correo_electronico: ''
+        }
     },
 
     inicializando: function() {
@@ -13,8 +20,12 @@ const GestionTalleristas = {
 
     cargarLista: function() {
         const params = new URLSearchParams();
-        if (this.configuracion.filtros.nombre) params.append('nombre', this.configuracion.filtros.nombre);
-        if (this.configuracion.filtros.id) params.append('id', this.configuracion.filtros.id);
+        if (this.configuracion.filtros.id_profesor) params.append('id_profesor', this.configuracion.filtros.id_profesor);
+        if (this.configuracion.filtros.id_taller) params.append('id_taller', this.configuracion.filtros.id_taller);
+        if (this.configuracion.filtros.nombre_taller) params.append('nombre_taller', this.configuracion.filtros.nombre_taller);
+        if (this.configuracion.filtros.profesion) params.append('profesion', this.configuracion.filtros.profesion);
+        if (this.configuracion.filtros.nombre_completo) params.append('nombre_completo', this.configuracion.filtros.nombre_completo);
+        if (this.configuracion.filtros.correo_electronico) params.append('correo_electronico', this.configuracion.filtros.correo_electronico);
         
         document.getElementById('tablaTalleristasCuerpo').innerHTML = '<tr><td colspan="6" class="text-center py-4"><i class="bi bi-arrow-repeat me-2"></i>Cargando...</td></tr>';
         
@@ -52,7 +63,7 @@ const GestionTalleristas = {
 
     generarFila: function(t) {
         const nombreCompleto = `${t.NOMBRE_PERSONA || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
-        const tallerAsignado = t.NOMBRE_TALLER_ASIGNADO || 'Desconocido';
+        const tallerAsignado = t.NOMBRE_TALLER || 'Desconocido';
         return `
             <tr>
                 <td class="ps-4 fw-semibold">${t.ID_PROFESOR}</td>
@@ -104,15 +115,30 @@ const GestionTalleristas = {
     },
 
     aplicarFiltros: function() {
-        this.configuracion.filtros.nombre = document.getElementById('busquedaNombre').value;
-        this.configuracion.filtros.id = document.getElementById('busquedaId').value;
+        this.configuracion.filtros.id_profesor = document.getElementById('busqueda_id_profesor').value;
+        this.configuracion.filtros.id_taller = document.getElementById('busqueda_id_taller').value;
+        this.configuracion.filtros.nombre_taller = document.getElementById('busqueda_nombre_taller').value;
+        this.configuracion.filtros.profesion = document.getElementById('busqueda_profesion').value;
+        this.configuracion.filtros.nombre_completo = document.getElementById('busqueda_nombre_completo').value;
+        this.configuracion.filtros.correo_electronico = document.getElementById('busqueda_correo_electronico').value;
         this.cargarLista();
     },
 
     limpiarFiltros: function() {
-        document.getElementById('busquedaNombre').value = '';
-        document.getElementById('busquedaId').value = '';
-        this.configuracion.filtros = { nombre: '', id: '' };
+        document.getElementById('busqueda_id_profesor').value = '';
+        document.getElementById('busqueda_id_taller').value = '';
+        document.getElementById('busqueda_nombre_taller').value = '';
+        document.getElementById('busqueda_profesion').value = '';
+        document.getElementById('busqueda_nombre_completo').value = '';
+        document.getElementById('busqueda_correo_electronico').value = '';
+        this.configuracion.filtros = { 
+            id_profesor: '', 
+            id_taller: '',
+            nombre_taller: '',
+            profesion: '',
+            nombre_completo: '',
+            correo_electronico: ''
+        };
         this.cargarLista();
     },
 

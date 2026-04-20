@@ -9,7 +9,6 @@ url_funcionario = Blueprint('url_funcionario', __name__, template_folder='src/te
 
 from db_test import (
     ac_taller,
-    # ac_taller_fecha,
     borrar_estudiante,
     cambiar_estado_taller_de_baja,
     inscribir_el_taller,
@@ -18,10 +17,6 @@ from db_test import (
     obtener_estudiantes_por_taller,
     obtener_talleres,
     suspender_tallerista,
-    obtener_historial_talleres_por_tallerista,
-    obtener_estudiantes_por_taller_proc,
-    ver_profesor,
-    # borrar_taller,
     ver_taller
 )
 
@@ -323,56 +318,7 @@ def api_delete_taller(id_taller): # CRU(D)
         # return print("ZA WARUDOO!!")
         
 # -- APIS TALLERISTAS --
-# -- API TALLERISTA C(R)UD --
-# @url_funcionario.route('/api/tallerista-lista', methods=['GET'])
-# @funcionario_required
-# def api_tallerista_lista():
-#     try:
-#         resultado = ver_profesor(
-#             id_profesor = request.args.get('id_profesor')
-#         )
-#         profesores = ver_profesor(id_profesor, )
-#         if resultado:
-#             return jsonify({"success": True, "data": profesores, "total": len(profesores)})
-#         else:
-#             return jsonify({"success": False, "message": "error el intentar cambiar el taller"}), 400
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)}), 500
-
-@url_funcionario.route('/api/tallerista-get/<int:id_profesor>', methods=['GET'])
-@funcionario_required
-def api_tallerista_get(id_profesor):
-    try:
-        # data = obtener_profesores(id_profesor)
-        # if data:
-        #     return jsonify({"success": True, "data": data})
-        return jsonify({"success": False, "message": "No encontrado"}), 404
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
-
-# @url_funcionario.route('/api/tallerista-crear', methods=['POST'])
-# @funcionario_required
-# def api_tallerista_crear():
-#     try:
-#         data = request.json
-#         usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-#         resultado = crear_tallerista(
-#             nombre=data.get('nombre'),
-#             apellido_paterno=data.get('apellido_paterno', ''),
-#             apellido_materno=data.get('apellido_materno', ''),
-#             correo=data.get('correo'),
-#             telefono=data.get('telefono', ''),
-#             profesion=data.get('profesion', ''),
-#             resumen_curricular=data.get('resumen_curricular', ''),
-#             aud_usuario_ingreso=usuario
-#         )
-#         if resultado['success']:
-#             return jsonify({"success": True, "message": resultado['message'], "id_profesor": resultado['id_profesor']}), 201
-#         else:
-#             return jsonify({"success": False, "message": resultado['message']}), 400
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)}), 500
-
+# -- API TALLERISTA CR(U)D --
 @url_funcionario.route('/api/tallerista-actualizar/<int:id_profesor>', methods=['PUT'])
 @funcionario_required
 def api_tallerista_actualizar(id_profesor):
@@ -414,7 +360,22 @@ def api_tallerista_suspender(id_profesor):
 @funcionario_required
 def api_lista_tallerista():
     try:
-        talleristas = obtener_profesores()
+        id_profesor_v1 = request.args.get('busqueda_id_profesor')
+        id_taller_v1 = request.args.get('busqueda_id_taller')
+        nombre_taller_v1 = request.args.get('busqueda_nombre_taller')
+        profesion_v1 = request.args.get('busqueda_profesion')
+        nombre_completo_v1 = request.args.get('busqueda_nombre_completo')
+        correo_electronico_v1 = request.args.get('busqueda_correo_electronico')
+
+        id_profesor_v2 = int(id_profesor_v1) if id_profesor_v1 and id_profesor_v1.isdigit() else None
+        id_taller_v2 = int(id_taller_v1) if id_taller_v1 and id_taller_v1.isdigit() else None
+
+        nombre_taller_v2 = nombre_taller_v1 if nombre_taller_v1 and nombre_taller_v1.strip() else None
+        profesion_v2 = profesion_v1 if profesion_v1 and profesion_v1.strip() else None
+        correo_electronico_v2 = correo_electronico_v1 if correo_electronico_v1 and correo_electronico_v1.strip() else None
+        nombre_completo_v2 = nombre_completo_v1 if nombre_completo_v1 and nombre_completo_v1.strip() else None
+
+        talleristas = obtener_profesores(id_profesor=id_profesor_v2,nombre_completo=nombre_completo_v2,id_taller=id_taller_v2,nombre_taller=nombre_taller_v2,profesion=profesion_v2,correo_electronico=correo_electronico_v2)
         return jsonify({"success": True, "data": talleristas, "total": len(talleristas)})
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.api_tallerista_lista: {e}", "error_funcionario")
@@ -488,10 +449,15 @@ def api_inscripcion_lista():
 def api_crear_inscripcion():
     try:
         data = request.json
+        id_taller_ins=data.get('id_taller')
+        id_estudiante_ins=data.get('id_estudiante')
+        year_proceso_ins=data.get('year_proceso')
+        aud_usuario_ingreso_ins=session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
         resultado = inscribir_taller_o_espera(
-            id_taller=data.get('id_taller'),
-            id_estudiante=data.get('id_estudiante'),
-            year_proceso=data.get('year_proceso', 2026)
+            id_taller=id_taller_ins,
+            id_estudiante=id_estudiante_ins,
+            year_proceso=year_proceso_ins,
+            aud_usuario_ingreso=aud_usuario_ingreso_ins
         )
         return jsonify(resultado)
     except Exception as e:
@@ -536,24 +502,24 @@ def joven_guts():
 
 #-- LOS QUE ESTEN AQUI NO LOS USARE POR MIENTRAS --
 # -- vere si sigo utilizando este , estoy cambiando las cosas y no se si usare este pero no afecta en nada dejarlo aqui, mientras no lo llame 
-@url_funcionario.route('/api/tallerista/seleccion', methods=['GET'])
-@funcionario_required
-def api_seleccion_tallerista():
-    try:
-        profesores = obtener_profesores()
-        talleristas = []
-        # return print("ZA WARUDOO!!")
-        for prof in profesores:
-            nombre_completo = f"{prof.get('NOMBRE_PERSONA', '')} {prof.get('APELLIDO_PATERNO', '')}".strip()
-            talleristas.append({
-                "ID_TALLERISTA": prof.get('ID_PROFESOR'),
-                "NOMBRE_COMPLETO": nombre_completo if nombre_completo else "como verga paso esto xd"
-            })
-        return jsonify(talleristas)
-    except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_seleccion_tallerista : {e}", "error_funcionario")
-        return jsonify({"success": False, "message": str(e)}), 500
-        # return print("ZA WARUDOO!!")
+# @url_funcionario.route('/api/tallerista/seleccion', methods=['GET'])
+# @funcionario_required
+# def api_seleccion_tallerista():
+#     try:
+#         profesores = obtener_profesores()
+#         talleristas = []
+#         # return print("ZA WARUDOO!!")
+#         for prof in profesores:
+#             nombre_completo = f"{prof.get('NOMBRE_PERSONA', '')} {prof.get('APELLIDO_PATERNO', '')}".strip()
+#             talleristas.append({
+#                 "ID_TALLERISTA": prof.get('ID_PROFESOR'),
+#                 "NOMBRE_COMPLETO": nombre_completo if nombre_completo else "como verga paso esto xd"
+#             })
+#         return jsonify(talleristas)
+#     except Exception as e:
+#         logger.add_to_log("error", f"error en funcionario.api_seleccion_tallerista : {e}", "error_funcionario")
+#         return jsonify({"success": False, "message": str(e)}), 500
+#         # return print("ZA WARUDOO!!")
 
 @url_funcionario.route('/taller/<int:id_taller>/inscritos')
 @funcionario_required
@@ -583,6 +549,9 @@ def ver_inscritos_taller_est(id_taller):
 #-- RUTAS ADICIONALES --
 # -- API CATEGORIA --
 @url_funcionario.route('/api/categoria', methods=['GET'])
+# por ahora no tengo un uso para esto, pero la idea original es que esto se usara para conseguir las categorias y mandarlas a base de datos,
+# el problema surje cuando de hecho esto es un tanto inseguro, por lo cual no es necesario suarlo, actualmente estoy usando un procedimiento almacenado
+# para hacer esto mismo asi que no tengo problemas, lo dejo aqui por esta bonito
 @funcionario_required
 def api_categoria_taller():
     try:

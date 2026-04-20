@@ -25,15 +25,35 @@
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label small fw-semibold">Nombre o Apellido</label>
-                    <input type="text" class="form-control form-control-sm" id="busquedaNombre" placeholder="Ej: Juan Pérez">
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <label class="form-label small fw-semibold">ID Tallerista</label>
-                    <input type="text" class="form-control form-control-sm" id="busquedaId" placeholder="Número de ID">
+                    <input type="text" class="form-control form-control-sm" id="busqueda_id_profesor" placeholder="ID del Tallerista">
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold">Nombre Completo</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_nombre_completo" placeholder="Busque por nombre/apellidos">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Correo Electronico</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_correo_electronico" placeholder="Correo del Tallerista">
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-1">
+                    <label class="form-label small fw-semibold">ID Taller</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_id_taller" placeholder="ID del Taller">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Nombre Taller</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_nombre_taller" placeholder="Busque el nombre del Taller">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Profesion</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_profesion" placeholder="Profesion del Tallerista">
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-2 d-flex h-100" style="margin-top: 40px;">
                     <button class="btn btn-primary btn-sm w-100" id="aplicarFiltrosBtn"><i class="bi bi-filter"></i> Filtrar</button>
                     <button class="btn btn-outline-secondary btn-sm ms-2" id="limpiarFiltrosBtn"><i class="bi bi-arrow-counterclockwise"></i></button>
                 </div>
@@ -49,9 +69,9 @@
                         <tr>
                             <th class="ps-4">ID</th>
                             <th>Nombre Completo</th>
+                            <th>ID Taller/Nombre Taller</th>
+                            <th>Profesion</th>
                             <th>Correo</th>
-                            <th>Profesión</th>
-                            <th>Taller Asignado</th>
                             <th class="text-end pe-4">Acciones</th>
                         </tr>
                     </thead>

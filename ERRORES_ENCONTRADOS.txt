@@ -1,0 +1,8 @@
+20/04 16:25 - "El procedimiento funciona, ya lo probe pero el backend no me funciona,se debe testear mas"
+DEBUG - : id_profesor<class 'NoneType'>, None
+DEBUG - : nombre_completo<class 'NoneType'>, None
+DEBUG - : id_taller<class 'NoneType'>, None
+DEBUG - : nombre_taller<class 'NoneType'>, None
+DEBUG - : profesion<class 'NoneType'>, None
+DEBUG - : correo_electronico<class 'NoneType'>, None
+Error en la obtener_profesores: 'builtin_function_or_method' object is not iterable
