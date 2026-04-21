@@ -563,15 +563,6 @@ abrirModalNuevoTaller: function() {
         }, 500); // un pequeño timer para que no se cierre tan rapido
     },
 
-    // bueno aqui la idea es que si se elimina un taller se le cambia a suspendido 
-    // confirmarEliminar: function( nombre) {
-    //     document.getElementById('mensajeConfirmacion').innerHTML =
-    //         `¿Esta seguro de suspender el taller <strong>${nombre}</strong>?<br>
-    //         <small class="text-muted">Esta accion cambiara el estado a "Suspendido".</small>`;
-    //     const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
-    //     modal.show();
-    // },
-
     confirmarEliminar: function(id, nombre) {
     const self = this;
     Swal.fire({

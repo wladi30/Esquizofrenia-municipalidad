@@ -6,3 +6,4 @@ DEBUG - : nombre_taller<class 'NoneType'>, None
 DEBUG - : profesion<class 'NoneType'>, None
 DEBUG - : correo_electronico<class 'NoneType'>, None
 Error en la obtener_profesores: 'builtin_function_or_method' object is not iterable
+- Error Solucionado

@@ -13,6 +13,15 @@ const GestionTalleristas = {
         }
     },
 
+    mapearGenero: function(codigo) {
+        const mapa = {
+            'M': 'Masculino',
+            'F': 'Femenino',
+            'O': 'Otro'
+        };
+        return mapa[codigo] || codigo || 'No especificado';
+    },
+
     inicializando: function() {
         this.cargarLista();
         this.bindEventos();
@@ -62,16 +71,21 @@ const GestionTalleristas = {
     },
 
     generarFila: function(t) {
-        const nombreCompleto = `${t.NOMBRE_PERSONA || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
-        const tallerAsignado = t.NOMBRE_TALLER || 'Desconocido';
+    const nombreCompleto = `${t.NOMBRE_COMPLETO}`.trim();
+    const idTallerAsignado = t.ID_TALLER || 'No tiene, o es un nuevo Profesor';
+    const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Profesor';
         return `
             <tr>
                 <td class="ps-4 fw-semibold">${t.ID_PROFESOR}</td>
-                <td>${nombreCompleto || 'Sin nombre, eso esta mal por que se supone QUE NO ACEPTA NULL , ASI QUE DIMELO YUYI , TAMO AQUI CON MAJITO, MAJITO? QUEN ES ESE MI BRODEL, MAJITO EL KE PARECE MUJEL, AY SI QUE ESA VAINA A MI ME GUTA'}</td>
-                <td>${t.CORREO_ELECTRONICO || '-'}</td>
-                <td>${t.PROFESION || '-'}</td>
+                <td>${nombreCompleto || 'Sin nombre'}</td>
+                <td>${idTallerAsignado}</td>
                 <td>${tallerAsignado}</td>
+                <td>${t.PROFESION || '-'}</td>
+                <td>${t.CORREO_ELECTRONICO || '-'}</td>
                 <td class="text-end pe-4">
+                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleristas.verDetalles(${t.ID_PROFESOR})" title="Ver detalles">
+                        <i class="bi bi-eye"></i>
+                    </button>
                     <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleristas.editar(${t.ID_PROFESOR})" title="Editar">
                         <i class="bi bi-pencil"></i>
                     </button>
@@ -219,6 +233,86 @@ const GestionTalleristas = {
                 this.mostrarError('Error de conexión');
             });
     },
+    // ESTO FALTA POR MODIFICAR la idea de esto es que se puedan ver los detalles del tallerista, pero son muchos asi que tengo que preparar esto
+    verDetalles: function(id) {
+        fetch(`/api/tallerista-get/${id}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const t = result.data;
+                    const generoTexto = this.mapearGenero(t.GENERO);
+                    let html = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Informacion Personal</h6>
+                                <table class="table table-sm text-nowrap">
+                                    <tr><th>ID Persona:</th><td>${t.id_persona}</td></tr>
+                                    <tr><th>ID Profesor:</th><td>${t.id_profesor}</td></tr>
+                                    <tr><th>Nombre:</th><td>${t.nombre_persona}</td></tr>
+                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno}</td></tr>
+                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno}</td></tr>
+                                    <tr><th>R.U.T:</th><td>${t.rut_persona}</td></tr>
+                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona}</td></tr>
+                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento}</td></tr>
+                                    <tr><th>Edad:</th><td>${t.edad}</td></tr>
+                                    <tr><th>Genero:</th><td>${generoTexto}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Contactos</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Telefono del Profesor:</th><td>${t.telefono}</td></tr>
+                                    <tr><th>Correo del Profesor:</th><td>${t.correo_electronico}</td></tr>
+                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto}</td></tr>
+                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto}</td></tr>
+                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto}</td></tr>
+                                </table>    
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Informacion General</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo}</td></tr>
+                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario}</td></tr>
+                                    <tr><th>Observacion:</th><td>${t.observacion}</td></tr>
+                                    <tr><th>Fecha de Creacion:</th><td>${t.fec_creacion}</td></tr>
+                                    <tr><th>Ultimo Acceso:</th><td>${t.ultimo_acceso}</td></tr>
+                                    <tr><th>Intentos de Inicio de Sesion:</th><td>${t.intentos_fallidos}</td></tr>
+                                    <tr><th>Bloqueado hasta:</th><td>${t.bloqueado_hasta}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Resumen Profesional</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Profesion:</th><td>${t.profesion}</td></tr>
+                                    <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Informacion Adicional</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso}</td></tr>
+                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
+                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
+                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('detallesTalleristaBody').innerHTML = html;
+                    window.talleristaDetallesId = id;
+                    new bootstrap.Modal(document.getElementById('modalDetallesTallerista')).show();
+                } 
+                else {
+                    this.mostrarError('No se pudieron cargar los detalles.');
+                }
+            })
+            .catch(error => {
+                console.error('Error en fetch verDetalles:', error);
+                this.mostrarError('Error de conexion al cargar detalles.');
+            });
+    },
 
     confirmarEliminar: function(id, nombre) {
         Swal.fire({
@@ -262,9 +356,28 @@ const GestionTalleristas = {
     bindEventos: function() {
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => this.aplicarFiltros());
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => this.limpiarFiltros());
-        document.getElementById('busquedaNombre')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') this.aplicarFiltros(); });
-        document.getElementById('busquedaId')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') this.aplicarFiltros(); });
-        document.getElementById('formTallerista')?.addEventListener('submit', (e) => { e.preventDefault(); this.guardar(); });
+        document.getElementById('busqueda_id_profesor')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_id_taller')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_nombre_taller')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); } 
+        });
+        document.getElementById('busqueda_profesion')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_nombre_completo')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_correo_electronico')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('formTallerista')?.addEventListener('submit', (e) => { 
+            e.preventDefault(); 
+            this.guardar(); 
+        });
     }
 };
 

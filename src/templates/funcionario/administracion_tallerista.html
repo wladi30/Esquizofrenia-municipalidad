@@ -69,7 +69,8 @@
                         <tr>
                             <th class="ps-4">ID</th>
                             <th>Nombre Completo</th>
-                            <th>ID Taller/Nombre Taller</th>
+                            <th>ID Taller</th>
+                            <th>Nombre Taller</th>
                             <th>Profesion</th>
                             <th>Correo</th>
                             <th class="text-end pe-4">Acciones</th>
@@ -144,6 +145,23 @@
             <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body"><p id="mensajeConfirmacion"></p></div>
             <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-danger" id="btnConfirmar">Confirmar</button></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetallesTallerista" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="bi bi-person-lines-fill me-2"></i>Detalles del Tallerista</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detallesTalleristaBody">
+                Cargando...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>
