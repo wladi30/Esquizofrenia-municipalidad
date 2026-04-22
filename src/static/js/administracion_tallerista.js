@@ -14,12 +14,9 @@ const GestionTalleristas = {
     },
 
     mapearGenero: function(codigo) {
-        const mapa = {
-            'M': 'Masculino',
-            'F': 'Femenino',
-            'O': 'Otro'
-        };
-        return mapa[codigo] || codigo || 'No especificado';
+        if (!codigo) return 'No especificado';
+        const mapa = { 'M': 'Masculino', 'F': 'Femenino', 'O': 'Otro' };
+        return mapa[codigo.toUpperCase()] || 'No especificado';
     },
 
     inicializando: function() {
@@ -48,10 +45,10 @@ const GestionTalleristas = {
                     this.mostrarError(result.message);
                 }
             })
-            .catch(error => {
-                console.error(error);
-                this.mostrarError('Error de conexión');
-            });
+        .catch(error => {
+            console.error(error);
+            this.mostrarError('Error de conexión');
+        });
     },
 
     mostrarPagina: function(pagina) {
@@ -71,9 +68,9 @@ const GestionTalleristas = {
     },
 
     generarFila: function(t) {
-    const nombreCompleto = `${t.NOMBRE_COMPLETO}`.trim();
-    const idTallerAsignado = t.ID_TALLER || 'No tiene, o es un nuevo Profesor';
-    const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Profesor';
+        const nombreCompleto = `${t.NOMBRE_COMPLETO}`.trim();
+        const idTallerAsignado = t.ID_TALLER || 'No tiene, o es un nuevo Profesor';
+        const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Profesor';
         return `
             <tr>
                 <td class="ps-4 fw-semibold">${t.ID_PROFESOR}</td>
@@ -164,16 +161,40 @@ const GestionTalleristas = {
     },
 
     guardar: function() {
-        const id = document.getElementById('idProfesor').value;
-        const data = {
-            nombre: document.getElementById('nombre').value.trim(),
-            apellido_paterno: document.getElementById('apellidoPaterno').value.trim(),
-            apellido_materno: document.getElementById('apellidoMaterno').value.trim(),
-            correo: document.getElementById('correo').value.trim(),
-            telefono: document.getElementById('telefono').value.trim(),
-            profesion: document.getElementById('profesion').value.trim(),
-            resumen_curricular: document.getElementById('resumenCurricular').value.trim()
-        };
+        // const id = document.getElementById('idProfesor').value;
+        // const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
+        // const yearProceso = parseInt(document.getElementById('yearProceso').value);
+        const nombre = document.getElementById('nombre').value.trim().toUpperCase();
+        const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
+        const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
+        const fecha_nacimiento = document.getElementById('fechaNacimiento').value.trim().toUpperCase();
+        const edad = parseInt(document.getElementById('edad').value);
+        const genero = document.getElementById('genero').value.trim().toUpperCase();
+        const telefono = document.getElementById('telefono').value.trim().toUpperCase();
+        const correo = document.getElementById('correo').value.trim().toUpperCase();
+        const telefono_contacto = document.getElementById('telefonoContacto').value.trim().toUpperCase();
+        const nombre_contacto = document.getElementById('nombreContacto').value.trim().toUpperCase();
+        const correo_contacto = document.getElementById('correoContacto').value.trim().toUpperCase();
+        const profesion = document.getElementById('profesion').value.trim().toUpperCase();
+        const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
+        const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value);
+        const tipo_usuario = document.getElementById('tipoUsuario').value.trim().toUpperCase();
+        const observacion = document.getElementById('observacion').value.trim().toUpperCase();
+        const id_pais = parseInt(document.getElementById('idPais').value);
+        const id_comuna = parseInt(document.getElementById('idComuna').value);
+        const villa = document.getElementById('villa').value.trim().toUpperCase();
+        const nro_dpto = document.getElementById('numeroDepartamento').value.trim().toUpperCase();
+        const nro_block = document.getElementById('numeroBlock').value.trim().toUpperCase();
+        const nro_calle = document.getElementById('numeroCalle').value.trim().toUpperCase();
+        const calle = document.getElementById('calle').value.trim().toUpperCase();
+        const fec_creacion = document.getElementById('fechaCreacion').value.trim().toUpperCase();
+        const ultimo_acceso = document.getElementById('ultimoAcceso').value.trim().toUpperCase();
+        const intentos_fallidos = parseInt(document.getElementById('intentosFallidos').value);
+        const bloqueado_hasta = document.getElementById('bloqueadoHasta').value.trim().toUpperCase();
+        const aud_usuario_ingreso = document.getElementById('audUsuarioIngreso').value.trim().toUpperCase();
+        const aud_fec_ingreso = document.getElementById('audFecIngreso').value.trim().toUpperCase();
+        const aud_usuario_modifica = document.getElementById('audUsuarioModifica').value.trim().toUpperCase();
+        const aud_fec_modifica = document.getElementById('audFecModifica').value.trim().toUpperCase();
         
         if (!data.nombre) {
             this.mostrarError('El nombre es obligatorio');
@@ -215,23 +236,47 @@ const GestionTalleristas = {
                 if (result.success) {
                     const t = result.data;
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
-                    document.getElementById('idProfesor').value = t.ID_PROFESOR;
-                    document.getElementById('nombre').value = t.NOMBRE_PERSONA;
+                    document.getElementById('idProfesor').value = t.id_profesor;
+                    document.getElementById('nombrePersona').value = t.NOMBRE_PERSONA;
                     document.getElementById('apellidoPaterno').value = t.APELLIDO_PATERNO;
                     document.getElementById('apellidoMaterno').value = t.APELLIDO_MATERNO;
-                    document.getElementById('correo').value = t.CORREO_ELECTRONICO;
+                    document.getElementById('fechaNacimiento').value = t.FECHA_NACIMIENTO;
+                    document.getElementById('edad').value = t.EDAD;
+                    document.getElementById('genero').value = t.GENERO;
                     document.getElementById('telefono').value = t.TELEFONO;
+                    document.getElementById('correo').value = t.CORREO_ELECTRONICO;
+                    document.getElementById('telefonoContacto').value = t.TELEFONO_CONTACTO;
+                    document.getElementById('nombreContacto').value = t.NOMBRE_CONTACTO;
+                    document.getElementById('correoContacto').value = t.CORREO_CONTACTO;
                     document.getElementById('profesion').value = t.PROFESION;
                     document.getElementById('resumenCurricular').value = t.RESUMEN_CURRICULAR;
+                    document.getElementById('indicadorActividad').value = t.IND_ACTIVO;
+                    document.getElementById('tipoUsuario').value = t.TIPO_USUARIO;
+                    document.getElementById('observacion').value = t.OBSERVACION;
+                    document.getElementById('idPais').value = t.ID_PAIS;
+                    document.getElementById('idComuna').value = t.ID_COMUNA;
+                    document.getElementById('villa').value = t.VILLA;
+                    document.getElementById('numeroDepartamento').value = t.NRO_DPTO;
+                    document.getElementById('numeroBlock').value = t.NRO_BLOCK;
+                    document.getElementById('numeroCalle').value = t.NRO_CALLE;
+                    document.getElementById('calle').value = t.CALLE;
+                    document.getElementById('fechaCreacion').value = t.FEC_CREACION;
+                    document.getElementById('ultimoAcceso').value = t.ULTIMO_ACCESO;
+                    document.getElementById('intentosFallidos').value = t.INTENTOS_FALLIDOS;
+                    document.getElementById('bloqueadoHasta').value = t.BLOQUEADO_HASTA;
+                    document.getElementById('audUsuarioIngreso').value = t.AUD_USUARIO_INGRESO;
+                    document.getElementById('audFecIngreso').value = t.AUD_FEC_INGRESO;
+                    document.getElementById('audUsuarioModifica').value = t.AUD_USUARIO_MODIFICA;
+                    document.getElementById('audFecModifica').value = t.AUD_FEC_MODIFICA;
                     new bootstrap.Modal(document.getElementById('modalTallerista')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el tallerista');
                 }
             })
-            .catch(error => {
-                console.error(error);
-                this.mostrarError('Error de conexión');
-            });
+        .catch(error => {
+            console.error(error);
+            this.mostrarError('Error de conexión en editar');
+        });
     },
     // ESTO FALTA POR MODIFICAR la idea de esto es que se puedan ver los detalles del tallerista, pero son muchos asi que tengo que preparar esto
     verDetalles: function(id) {
@@ -240,32 +285,33 @@ const GestionTalleristas = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
+                    console.log("Datos del tallerista:", t);
                     const generoTexto = this.mapearGenero(t.GENERO);
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion Personal</h6>
                                 <table class="table table-sm text-nowrap">
-                                    <tr><th>ID Persona:</th><td>${t.id_persona}</td></tr>
-                                    <tr><th>ID Profesor:</th><td>${t.id_profesor}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_persona}</td></tr>
-                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno}</td></tr>
-                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno}</td></tr>
-                                    <tr><th>R.U.T:</th><td>${t.rut_persona}</td></tr>
-                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona}</td></tr>
-                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento}</td></tr>
-                                    <tr><th>Edad:</th><td>${t.edad}</td></tr>
-                                    <tr><th>Genero:</th><td>${generoTexto}</td></tr>
+                                    <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
+                                    <tr><th>ID Profesor:</th><td>${t.id_profesor || 'No registrado'}</td></tr>
+                                    <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
+                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
+                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
+                                    <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
+                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
+                                    <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
+                                    <tr><th>Genero:</th><td>${generoTexto || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Contactos</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Telefono del Profesor:</th><td>${t.telefono}</td></tr>
-                                    <tr><th>Correo del Profesor:</th><td>${t.correo_electronico}</td></tr>
-                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto}</td></tr>
-                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto}</td></tr>
-                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto}</td></tr>
+                                    <tr><th>Telefono del Profesor:</th><td>${t.telefono || 'No registrado'}</td></tr>
+                                    <tr><th>Correo del Profesor:</th><td>${t.correo_electronico || 'No registrado'}</td></tr>
+                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || 'No registrado'}</td></tr>
+                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
+                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || 'No registrado'}</td></tr>
                                 </table>    
                             </div>
                         </div>
@@ -273,29 +319,29 @@ const GestionTalleristas = {
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion General</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo}</td></tr>
-                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario}</td></tr>
-                                    <tr><th>Observacion:</th><td>${t.observacion}</td></tr>
-                                    <tr><th>Fecha de Creacion:</th><td>${t.fec_creacion}</td></tr>
-                                    <tr><th>Ultimo Acceso:</th><td>${t.ultimo_acceso}</td></tr>
-                                    <tr><th>Intentos de Inicio de Sesion:</th><td>${t.intentos_fallidos}</td></tr>
-                                    <tr><th>Bloqueado hasta:</th><td>${t.bloqueado_hasta}</td></tr>
+                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'No registrado'}</td></tr>
+                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
+                                    <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha de Creacion:</th><td>${t.fec_creacion || 'No registrada'}</td></tr>
+                                    <tr><th>Ultimo Acceso:</th><td>${t.ultimo_acceso || 'No registrado'}</td></tr>
+                                    <tr><th>Intentos de Inicio de Sesion:</th><td>${t.intentos_fallidos || 'No registrado'}</td></tr>
+                                    <tr><th>Bloqueado hasta:</th><td>${t.bloqueado_hasta || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Resumen Profesional</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Profesion:</th><td>${t.profesion}</td></tr>
-                                    <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular}</td></tr>
+                                    <tr><th>Profesion:</th><td>${t.profesion || 'No registrado'}</td></tr>
+                                    <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion Adicional</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso}</td></tr>
-                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
-                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
+                                    <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</td></tr>
+                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                         </div>
@@ -308,10 +354,10 @@ const GestionTalleristas = {
                     this.mostrarError('No se pudieron cargar los detalles.');
                 }
             })
-            .catch(error => {
-                console.error('Error en fetch verDetalles:', error);
-                this.mostrarError('Error de conexion al cargar detalles.');
-            });
+        .catch(error => {
+            console.error('Error en fetch verDetalles:', error);
+            this.mostrarError('Error de conexion al cargar detalles.');
+        });
     },
 
     confirmarEliminar: function(id, nombre) {
@@ -340,10 +386,10 @@ const GestionTalleristas = {
                     this.mostrarError(result.message || 'Error al suspender');
                 }
             })
-            .catch(error => {
-                console.error(error);
-                this.mostrarError('Error de conexión');
-            });
+        .catch(error => {
+            console.error(error);
+            this.mostrarError('Error de conexión');
+        });
     },
 
     mostrarExito: function(mensaje) {

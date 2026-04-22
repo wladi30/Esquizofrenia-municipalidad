@@ -72,82 +72,93 @@
     border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
+
 .filtros-card .form-label {
     font-weight: 500;
     color: #334155;
     margin-bottom: 0.25rem;
 }
+
 .filtros-card .form-control,
 .filtros-card .form-select {
-    border-radius: 0; /* Inputs cuadrados */
+    border-radius: 0;
     border: 1px solid #cbd5e1;
 }
+
 .filtros-card .form-control:focus,
 .filtros-card .form-select:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
 }
 
-/* --- Estilos para modales (más serios) --- */
 .modal-content {
-    border-radius: 0; /* Modal cuadrado */
+    border-radius: 0;
     border: 1px solid #cbd5e1;
 }
+
 .modal-header {
-    background-color: #0B3B5C; /* Color primario más oscuro y serio */
+    background-color: #0B3B5C;
     color: white;
     border-radius: 0;
     padding: 1rem 1.5rem;
 }
+
 .modal-header .btn-close {
     filter: brightness(0) invert(1);
 }
+
 .modal-title {
     font-weight: 500;
     font-size: 1.1rem;
 }
+
 .modal-body {
     padding: 1.5rem;
 }
+
 .modal-footer {
     border-top: 1px solid #e2e8f0;
     padding: 1rem 1.5rem;
 }
 
-/* --- Estilos para botones (más consistentes) --- */
 .btn {
-    border-radius: 0; /* Botones cuadrados */
+    border-radius: 0;
     font-weight: 500;
 }
+
 .btn-primary {
     background-color: #0B3B5C;
     border-color: #0B3B5C;
 }
+
 .btn-primary:hover {
     background-color: #062435;
     border-color: #062435;
 }
+
 .btn-outline-primary {
     color: #0B3B5C;
     border-color: #0B3B5C;
 }
+
 .btn-outline-primary:hover {
     background-color: #0B3B5C;
     border-color: #0B3B5C;
     color: white;
 }
 
-/* --- Estilos para la paginación (más compacta) --- */
 .pagination .page-link {
     border-radius: 0;
     color: #0B3B5C;
     border: 1px solid #d1d5db;
 }
+
 .pagination .page-item.active .page-link {
     background-color: #0B3B5C;
     border-color: #0B3B5C;
     color: white;
 }
+
 .pagination .page-link:focus {
     box-shadow: none;
 }

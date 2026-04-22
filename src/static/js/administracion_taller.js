@@ -120,28 +120,29 @@ const GestionTalleres = {
         })
     },
     limpiarFiltros: function() {
-    document.getElementById('filtroAnio').value = '';
-    document.getElementById('filtroEstado').value = '';
-    document.getElementById('busqueda_id').value = '';
-    document.getElementById('busqueda_lugar').value = '';
-    document.getElementById('busqueda_nombre').value = '';
+        document.getElementById('filtroAnio').value = '';
+        document.getElementById('filtroEstado').value = '';
+        document.getElementById('busqueda_id').value = '';
+        document.getElementById('busqueda_lugar').value = '';
+        document.getElementById('busqueda_nombre').value = '';
+        
+        // Limpiar el select de categoría filtro
+        const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
+        if (selectCategoriaFiltro) {
+            selectCategoriaFiltro.value = '';
+        }
+        
+        this.configuracion.filtros = { 
+            year: '', 
+            estado: '', 
+            categoria: '',
+            busqueda_id: '', 
+            busqueda_lugar: '',
+            busqueda_nombre: ''
+        };
+        this.cargarTalleres();
+    },
     
-    // Limpiar el select de categoría filtro
-    const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
-    if (selectCategoriaFiltro) {
-        selectCategoriaFiltro.value = '';
-    }
-    
-    this.configuracion.filtros = { 
-        year: '', 
-        estado: '', 
-        categoria: '',
-        busqueda_id: '', 
-        busqueda_lugar: '',
-        busqueda_nombre: ''
-    };
-    this.cargarTalleres();
-},
     cargarTalleres: function(){
         // aqui estoy haciendo los filtros que usare en cargar taller, year y estado seran valores mas simples de poner, year es solo el año que deberia ser automatico ademas de poder colocar los años anteriores
         // y estado seran los estados del 1 al 4 que se encuentran los talleres
@@ -323,50 +324,50 @@ const GestionTalleres = {
         this.cargarTalleres();
     },
 
-abrirModalNuevoTaller: function() {
-    document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
-    document.getElementById('formTaller').reset();
-    document.getElementById('tallerId').value = '';
-    
-    const selectCategoriaModal = document.querySelector('.select-categoria');
-    if (selectCategoriaModal) {
-        selectCategoriaModal.value = '';
-    }
-    
-    const currentYear = new Date().getFullYear();
-    document.getElementById('yearProceso').value = currentYear;
-    document.getElementById('minEstudiantes').value;
-    document.getElementById('maxEstudiantes').value;
-    document.getElementById('estadoTaller').value;
-    document.getElementById('edadMinima').value;
-    document.getElementById('edadMaxima').value;
-    document.getElementById('nroClases').value;
-    document.getElementById('nroMinutos').value;
-    
-    new bootstrap.Modal(document.getElementById('modalTaller')).show();
-},
+    abrirModalNuevoTaller: function() {
+        document.getElementById('modalTallerTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Taller';
+        document.getElementById('formTaller').reset();
+        document.getElementById('tallerId').value = '';
+        
+        const selectCategoriaModal = document.querySelector('.select-categoria');
+        if (selectCategoriaModal) {
+            selectCategoriaModal.value = '';
+        }
+        
+        const currentYear = new Date().getFullYear();
+        document.getElementById('yearProceso').value = currentYear;
+        document.getElementById('minEstudiantes').value;
+        document.getElementById('maxEstudiantes').value;
+        document.getElementById('estadoTaller').value;
+        document.getElementById('edadMinima').value;
+        document.getElementById('edadMaxima').value;
+        document.getElementById('nroClases').value;
+        document.getElementById('nroMinutos').value;
+        
+        new bootstrap.Modal(document.getElementById('modalTaller')).show();
+    },
 
     guardarTaller: function() {
-    const id = document.getElementById('tallerId').value;
-    const selectCategoriaModal = document.querySelector('.select-categoria');
-    const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
-    const yearProceso = parseInt(document.getElementById('yearProceso').value);
-    const objTaller = document.getElementById('objetivo').value.trim().toUpperCase();
-    const fechaInicio = document.getElementById('fecInicio').value;
-    const fechaTermino = document.getElementById('fecTermino').value;
-    const numeroDeMinutos = parseInt(document.getElementById('nroMinutos').value);
-    const numeroDeClasesAnuales = parseInt(document.getElementById('nroClases').value);
-    const numeroHorasTotales = parseInt(document.getElementById('horasTotales').value);
-    const numeroIdEstadoTaller = parseInt(document.getElementById('estadoTaller').value);
-    const observacionTaller = document.getElementById('observacion').value.trim().toUpperCase();
-    const lugarTaller = document.getElementById('lugar').value.trim().toUpperCase();
-    const minimoEstudiante = parseInt(document.getElementById('minEstudiantes').value);
-    const maximoEstudiante = parseInt(document.getElementById('maxEstudiantes').value);
-    const requisitosTaller = document.getElementById('requisitos').value.trim().toUpperCase();
-    const edadMinimaTaller = parseInt(document.getElementById('edadMinima').value);
-    const edadMaximaTaller = parseInt(document.getElementById('edadMaxima').value);
-    const materialTaller = document.getElementById('material').value.trim().toUpperCase();
-    const idTipoTaller = parseInt(document.getElementById('tipoTaller').value);
+        // const id = document.getElementById('tallerId').value;
+        const selectCategoriaModal = document.querySelector('.select-categoria');
+        const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
+        const yearProceso = parseInt(document.getElementById('yearProceso').value);
+        const objTaller = document.getElementById('objetivo').value.trim().toUpperCase();
+        const fechaInicio = document.getElementById('fecInicio').value;
+        const fechaTermino = document.getElementById('fecTermino').value;
+        const numeroDeMinutos = parseInt(document.getElementById('nroMinutos').value);
+        const numeroDeClasesAnuales = parseInt(document.getElementById('nroClases').value);
+        const numeroHorasTotales = parseInt(document.getElementById('horasTotales').value);
+        const numeroIdEstadoTaller = parseInt(document.getElementById('estadoTaller').value);
+        const observacionTaller = document.getElementById('observacion').value.trim().toUpperCase();
+        const lugarTaller = document.getElementById('lugar').value.trim().toUpperCase();
+        const minimoEstudiante = parseInt(document.getElementById('minEstudiantes').value);
+        const maximoEstudiante = parseInt(document.getElementById('maxEstudiantes').value);
+        const requisitosTaller = document.getElementById('requisitos').value.trim().toUpperCase();
+        const edadMinimaTaller = parseInt(document.getElementById('edadMinima').value);
+        const edadMaximaTaller = parseInt(document.getElementById('edadMaxima').value);
+        const materialTaller = document.getElementById('material').value.trim().toUpperCase();
+        const idTipoTaller = parseInt(document.getElementById('tipoTaller').value);
 
     // validacion nametaller
     
@@ -394,25 +395,25 @@ abrirModalNuevoTaller: function() {
     const url = id ? `/api/taller-ac/${id}` : '/api/taller-crear';
     const method = id ? 'PUT' : 'POST';
     fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
-            this.mostrarExito(result.message || 'Operacion exitosa');
-            this.cargarTalleres();
-        } else {
-            this.mostrarError(result.message || 'Error al guardar');
-        }
-    })
-    .catch(error => {
-        console.error('Error en fetch guardarTaller:', error);
-        this.mostrarError('Error de conexion al guardar.');
-    });
-},
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                bootstrap.Modal.getInstance(document.getElementById('modalTaller')).hide();
+                this.mostrarExito(result.message || 'Operacion exitosa');
+                this.cargarTalleres();
+            } else {
+                this.mostrarError(result.message || 'Error al guardar');
+            }
+        })
+        .catch(error => {
+            console.error('Error en fetch guardarTaller:', error);
+            this.mostrarError('Error de conexion al guardar.');
+        });
+    },
 
     // carga los datos de un taller en el formulario para editar
     editarTaller: function(id) {
@@ -564,39 +565,39 @@ abrirModalNuevoTaller: function() {
     },
 
     confirmarEliminar: function(id, nombre) {
-    const self = this;
-    Swal.fire({
-        title: '¿Suspender taller?',
-        text: `¿Estás seguro de suspender el taller "${nombre}"?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, suspender',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {self.ejecutarEliminacion(id);}
-    });
-},
+        const self = this;
+        Swal.fire({
+            title: '¿Suspender taller?',
+            text: `¿Estás seguro de suspender el taller "${nombre}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, suspender',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {self.ejecutarEliminacion(id);}
+        });
+    },
 
-ejecutarEliminacion: function(id) {
-    fetch(`/api/taller-cambiar/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(result => {
-        // if (id_estado_taller===4) {
-        //     this.mostrarError(result.message || 'Error al suspender, el taller ya esta "De Baja"');}
-        if (result.success) {
-            this.mostrarExito(result.message || 'Taller suspendido correctamente');
-            this.cargarTalleres();}
-        else {
-            this.mostrarError(result.message || 'Error al suspender');}
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        this.mostrarError('Error de conexión');
-    });
-},
+    ejecutarEliminacion: function(id) {
+        fetch(`/api/taller-cambiar/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(result => {
+            // if (id_estado_taller===4) {
+            //     this.mostrarError(result.message || 'Error al suspender, el taller ya esta "De Baja"');}
+            if (result.success) {
+                this.mostrarExito(result.message || 'Taller suspendido correctamente');
+                this.cargarTalleres();}
+            else {
+                this.mostrarError(result.message || 'Error al suspender');}
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.mostrarError('Error de conexión');
+        });
+    },
     // AQUI VAN LAS UTILIDADES UQE SON LOS MENSAJE, CABE DECIR QUE ESTO ES DE MI CODIGO ANTIGUO ASI QUE TAL VEZ FALLE, POR MIENTRAS AQUI ESTAN
     mostrarExito: function(mensaje) {
         Swal.fire({

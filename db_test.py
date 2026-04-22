@@ -843,7 +843,30 @@ def obtener_profesores(id_profesor=None, nombre_completo=None, id_taller=None, n
         cursor.close()
         conn.close()
 
-def ac_profesor(id_persona,profesion,resumen_curricular,aud_usuario_modifica):
+def ac_profesor(id_persona,
+                nombre_persona,
+                apellido_paterno,
+                apellido_materno,
+                genero,
+                telefono,
+                correo_electronico,
+                telefono_contacto,
+                nombre_contacto,
+                correo_contacto,
+                profesion,
+                resumen_curricular,
+                ind_activo,
+                observacion,
+                id_pais,
+                id_comuna,
+                villa,
+                nro_dpto,
+                nro_block,
+                nro_calle,
+                calle,
+                bloqueado_hasta,
+                aud_usuario_modifica_pt,
+                aud_usuario_modifica_p):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
@@ -851,9 +874,30 @@ def ac_profesor(id_persona,profesion,resumen_curricular,aud_usuario_modifica):
     try:
         query = f"""{{CALL AC_TALLERISTAS(
         {id_persona}, 
+        '{nombre_persona}',
+        '{apellido_paterno}',
+        '{apellido_materno}',
+        '{genero}',
+        '{telefono}',
+        '{correo_electronico}',
+        '{telefono_contacto}',
+        '{nombre_contacto}',
+        '{correo_contacto}',
         '{profesion}', 
         '{resumen_curricular}',
-        '{aud_usuario_modifica}')}}"""
+        {ind_activo},
+        '{observacion}',
+        {id_pais},
+        {id_comuna},
+        '{villa}',
+        '{nro_dpto}',
+        '{nro_block}',
+        '{nro_calle}',
+        '{calle}',
+        '{bloqueado_hasta}',
+        '{aud_usuario_modifica_pt}',
+        '{aud_usuario_modifica_p}')}}"""
+        print(f"DEBUG - : {query}")
         cursor.execute(query)
         conn.commit()
         return True

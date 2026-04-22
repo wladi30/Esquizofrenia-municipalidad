@@ -91,15 +91,15 @@ todo tiene que ser con procedimientos almacenados para mayor seguridad, tambien 
 centremosnos en terminar bien lo de taller
 
 Administracion de talleres
-1.- Revision de inscripciones
-2.- Mantenedores 
-3.- Crud Talleristas
-4.- Crud Talleres
+1.- Revision de inscripciones |
+2.- Mantenedores |
+3.- Crud Talleristas |
+4.- Crud Talleres ||
 5.- Crud inscripciones
 
-6.- Masivo Talleres
-7.- Lista de espera funcional
-8.- Gestion de cupos
+6.- Masivo Talleres |
+7.- Lista de espera funcional |
+8.- Gestion de cupos |
 
 La base de datos que se esta utilizando es sql server 2008 r2 , en el archivo BASE_DE_DATOS.txt esta lo que tengo en sql server, existen mas cosas que son de la base de datos de por si pero si
 necesitas algo me dices, tambien si tienes que hacer cambios en la base de datos me dices con respecto a realizar cambios en las tablas o procedimientos que te estoy entregando, etc 

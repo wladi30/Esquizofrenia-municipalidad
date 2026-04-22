@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Nombre(s) <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="nombre" required>
+                            <input type="text" class="form-control" id="nombrePersona" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Apellido Paterno</label>
@@ -116,17 +116,156 @@
                             <label class="form-label fw-semibold">Correo Electrónico <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="correo" required>
                         </div>
-                        <div class="col-md-6 mb-3">
+                    </div>
+                    
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 1px;">
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
                             <label class="form-label fw-semibold">Teléfono</label>
                             <input type="text" class="form-control" id="telefono">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Profesión</label>
-                            <input type="text" class="form-control" id="profesion">
+                        <div class="col-md-2 mb-1">
+                            <label class="form-label fw-semibold">Edad</label>
+                            <input type="text" class="form-control" id="edad">
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label fw-semibold">Resumen Curricular</label>
-                            <textarea class="form-control" id="resumenCurricular" rows="3"></textarea>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label fw-semibold">Fecha de Nacimiento</label>
+                            <input type="text" class="form-control" id="fechaNacimiento">
+                        </div>
+                        <div class="col-md-2 mb-1">
+                            <label class="form-label fw-semibold">Genero</label>
+                            <input type="text" class="form-control" id="genero">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Profesión</label>
+                        <textarea class="form-control" id="profesion" rows="2" maxlength="500"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Resumen Curricular</label>
+                        <textarea class="form-control" id="resumenCurricular" rows="2" maxlength="500"></textarea>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 5px;">
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Telefono Contacto</label>
+                            <input type="text" class="form-control" id="telefonoContacto">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Nombre Contacto</label>
+                            <input type="text" class="form-control" id="nombreContacto">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Correo Contacto</label>
+                            <input type="text" class="form-control" id="correoContacto">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Observacion</label>
+                            <textarea class="form-control" id="observacion" rows="2" maxlength="500"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Indicador de Actividad</label>
+                            <input type="text" class="form-control" id="indicadorActividad">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Tipo de Usuario</label>
+                            <input type="text" class="form-control" id="tipoUsuario">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="row">
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label fw-semibold">ID del Pais</label>
+                            <input type="text" class="form-control" id="idPais">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label fw-semibold">ID de la Comuna</label>
+                            <input type="text" class="form-control" id="idComuna">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Numero de Departamento</label>
+                            <input type="text" class="form-control" id="numeroDepartamento">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Numero del Block</label>
+                            <input type="text" class="form-control" id="numeroBlock">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Villa</label>
+                            <input type="text" class="form-control" id="villa">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="row">
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label fw-semibold">Numero de la Calle</label>
+                            <input type="text" class="form-control" id="numeroCalle">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Calle</label>
+                            <input type="text" class="form-control" id="calle">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Fecha de Creacion</label>
+                            <input type="text" class="form-control" id="fechaCreacion">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Ultimo Acceso</label>
+                            <input type="text" class="form-control" id="ultimoAcceso">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label fw-semibold">Intento de Inicio Fallidos</label>
+                            <input type="text" class="form-control" id="intentosFallidos">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Bloqueado Hasta</label>
+                            <input type="text" class="form-control" id="bloqueadoHasta">
+                        </div>
+                    </div>
+
+                    <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
+                    
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Usuario que ingreso el taller</label>
+                            <input type="text" class="form-control" id="audUsuarioIngreso">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Fecha del Ingreso</label>
+                            <input type="text" class="form-control" id="audFecIngreso">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación</label>
+                            <input type="text" class="form-control" id="audUsuarioModifica">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Fecha de la ultima modificación</label>
+                            <input type="text" class="form-control" id="audFecModifica">
                         </div>
                     </div>
                 </div>
