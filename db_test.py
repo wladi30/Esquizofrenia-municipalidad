@@ -82,8 +82,8 @@ def autenticar(rut_numerico, dv, password):
         return {"success": False, "message": "Error de conexion a la base de datos"}
     cursor = conn.cursor()
     try:
-        import hashlib
-        contrasena_hash = hashlib.sha256(password.encode()).hexdigest()
+        # import hashlib
+        # contrasena_hash = hashlib.sha256(password.encode()).hexdigest()
         query = """
         SELECT TOP 1
             P.ID_PERSONA,
@@ -101,7 +101,7 @@ def autenticar(rut_numerico, dv, password):
             AND P.IND_ACTIVO = 1
         """
         print(f"DEBUG BD - Bsucando la persona: rut={rut_numerico}, dv={dv}") #probando si llega hasta aqui
-        cursor.execute(query, (rut_numerico,dv,contrasena_hash))
+        cursor.execute(query, (rut_numerico,dv,password))
         row = cursor.fetchone()
         if row:
             nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
@@ -179,50 +179,18 @@ def autenticar_usuario(identificador, password):
     conn.close()
     return {"success": False, "message": "Credenciales incorrectas"}
 
-def autenticar_usuario_simple(identificador, contrasena):
+def autenticar_usuario_simple(usuario,password):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        import hashlib
-        contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
-        query = f"""
-        SELECT TOP 1 
-            P.ID_PERSONA,
-            P.RUT_PERSONA,
-            P.DV_PERSONA,
-            P.NOMBRE_PERSONA,
-            P.APELLIDO_PATERNO,
-            P.APELLIDO_MATERNO,
-            P.CORREO_ELECTRONICO,
-            P.TIPO_USUARIO,
-            ISNULL(E.ID_ESTUDIANTE, PR.ID_PROFESOR) AS ID_ROL
-        FROM SGT_PERSONA P
-        LEFT JOIN SGT_ESTUDIANTE E ON P.ID_PERSONA = E.ID_PERSONA
-        LEFT JOIN SGT_PROFESOR PR ON P.ID_PERSONA = PR.ID_PERSONA
-        WHERE (P.RUT_PERSONA = TRY_CAST('{identificador}' AS NUMERIC) 
-               OR P.CORREO_ELECTRONICO = '{identificador}')
-          AND P.CONTRASENA_HASH = '{contrasena_hash}'
-          AND P.IND_ACTIVO = 1
-        """
-        cursor.execute(query)
+        query = "{CALL AUTENTIFICACION(?, ?)}"
+        cursor.execute(query, (usuario, password))
         row = cursor.fetchone()
         if row:
-            nombre_completo = f"{row[3]} {row[4]} {row[5]}".strip()
-            return {
-                "success": True,
-                "message": "Autenticación exitosa",
-                "datos": {
-                    "ID_PERSONA": row[0],
-                    "RUT_PERSONA": row[1],
-                    "DV_PERSONA": row[2],
-                    "NOMBRE_COMPLETO": nombre_completo,
-                    "CORREO_ELECTRONICO": row[6],
-                    "TIPO_USUARIO": row[7],
-                    "ID_ROL": row[8]
-                }
-            }
+            nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
+            return {"success": True, "message": "Autenticación exitosa", "datos": {"ID_F": row[0], "NOMBRE_COMPLETO": nombre_completo}}
         else:
             return {"success": False, "message": "Usuario o contraseña incorrectos"}  
     except Exception as e:
@@ -920,6 +888,51 @@ def inscribir_profesores(id_persona,profesion,resumen_curricular,aud_usuario_ing
         '{profesion}', 
         '{resumen_curricular}',
         '{aud_usuario_ingreso}'
+        )}}"""
+        cursor.execute(query)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error en INSCRIBIR_TALLERISTAS: {e}")
+        conn.rollback()
+        return {"success": False, "message": str(e)}
+    finally:
+        cursor.close()
+        conn.close()
+
+def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,pi_fec_nacimiento,pi_edad,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
+                         pi_calle,pi_villa,pi_id_comuna,pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,pi_correo_contacto,pi_observacion,
+                         pi_id_usuario,pi_profesion,pi_resumen_curricular):
+    conn = get_connection()
+    if not conn:
+        return {"success": False, "message": "Error de conexión"}
+    cursor = conn.cursor()
+    try:
+        query = f"""{{CALL INSCRIBIR_TALLERISTAS(
+        {pi_rut_profesor}, 
+        '{pi_dv_profesor}', 
+        '{pi_nombre_profesor}',
+        '{pi_apellido_paterno}',
+        '{pi_apellido_materno}',
+        '{pi_fec_nacimiento}',
+        {pi_edad},
+        '{pi_genero}',
+        '{pi_nro_calle}',
+        '{pi_nro_block}',
+        '{pi_nro_dpto}',
+        '{pi_calle}',
+        '{pi_villa}',
+        {pi_id_comuna},
+        {pi_id_pais},
+        '{pi_telefono}',
+        '{pi_correo_electronico}',
+        '{pi_nombre_contacto}',
+        '{pi_telefono_contacto}',
+        '{pi_correo_contacto}',
+        '{pi_observacion}',
+        '{pi_id_usuario}',
+        '{pi_profesion}',
+        '{pi_resumen_curricular}'
         )}}"""
         cursor.execute(query)
         conn.commit()

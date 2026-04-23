@@ -1,6 +1,6 @@
 # https://youtu.be/NgxLGpb38Sk video git sobre sus funciones y como usarlas
 from flask import flash, jsonify, make_response, redirect, url_for, session, redirect, url_for, render_template , Blueprint , request
-from db_test import autenticar
+from db_test import autenticar, autenticar_usuario_simple
 from datetime import datetime
 # aqui no es mucho enrrollo, solo van las rutas principales que seran el dash board junto con otras rutas principales de todos los usuarios que deberian poder acceder
 
@@ -9,10 +9,9 @@ url_principal = Blueprint('url_principal', __name__, template_folder='src/templa
 @url_principal.route("/")
 def index():
     if 'id_usuario' in session:
-        if session.get('tipo_usuario') == 'ADMIN':
-            return redirect(url_for('url_funcionario.funcionario_dashboard'))
-        elif session.get('tipo_usuario') == 'FUNCIONARIO':
-            return redirect(url_for('url_funcionario.funcionario_dashboard'))
+        return redirect(url_for('url_funcionario.funcionario_dashboard'))
+        # elif session.get('tipo_usuario') == 'FUNCIONARIO':
+        #     return redirect(url_for('url_funcionario.funcionario_dashboard'))
     return redirect(url_for('url_principal.pagina_login'))
 
 @url_principal.route('/login-pagina', methods=['GET'])
@@ -42,6 +41,37 @@ def login():
         flash(f'bienvenido, {session["nombre_completo"]}')
         return redirect(url_for('url_funcionario.funcionario_dashboard'))
     return redirect(url_for('url_principal.pagina_login'))
+
+# @url_principal.route('/login', methods=['GET'])
+# def login():
+#     if 'id_usuario' in session:
+#         return redirect(url_for('url_principal.index'))
+    
+
+# @url_principal.route('/api/login', methods=['POST'])
+# def api_login():
+#     try:
+#         datos = request.json
+#         usuario = datos.get('usuario')
+#         password = datos.get('password')
+#         print(f"holaa si llegamos hasta aqui es que recien estamos en el try de api_login")
+#         if not usuario or not  password:
+#             return jsonify({"success": False, "message": "Todos los campos son obligatorios"}), 400
+#         if usuario and password:
+#             resultado = autenticar_usuario_simple(usuario,password)
+#             if resultado['success']:
+#                 datos_usuario = resultado['datos']
+#                 session['id_usuario'] = datos_usuario['ID_F']
+#                 session['nombre_completo'] = datos_usuario['NOMBRE_COMPLETO']
+#                 redirect_url = url_for('url_funcionario.funcionario_dashboard')
+#                 return jsonify({"success": True, "message": "fiumba", "redirect": redirect_url})
+#             else:
+#                 return jsonify({"success": False, "message": resultado.get('message', 'usuario o contraseña incorrectos')})
+#         return jsonify({"success": True, "message": "fiumba", "redirect": redirect_url})
+#     except Exception as e:
+#         import traceback
+#         traceback.print_exc()
+#         return jsonify({"success": False, "message": str(e)}), 500
 
 @url_principal.route('/api/login', methods=['POST'])
 def api_login():
@@ -104,7 +134,7 @@ def api_login():
             "success": False, 
             "message": str(e)
         }), 500
-    
+
 @url_principal.route('/logout')
 def logout():
     session.clear() # esto limpia los datos de la session

@@ -161,14 +161,9 @@ const GestionTalleristas = {
     },
 
     guardar: function() {
-        // const id = document.getElementById('idProfesor').value;
-        // const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
-        // const yearProceso = parseInt(document.getElementById('yearProceso').value);
         const nombre = document.getElementById('nombre').value.trim().toUpperCase();
         const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
         const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
-        const fecha_nacimiento = document.getElementById('fechaNacimiento').value.trim().toUpperCase();
-        const edad = parseInt(document.getElementById('edad').value);
         const genero = document.getElementById('genero').value.trim().toUpperCase();
         const telefono = document.getElementById('telefono').value.trim().toUpperCase();
         const correo = document.getElementById('correo').value.trim().toUpperCase();
@@ -178,7 +173,6 @@ const GestionTalleristas = {
         const profesion = document.getElementById('profesion').value.trim().toUpperCase();
         const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
         const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value);
-        const tipo_usuario = document.getElementById('tipoUsuario').value.trim().toUpperCase();
         const observacion = document.getElementById('observacion').value.trim().toUpperCase();
         const id_pais = parseInt(document.getElementById('idPais').value);
         const id_comuna = parseInt(document.getElementById('idComuna').value);
@@ -187,15 +181,31 @@ const GestionTalleristas = {
         const nro_block = document.getElementById('numeroBlock').value.trim().toUpperCase();
         const nro_calle = document.getElementById('numeroCalle').value.trim().toUpperCase();
         const calle = document.getElementById('calle').value.trim().toUpperCase();
-        const fec_creacion = document.getElementById('fechaCreacion').value.trim().toUpperCase();
-        const ultimo_acceso = document.getElementById('ultimoAcceso').value.trim().toUpperCase();
-        const intentos_fallidos = parseInt(document.getElementById('intentosFallidos').value);
         const bloqueado_hasta = document.getElementById('bloqueadoHasta').value.trim().toUpperCase();
-        const aud_usuario_ingreso = document.getElementById('audUsuarioIngreso').value.trim().toUpperCase();
-        const aud_fec_ingreso = document.getElementById('audFecIngreso').value.trim().toUpperCase();
-        const aud_usuario_modifica = document.getElementById('audUsuarioModifica').value.trim().toUpperCase();
-        const aud_fec_modifica = document.getElementById('audFecModifica').value.trim().toUpperCase();
         
+        const data = {
+            nombre_persona: nombre,
+            apellido_paterno: apellido_paterno,
+            apellido_materno: apellido_materno,
+            genero: genero || 'O',
+            telefono: telefono || '-',
+            correo_electronico: correo || 'prueba@test.cl',
+            telefono_contacto: telefono_contacto || '-',
+            nombre_contacto: nombre_contacto || '-',
+            correo_contacto: correo_contacto || '-',
+            profesion: profesion || '-',
+            resumen_curricular: resumen_curricular || '-',
+            ind_actividad: indicador_actividad,
+            observacion: observacion || '-',
+            id_pais: id_pais || 0,
+            id_comuna: id_comuna || 0,
+            villa: villa || '-',
+            nro_dpto: nro_dpto || '-',
+            nro_block: nro_block || '-',
+            nro_calle: nro_calle || '-',
+            calle: calle || '-',
+            bloqueado_hasta: bloqueado_hasta,
+        }
         if (!data.nombre) {
             this.mostrarError('El nombre es obligatorio');
             return;
@@ -237,37 +247,37 @@ const GestionTalleristas = {
                     const t = result.data;
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
                     document.getElementById('idProfesor').value = t.id_profesor;
-                    document.getElementById('nombrePersona').value = t.NOMBRE_PERSONA;
-                    document.getElementById('apellidoPaterno').value = t.APELLIDO_PATERNO;
-                    document.getElementById('apellidoMaterno').value = t.APELLIDO_MATERNO;
-                    document.getElementById('fechaNacimiento').value = t.FECHA_NACIMIENTO;
-                    document.getElementById('edad').value = t.EDAD;
-                    document.getElementById('genero').value = t.GENERO;
-                    document.getElementById('telefono').value = t.TELEFONO;
-                    document.getElementById('correo').value = t.CORREO_ELECTRONICO;
-                    document.getElementById('telefonoContacto').value = t.TELEFONO_CONTACTO;
-                    document.getElementById('nombreContacto').value = t.NOMBRE_CONTACTO;
-                    document.getElementById('correoContacto').value = t.CORREO_CONTACTO;
-                    document.getElementById('profesion').value = t.PROFESION;
-                    document.getElementById('resumenCurricular').value = t.RESUMEN_CURRICULAR;
-                    document.getElementById('indicadorActividad').value = t.IND_ACTIVO;
-                    document.getElementById('tipoUsuario').value = t.TIPO_USUARIO;
-                    document.getElementById('observacion').value = t.OBSERVACION;
-                    document.getElementById('idPais').value = t.ID_PAIS;
-                    document.getElementById('idComuna').value = t.ID_COMUNA;
-                    document.getElementById('villa').value = t.VILLA;
-                    document.getElementById('numeroDepartamento').value = t.NRO_DPTO;
-                    document.getElementById('numeroBlock').value = t.NRO_BLOCK;
-                    document.getElementById('numeroCalle').value = t.NRO_CALLE;
-                    document.getElementById('calle').value = t.CALLE;
-                    document.getElementById('fechaCreacion').value = t.FEC_CREACION;
-                    document.getElementById('ultimoAcceso').value = t.ULTIMO_ACCESO;
-                    document.getElementById('intentosFallidos').value = t.INTENTOS_FALLIDOS;
-                    document.getElementById('bloqueadoHasta').value = t.BLOQUEADO_HASTA;
-                    document.getElementById('audUsuarioIngreso').value = t.AUD_USUARIO_INGRESO;
-                    document.getElementById('audFecIngreso').value = t.AUD_FEC_INGRESO;
-                    document.getElementById('audUsuarioModifica').value = t.AUD_USUARIO_MODIFICA;
-                    document.getElementById('audFecModifica').value = t.AUD_FEC_MODIFICA;
+                    document.getElementById('nombrePersona').value = t.nombre_persona;
+                    document.getElementById('apellidoPaterno').value = t.apellido_paterno;
+                    document.getElementById('apellidoMaterno').value = t.apellido_materno;
+                    document.getElementById('fechaNacimiento').value = t.fec_nacimiento;
+                    document.getElementById('edad').value = t.edad;
+                    document.getElementById('genero').value = t.genero;
+                    document.getElementById('telefono').value = t.telefono;
+                    document.getElementById('correo').value = t.correo_electronico;
+                    document.getElementById('telefonoContacto').value = t.telefono_contacto;
+                    document.getElementById('nombreContacto').value = t.nombre_contacto;
+                    document.getElementById('correoContacto').value = t.correo_contacto;
+                    document.getElementById('profesion').value = t.profesion;
+                    document.getElementById('resumenCurricular').value = t.resumen_curricular;
+                    document.getElementById('indicadorActividad').value = t.ind_actividad;
+                    document.getElementById('tipoUsuario').value = t.tipo_usuario;
+                    document.getElementById('observacion').value = t.observacion;
+                    document.getElementById('idPais').value = t.id_pais;
+                    document.getElementById('idComuna').value = t.id_comuna;
+                    document.getElementById('villa').value = t.villa;
+                    document.getElementById('numeroDepartamento').value = t.nro_dpto;
+                    document.getElementById('numeroBlock').value = t.nro_block;
+                    document.getElementById('numeroCalle').value = t.nro_calle;
+                    document.getElementById('calle').value = t.calle;
+                    document.getElementById('fechaCreacion').value = t.fec_creacion;
+                    document.getElementById('ultimoAcceso').value = t.ultimo_acceso;
+                    document.getElementById('intentosFallidos').value = t.intentos_fallidos;
+                    document.getElementById('bloqueadoHasta').value = t.bloqueado_hasta;
+                    document.getElementById('audUsuarioIngreso').value = t.aud_usuario_ingreso;
+                    document.getElementById('audFecIngreso').value = t.aud_fec_ingreso;
+                    document.getElementById('audUsuarioModifica').value = t.aud_usuario_modifica;
+                    document.getElementById('audFecModifica').value = t.aud_fec_modifica;
                     new bootstrap.Modal(document.getElementById('modalTallerista')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el tallerista');
