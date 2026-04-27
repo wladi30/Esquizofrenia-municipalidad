@@ -179,26 +179,118 @@ def autenticar_usuario(identificador, password):
     conn.close()
     return {"success": False, "message": "Credenciales incorrectas"}
 
-def autenticar_usuario_simple(usuario,password):
+# este es el sin hash , lo usare por mientras por que no quiero complicar las cosas al momento de ingresar a la pagina
+# def autenticar_simple(identificador,contrasena):
+#     print(f"DEBUG - : identificador{type(identificador)}, {(identificador)}")
+#     print(f"DEBUG - : contrasena{type(contrasena)}, {(contrasena)}")
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexión"}
+#     cursor = conn.cursor()
+#     try:
+#         query = "{CALL AUTENTIFICACION_SIN_HASH(?, ?)}"
+#         cursor.execute(query, (identificador, contrasena))
+#         # row = cursor.fetchone()
+#         # if row:
+#         #     nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
+#         #     return {"success": True, "message": "Autenticación exitosa", "datos": {"ID_F": row[0], "NOMBRE_COMPLETO": nombre_completo}}
+#         # else:
+#         #     return {"success": False, "message": "Usuario o contraseña incorrectos"}  
+#     except Exception as e:
+#         print(f"Error en autenticación: {e}")
+#         return {"success": False, "message": "Error en el servidor"}
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# def autenticar_simple(rut, dv, contrasena):
+#     print(f"DEBUG - autenticar_simple({rut}, {dv}, ***)")
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexión"}
+#     cursor = conn.cursor()
+#     try:
+#         cursor.execute("{CALL AUTENTIFICACION_SIN_HASH(?, ?, ?)}", (rut, dv, contrasena))
+#         row = cursor.fetchone()
+#         if row and row.EXITO == 1:
+#             return {"success": True,"datos": {"ID_F": row.ID_F,"NOMBRE_COMPLETO": row.NOMBRE}}
+#         else:
+#             mensaje = row.MENSAJE if row else "Error desconocido"
+#             return {"success": False, "message": mensaje}
+#     except Exception as e:
+#         print(f"Error en autenticación: {e}")
+#         return {"success": False, "message": "Error interno del servidor"}
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+def autenticar_simple(rut, dv, contrasena):
+    print(f"DEBUG - autenticar_simple({type(rut)},{rut}, {type(dv)},{dv}, ***)")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = "{CALL AUTENTIFICACION(?, ?)}"
-        cursor.execute(query, (usuario, password))
+        cursor.execute("{CALL AUTENTIFICACION_SIMPLE(?, ?, ?)}", (rut, dv, contrasena))
         row = cursor.fetchone()
-        if row:
-            nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
-            return {"success": True, "message": "Autenticación exitosa", "datos": {"ID_F": row[0], "NOMBRE_COMPLETO": nombre_completo}}
+        if row and row.EXITO == 1:
+            return {"success": True,  "datos": {"ID_F": row.ID_F, "NOMBRE_COMPLETO": row.NOMBRE}}
         else:
-            return {"success": False, "message": "Usuario o contraseña incorrectos"}  
+            mensaje = row.MENSAJE if row else "Error desconocido"
+            return {"success": False, "message": mensaje}
     except Exception as e:
-        print(f"Error en autenticación: {e}")
-        return {"success": False, "message": "Error en el servidor"}
+        print(f"Error: {e}")
+        return {"success": False, "message": "Error interno"}
     finally:
         cursor.close()
         conn.close()
+
+# def validar_rut(rut_str,dv_ingresado):
+#     # un validor del digito verificador del ruf, no lo pongo en el js por que nmguta js
+#     # conn = get_connection()
+#     # if not conn:
+#     #     return {"success": False, "message": "error de conexion"}
+#     # cursor = conn.cursor()
+#     try:
+#         # aqui se vienen un monton de matematicas
+#         suma = 0
+#         multiplicador = 2
+#         for digito in reversed(rut_str):
+#             suma += int(digito) * multiplicador
+#             multiplicador = 9 if multiplicador == 7 else multiplicador + 1
+#         resto = suma % 11
+#         dv_esperado = 11 - resto
+
+#         if dv_esperado == 11:
+#             dv_esperado = '0'
+#         elif dv_esperado == 10:
+#             dv_esperado = 'K'
+#         else:
+#             dv_esperado = str(dv_esperado)
+#         return dv_esperado == dv_ingresado.upper()
+#     except:
+#         return False
+
+# def validar_dv_rut(rut_str, dv_ingresado):
+#     """Recibe el RUT sin DV (solo números) y el DV ingresado. Retorna True si coincide."""
+#     try:
+#         # Algoritmo del módulo 11
+#         suma = 0
+#         multiplicador = 2
+#         for digito in reversed(rut_str):
+#             suma += int(digito) * multiplicador
+#             multiplicador = 9 if multiplicador == 7 else multiplicador + 1
+#         resto = suma % 11
+#         dv_esperado = 11 - resto
+#         if dv_esperado == 11:
+#             dv_esperado = '0'
+#         elif dv_esperado == 10:
+#             dv_esperado = 'K'
+#         else:
+#             dv_esperado = str(dv_esperado)
+#         return dv_esperado == dv_ingresado.upper()
+#     except:
+#         return False
 
 #--REGISTRAR PERSONAS--
 def registrar_persona(rut_persona,dv_persona,nombre_persona,apellido_paterno,apellido_materno,fec_nacimiento, genero, telefono, correo, contrasena, tipo_usuario='ESTUDIANTE', pasaporte=None, calle=None, nro_calle=None, id_comuna=None, id_pais=None):
@@ -785,23 +877,12 @@ def ver_profesor(id_profesor):
         conn.close()
 
 def obtener_profesores(id_profesor=None, nombre_completo=None, id_taller=None, nombre_taller=None, profesion=None, correo_electronico=None):
-    # basicamente copie el tema de obtener_talleres, el principio es el mismo, lo que necesito es mostrar una lista de todos los talleristas
-    # en el procedimiento tambien se ven muy parecidos, por lo cual es como si fueran lo mismo, eso si lo que quiero hacer es que en un momento
-    # es tambien poner que se le vean el historial de talleres a su vez en talleres(la pag) tambien se pueda ver su tallerista
-    # print(f"DEBUG - : id_profesor{type(id_profesor)}, {(id_profesor)}")
-    # print(f"DEBUG - : nombre_completo{type(nombre_completo)}, {(nombre_completo)}")
-    # print(f"DEBUG - : id_taller{type(id_taller)}, {(id_taller)}")
-    # print(f"DEBUG - : nombre_taller{type(nombre_taller)}, {(nombre_taller)}")
-    # print(f"DEBUG - : profesion{type(profesion)}, {(profesion)}")
-    # print(f"DEBUG - : correo_electronico{type(correo_electronico)}, {(correo_electronico)}")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor  = conn.cursor()
     try:
         cursor.execute("{CALL LISTAR_TALLERISTAS_FILTRADOS(?, ?, ?, ?, ?, ?)}",(id_profesor,nombre_completo,id_taller,nombre_taller,profesion,correo_electronico))
-        # if cursor == True:
-        #     print(f"Si se ve este mensaje entonces el cursor le llegaron datos")
         columns = [c[0] for c in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
     except Exception as e:

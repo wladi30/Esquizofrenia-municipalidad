@@ -7,3 +7,22 @@ DEBUG - : profesion<class 'NoneType'>, None
 DEBUG - : correo_electronico<class 'NoneType'>, None
 Error en la obtener_profesores: 'builtin_function_or_method' object is not iterable
 - Error Solucionado
+
+27/04 8:27 - "Forbidden You don't have the permission to access the requested resource. It is either read-protected or not readable by the server."
+DEBUG - hola este es el debug n°desconocido , aqui se intentara hacer un login con el rut y dv: rut=99999999, dv=9
+DEBUG BD - Bsucando la persona: rut=99999999, dv=9
+DEBUG - hola esto es para probar si tenemos un problema con las cosas del usuario, usuario no encontrado
+DEBUG BD - El usuario no existe en la BD
+DEBUG - hola este es el debug n°desconocido , aqui se intentara hacer un login con el rut y dv: rut=10000000, dv=8
+DEBUG BD - Bsucando la persona: rut=10000000, dv=8
+127.0.0.1 - - [27/Apr/2026 08:24:06] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2026 08:24:06] "GET /dashboard HTTP/1.1" 403 -
+- Error Solucionado
+
+27/04 16:59 - "El error de inicio de sesion sigue vigente"
+127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /login-pagina HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /static/css/login.css HTTP/1.1" 304 -
+127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /static/sm_5b348d4c557a7.png HTTP/1.1" 304 -
+127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /static/js/login.js HTTP/1.1" 200 -
+- Voy a probar cambiar el PROCEDIMIENTO en sql

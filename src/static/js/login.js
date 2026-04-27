@@ -85,57 +85,63 @@ function validarRut(rutCompleto) {
 
 // aqui un document para mandar el envio del formulario
 document.getElementById('loginForm').addEventListener('submit', function (e) {
+    console.time('submit-handler');
     e.preventDefault();
     const btn = document.querySelector('.btn-login');
     const originalText = btn.innerHTML;
-
     const rutInput = document.getElementById('identificador');
     const passwordInput = document.getElementById('password');
     // aqui valido el rut antes de enviarlo a la base de datos todo sanitizado my sangre
-    if (!rutInput.value.trim()) {
-        alert('Por favor ingrese su RUT');
+    if (!rutInput.value.trim()) {alert('Por favor ingrese su RUT');
         rutInput.focus();
         return;
     }
     //mensaje de alerta que pide ingresar el rut
-    if (!validarRut(rutInput.value)) {
-        alert('Rut Invalido. por favor ingrese un RUT valido (EJ: 12.345.678-9 o 1.234.567-8');
+    if (!validarRut(rutInput.value)) {alert('RUT inválido. Ejemplo: 12.345.678-9');
         rutInput.focus();
         return;
     }
-    if (!passwordInput.value.trim()) {
-        alert('ingrese alguna contraseña');
+    if (!passwordInput.value.trim()) {alert('Ingrese la contraseña');
         passwordInput.focus();
         return;
     }
     //aqui le estoy requiriendo al usuario que ingrese alguna contraseña
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...';
     btn.disabled = true;
-    //innerHTML siempre me da problemas, no se por que/es autoexplicativo , spinner y desactiva el boton
+    //innerHTML siempre me da problemas, no se por que. Es autoexplicativo , spinner y desactiva el boton
     let rutLimpio = rutInput.value.replace(/[.-]/g,'');
     let rut = rutLimpio.slice(0,-1); //espero esto se entienda, aqui basicamente estoy separando el cuerpo del digito ya sea 7 u 8
     let dv = rutLimpio.slice(-1); // aqui solo seteo el dv
-    const data = {
-        rut: rut,
-        dv: dv,
-        password: passwordInput.value
-    };
+    const data = { rut: rut, dv: dv, password: passwordInput.value };
     // aqui hago un envio del rut y el dv por separado
     console.log('Enviando sus datos:', { rut: rut, dv: dv, password: '******'}); // HOLAAAAA esto es para debug y ver si todo llega bien
-    fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    }) //yico yico fetch mi amigo que no siempre me sirve pero siempre esta
-    .then(response => {
+    fetch('/api/login', {method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify(data)})
+    //yico yico fetch mi amigo que no siempre me sirve pero siempre esta
+    // .then(response => {
+    //     if (!response.ok) {
+    //         return response.json().then(err => { throw err;});
+    //     }
+    //     return response.json();
+    // }) // this may be converted to my bolas no va a pasar, en el mejor de lo casos
+    .then(async response =>{
+        const contentType = response.headers.get('content-type');
         if (!response.ok) {
-            return response.json().then(err => { throw err;});
+            if (contentType && contentType.includes('application/json')) {const errorData = await response.json();
+                throw new Error(errorData.message || `Error ${response.status}`);
+            }
+            else {
+                const text = await response.text();
+                console.error('Respuesta no-JSON:', text.substring(0, 200));
+                throw new Error('Error del servidor');
+            }
         }
-        return response.json();
-    }) // this may be converted to my bolas no va a pasar, en el mejor de lo casos
+        if (contentType && contentType.includes('application/json')) {return response.json();
+        }
+        else {throw new Error('Respuesta invalida del servidor');
+        }
+    })
     .then(data => {
-        if (data.success) {
-            window.location.href = data.redirect || '/funcionario/dashboard';
+        if (data.success) {window.location.href = data.redirect;
         }
         else {
             alert(data.message || 'error al inicar sesion');
@@ -144,39 +150,36 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
             // restaura el boton , si no qued a stuck
         }
     })
-    fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    // fetch('/api/login', {method: 'POST',headers: { 'Content-Type': 'application/json' },body: JSON.stringify(data)
     //hice mas complejo el tema de atrapar los errores por que el anterior resulto ser pija corta
-    })
-    .then(async response => {
-        const contentType = response.headers.get('content-type');
-        if (!response.ok) {
-            if (contentType && contentType.includes('application/json')) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Error ${response.status}`);
-            } else {
-                const text = await response.text();
-                console.error('Respuesta no-JSON:', text.substring(0, 200));
-                throw new Error('Error del servidor');
-            }
-        }
-        if (contentType && contentType.includes('application/json')) {
-            return response.json();
-        } else {
-            throw new Error('Respuesta invalida del servidor');
-        }
-    })
-    .then(data => {
-        if (data.success) {
-            window.location.href = data.redirect || '/funcionario/dashboard';} 
-        else {
-            alert(data.message || 'Error al iniciar sesion');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
-    })
+    // })
+    // .then(async response => {
+    //     const contentType = response.headers.get('content-type');
+    //     if (!response.ok) {
+    //         if (contentType && contentType.includes('application/json')) {
+    //             const errorData = await response.json();
+    //             throw new Error(errorData.message || `Error ${response.status}`);
+    //         } else {
+    //             const text = await response.text();
+    //             console.error('Respuesta no-JSON:', text.substring(0, 200));
+    //             throw new Error('Error del servidor');
+    //         }
+    //     }
+    //     if (contentType && contentType.includes('application/json')) {
+    //         return response.json();
+    //     } else {
+    //         throw new Error('Respuesta invalida del servidor');
+    //     }
+    // })
+    // .then(data => {
+    //     if (data.success) {
+    //         window.location.href = data.redirect || '/funcionario/dashboard';} 
+    //     else {
+    //         alert(data.message || 'Error al iniciar sesion');
+    //         btn.innerHTML = originalText;
+    //         btn.disabled = false;
+    //     }
+    // })
     .catch(error => {
         console.error('Error detallado:', error);
         let mensajeError = 'Error de conexion. ';
@@ -189,7 +192,8 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         btn.innerHTML = originalText;
         btn.disabled = false;
     });
-})
+    console.timeEnd('submit-handler');
+});
 
 // window.location.href = '/api/taller-ac/<int:id_taller>';
 // window.location.href = 'funcionario/administracion_taller.html';

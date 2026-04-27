@@ -34,7 +34,7 @@ def funcionario_required(f):
             return redirect(url_for('url_principal.pagina_login'))
         if session.get('tipo_usuario') != 'FUNCIONARIO':
             flash('acceso denegado.', 'danger')
-            abort(403)
+            # abort(403)
             #en el caso de que el usuario no sea el funcionario le deberia tirar el abord para sacarlo
         return f(*args, **kwargs)
     return funcionario_decorated
