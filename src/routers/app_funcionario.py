@@ -15,6 +15,7 @@ from db_test import (
     cambiar_estado_taller_de_baja,
     inscribir_el_taller,
     inscribir_taller_o_espera,
+    inscribir_talleristas,
     # obtener_historial_talleres_por_tallerista,
     obtener_profesores,
     obtener_estudiantes_por_taller,
@@ -460,29 +461,30 @@ def api_crear_tallerista():
     try:
         data = request.json
         usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-        from db_test import insertar_tallerista
-        resultado = insertar_tallerista(
-            nombre_persona=data.get('nombre_persona', ''),
-            apellido_paterno=data.get('apellido_paterno', ''),
-            apellido_materno=data.get('apellido_materno', ''),
-            genero=data.get('genero', 'O'),
-            telefono=data.get('telefono', ''),
-            correo_electronico=data.get('correo_electronico', ''),
-            telefono_contacto=data.get('telefono_contacto', ''),
-            nombre_contacto=data.get('nombre_contacto', ''),
-            correo_contacto=data.get('correo_contacto', ''),
-            profesion=data.get('profesion', ''),
-            resumen_curricular=data.get('resumen_curricular', ''),
-            ind_activo=data.get('ind_activo', 1),
-            observacion=data.get('observacion', ''),
-            id_pais=data.get('id_pais', 1),
-            id_comuna=data.get('id_comuna', 1),
-            villa=data.get('villa', ''),
-            nro_dpto=data.get('nro_dpto', ''),
-            nro_block=data.get('nro_block', ''),
-            nro_calle=data.get('nro_calle', ''),
-            calle=data.get('calle', ''),
-            aud_usuario_ingreso=usuario_ingreso
+        resultado = inscribir_talleristas(
+            pi_rut_profesor=data.get('rut_profesor'),
+            pi_dv_profesor=data.get('dv_profesor'),
+            pi_nombre_profesor=data.get('nombre_persona', ''),
+            pi_apellido_paterno=data.get('apellido_paterno', ''),
+            pi_apellido_materno=data.get('apellido_materno', ''),
+            pi_fec_nacimiento=data.get('fec_nacimiento', '1900-01-01 00:00:00.001'),
+            pi_genero=data.get('genero', 2),
+            pi_nro_calle=data.get('nro_calle', ''),
+            pi_nro_block=data.get('nro_block', ''),
+            pi_nro_dpto=data.get('nro_dpto', ''),
+            pi_calle=data.get('calle', ''),
+            pi_villa=data.get('villa', ''),
+            pi_id_comuna=data.get('id_comuna', 1),
+            pi_id_pais=data.get('id_pais', 1),
+            pi_telefono=data.get('telefono', ''),
+            pi_correo_electronico=data.get('correo_electronico', ''),
+            pi_nombre_contacto=data.get('nombre_contacto', ''),
+            pi_telefono_contacto=data.get('telefono_contacto', ''),
+            pi_correo_contacto=data.get('correo_contacto', ''),
+            pi_observacion=data.get('observacion', ''),
+            pi_profesion=data.get('profesion', ''),
+            pi_resumen_curricular=data.get('resumen_curricular', ''),
+            pi_id_usuario=usuario_ingreso
         )
         if resultado.get('success'):
             return jsonify({"success": True, "message": resultado.get('message'), "id_profesor": resultado.get('id_profesor')}), 201

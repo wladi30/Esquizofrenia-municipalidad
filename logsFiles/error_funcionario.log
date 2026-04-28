@@ -306,3 +306,15 @@
 2026-04-20 13:43:11 | Thread-25 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ got an unexpected keyword argument _nombre_completo_
 2026-04-20 13:44:03 | Thread-7 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ got an unexpected keyword argument _nombre_completo_
 2026-04-20 13:46:48 | Thread-7 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_tallerista_lista_ obtener_profesores__ got an unexpected keyword argument _id_taller_
+2026-04-28 15:00:49 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ cannot import name _insertar_tallerista_ from _db_test_ _C__Users_arias_Escritorio_flask_app_db_test.py_
+2026-04-28 15:02:12 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _nombre_persona_
+2026-04-28 15:05:33 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _nombre_persona_
+2026-04-28 15:06:37 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _nombre_persona_
+2026-04-28 15:07:12 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _nombre_persona_
+2026-04-28 15:07:32 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _nombre_persona_
+2026-04-28 15:08:18 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _apellido_paterno_. Did you mean _pi_apellido_paterno__
+2026-04-28 15:13:54 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ missing 3 required positional arguments_ _pi_rut_profesor_, _pi_dv_profesor_, and _pi_edad_
+2026-04-28 15:15:17 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ missing 1 required positional argument_ _pi_edad_
+2026-04-28 15:15:31 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ missing 1 required positional argument_ _pi_edad_
+2026-04-28 15:15:44 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-28 15:18:55 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_

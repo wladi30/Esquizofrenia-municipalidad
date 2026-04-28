@@ -786,15 +786,15 @@ def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno,
 #         cursor.close()
 #         conn.close()
 
-def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,pi_fec_nacimiento,pi_edad,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
-                         pi_calle,pi_villa,pi_id_comuna,pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,pi_correo_contacto,pi_observacion,
-                         pi_id_usuario,pi_profesion,pi_resumen_curricular):
+def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,pi_fec_nacimiento,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
+                        pi_calle,pi_villa,pi_id_comuna,pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,pi_correo_contacto,pi_observacion,
+                        pi_id_usuario,pi_profesion,pi_resumen_curricular):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL INSCRIBIR_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+        cursor.execute("{CALL INSCRIBIR_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
         (
         pi_rut_profesor, 
         pi_dv_profesor, 
@@ -802,7 +802,6 @@ def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_a
         pi_apellido_paterno,
         pi_apellido_materno,
         pi_fec_nacimiento,
-        pi_edad,
         pi_genero,
         pi_nro_calle,
         pi_nro_block,

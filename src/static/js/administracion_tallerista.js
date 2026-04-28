@@ -13,12 +13,6 @@ const GestionTalleristas = {
         }
     },
 
-    mapearGenero: function(codigo) {
-        if (codigo === undefined || codigo === null) return 'No especificado';
-        const mapa = { 0: 'Masculino', 1: 'Femenino', 2: 'Otro' };
-        return mapa[codigo] || 'No especificado';
-    },
-
     inicializando: function() {
         this.cargarLista();
         this.cargarGeneroSelect();
@@ -197,6 +191,8 @@ const GestionTalleristas = {
 
     guardar: function() {
         const id = document.getElementById('talleristaId').value;
+        const RutProfesor = document.getElementById('rutProfesor').value;
+        const DvProfesor = document.getElementById('dvProfesor').value;
         const nombre = document.getElementById('nombrePersona').value.trim().toUpperCase();
         const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
         const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
@@ -222,6 +218,8 @@ const GestionTalleristas = {
         if (!correo) { this.mostrarError('El correo es obligatorio'); return; }
 
         const data = {
+            rut_profesor: RutProfesor,
+            dv_profesor: DvProfesor,
             nombre_persona: nombre,
             apellido_paterno: apellido_paterno,
             apellido_materno: apellido_materno,
@@ -320,7 +318,6 @@ const GestionTalleristas = {
                 if (result.success) {
                     const t = result.data;
                     console.log("Datos del tallerista:", t);
-                    const generoTexto = this.mapearGenero(t.GENERO);
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
@@ -335,7 +332,7 @@ const GestionTalleristas = {
                                     <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
                                     <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
                                     <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${generoTexto || 'No registrado'}</td></tr>
+                                    <tr><th>Genero:</th><td>${t.genero || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
