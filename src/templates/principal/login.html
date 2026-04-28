@@ -18,7 +18,7 @@
                 <!-- LOGO Y TITULO(LOGO AUN SE TIENE QUE CAMBIAR, PUSE UNA FOTO DE MI GATA GUTS POR MIENTRAS) -->
                 <!-- ya no es la guts , ahora es un arbol png no png -->
                 <div class="text-center mb-4">
-                    <img src="{{ url_for('static', filename='sm_5b348d4c557a7.png') }}" alt="Municipalidad de Quilicura" class="img-fluid rounded-circle mb-3" style="max-width: 120px; height: auto;">
+                    <img src="{{ url_for('static', filename='logoEscudo.png') }}" alt="Municipalidad de Quilicura" class="img-fluid mb-3" style="max-width: 120px; height: auto;">
                     <h2 class="h5 text-secondary mb-1">Municipalidad de Quilicura</h2>
                     <h1 class="h3 text-primary fw-bold">Administracion de Talleres</h1>
                 </div>
@@ -63,9 +63,9 @@
                                         <i class="bi bi-lock"></i>
                                     </span>
                                     <input type="password" class="form-control form-control-lg" id="password" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
-                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
+                                    <!-- <button class="btn btn-outline-secondary" type="button" id="togglePassword"> -->
+                                        <!-- <i class="bi bi-eye"></i> -->
+                                    <!-- </button> -->
                                 </div>
                                 <div class="form-text text-muted small">
                                     <i class="bi bi-shield-check"></i>
@@ -73,12 +73,12 @@
                                 </div>
                             </div>
                             <!-- lo que hace esto es hacer uqe el sistema recuerde las credenciales y mantenga las credenciales del usuario entre sesiones -->
-                            <div class="mb-4 form-check">
+                            <!-- <div class="mb-4 form-check">
                                 <input type="checkbox" class="form-check-input" id="recordar">
                                 <label class="form-check-label small" for="recordar">
                                     Recordar mi usuario
                                 </label>
-                            </div>
+                            </div> -->
                             <!-- Boton del login -->
                             <button type="submit" class="btn btn-primary btn-lg w-100 btn-login" id="btnLogin">
                                 <i class="bi bi-box-arrow-in-right me-2"></i>
@@ -92,6 +92,8 @@
                         <small class="text-muted">
                             <i class="bi bi-building me-1"></i>
                         </small>
+                    <!-- aqui hace no mucho rato le tenia puesto todo los derechos reservados y fono con gmail de contacto por si acaso algo ocurre, pero viendo que es de los
+                    funcionarios asumi que si ocurre algun problema bueno solo mandan ticket y listo, asi que deje el edificio pq si -->
                     </div>
                 </div>
             </div>
@@ -123,7 +125,7 @@
                             <i class="bi bi-2-circle-fill text-primary me-2"></i>
                             <strong>Contraseña:</strong> Ingrese la contraseña asignada por el sistema
                             <br>
-                            <small class="text-muted ms-4">Mínimo 6 caracteres</small>
+                            <small class="text-muted ms-4">Minimo 6 caracteres</small>
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-3-circle-fill text-primary me-2"></i>
@@ -135,7 +137,7 @@
                     <p class="mb-0 small">
                         <i class="bi bi-envelope me-1"></i> <strong>Mesa de ayuda:</strong> amigo@cagaste.cl
                         <br>
-                        <i class="bi bi-telephone me-1"></i> <strong>Teléfono:</strong> +56 2 2345 6789
+                        <i class="bi bi-telephone me-1"></i> <strong>Telefono:</strong> +56 2 2345 6789
                     </p>
                 </div>
                 <!-- el boton para cerrar -->
@@ -152,18 +154,18 @@
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
     <!-- este scrip de aqui abajo es para hacer un toggle en la contraseña, basicamente el poder ver los caracteres o ocultarlos -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const togglePassword = document.getElementById('togglePassword');
-            const password = document.getElementById('password');
-            togglePassword.addEventListener('click', function() {
-                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                password.setAttribute('type', type);
-                // aqui esta el cambio del icono, el ojito ese
-                const icon = this.querySelector('i');
-                icon.classList.toggle('bi-eye');
-                icon.classList.toggle('bi-eye-slash');
-            });
-        });
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const togglePassword = document.getElementById('togglePassword');
+        //     const password = document.getElementById('password');
+        //     togglePassword.addEventListener('click', function() {
+        //         const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        //         password.setAttribute('type', type);
+        //         // aqui esta el cambio del icono, el ojito ese
+        //         const icon = this.querySelector('i');
+        //         icon.classList.toggle('bi-eye');
+        //         icon.classList.toggle('bi-eye-slash');
+        //     });
+        // });
     </script>
 </body>
 </html>

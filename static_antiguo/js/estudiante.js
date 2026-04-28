@@ -138,12 +138,12 @@
 //     //         const response = await fetch('/api/categorias');
 //     //         console.log('DEBUG - Response status:', response.status);
 //     //         const data = await response.json();
-//     //         console.log('DEBUG - Datos de categorías:', data);
+//     //         console.log('DEBUG - Datos de categorias:', data);
 //     //         if (data.success && Array.isArray(data.categorias)) {
 //     //             const categoriaSelect = document.getElementById('categoria');
 //     //             if (categoriaSelect) {
-//     //                 console.log('DEBUG - Select de categorías encontrado');
-//     //                 let opciones = '<option value="">TODAS LAS CATEGORÍAS</option>';
+//     //                 console.log('DEBUG - Select de categorias encontrado');
+//     //                 let opciones = '<option value="">TODAS LAS CATEGORiAS</option>';
 //     //                 data.categorias.forEach(c => {
 //     //                     const id = c.ID_CATEGORIA || c.id_categoria;
 //     //                     const desc = c.DESCRIPCION_CATEGORIA || c.descripcion_categoria;
@@ -227,7 +227,7 @@
 //                 <div class="empty-state">
 //                     <i class="bi bi-inbox"></i>
 //                     <h4>No hay talleres disponibles</h4>
-//                     <p>Intenta ajustar los filtros de búsqueda</p>
+//                     <p>Intenta ajustar los filtros de busqueda</p>
 //                 </div>
 //             `;
 //             return;
@@ -475,7 +475,7 @@
 //             container.innerHTML = `
 //                 <div class="empty-state">
 //                     <i class="bi bi-journal-x"></i>
-//                     <h4>No estás inscrito en ningún taller</h4>
+//                     <h4>No estas inscrito en ningun taller</h4>
 //                     <p>Visita la seccion de talleres disponibles para inscribirte</p>
 //                     <a href="/estudiante/talleres" class="action-btn btn-inscribir" style="display: inline-block; margin-top: 20px;">
 //                         Ver talleres disponibles
@@ -565,7 +565,7 @@
 //       }
 
 //     cerrarSesion() {
-//         if (confirm('¿Estás seguro de que deseas cerrar sesion?')) {
+//         if (confirm('¿Estas seguro de que deseas cerrar sesion?')) {
 //             window.location.href = '/logout';
 //         }
 //     }

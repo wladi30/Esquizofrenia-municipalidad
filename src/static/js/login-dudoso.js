@@ -15,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         return;
     }
     // esto hace que se tenga que ingresar un rut en el caso de que no ponga nada
-    if (!validarRut(rutInput.value)) {alert('RUT inválido. Ejemplo: 12.345.678-9');
+    if (!validarRut(rutInput.value)) {alert('RUT invalido. Ejemplo: 12.345.678-9');
         rutInput.focus();
         return;
     }
@@ -55,7 +55,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         }
         if (contentType && contentType.includes('application/json')) {return response.json();
         } 
-        else {throw new Error('Respuesta inválida del servidor');
+        else {throw new Error('Respuesta invalida del servidor');
         }
     })
     .then(data => {

@@ -11,7 +11,7 @@ if (typeof data !== 'undefined' && data !== null) {
 } else {
     // esto lo hice para que no mandara un error cada vez que se accede a una nueba pagina, el general,js se le tira un llamado desde base.html el cual lo tienen con extendes todos
     // asi que puede ser algo molesto ver que el error sale todo el rato
-    console.warn("La variable 'data' no está definida en esta página.");
+    console.warn("La variable 'data' no esta definida en esta pagina.");
 }
 // Aqui doy inicio al js principal que se encargara de casi todo sobre administracion de talleres
 
@@ -64,7 +64,7 @@ const GestionTalleres = {
                 const selectsModal = document.querySelectorAll('.select-categoria');
                 // aqui lo que hago (ademas de ponerle un texto para mayor indicacion) le coloco un valor por default , si no tiene esto puede dar un error
                 selectsModal.forEach(select => {
-                    select.innerHTML = '<option value="">Seleccione categoría...</option>';
+                    select.innerHTML = '<option value="">Seleccione categoria...</option>';
                     data.forEach(cat => { 
                         // hago uso de la id categoria y descripcion de la base dedatos, podria tambien usdar las que tengo creadas en mi app de funcionario
                         const option = document.createElement('option');
@@ -75,7 +75,7 @@ const GestionTalleres = {
                 });
                 const selectsFiltro = document.querySelectorAll('.select-categoria-filtro');
                 selectsFiltro.forEach(select => {
-                    select.innerHTML = '<option value="">Todas las categorías</option>';
+                    select.innerHTML = '<option value="">Todas las categorias</option>';
                     data.forEach(cat => {
                         const option = document.createElement('option');
                         option.value = cat.ID_CATEGORIA;
@@ -86,8 +86,8 @@ const GestionTalleres = {
             })
         // un catch simplemente, tal vez le podria poner un log para mas debug?
         .catch(error => {
-            console.error('Error cargando categorías:', error);
-            this.mostrarError('No se pudieron cargar las categorías.');
+            console.error('Error cargando categorias:', error);
+            this.mostrarError('No se pudieron cargar las categorias.');
         });
     },
 
@@ -126,7 +126,7 @@ const GestionTalleres = {
         document.getElementById('busqueda_lugar').value = '';
         document.getElementById('busqueda_nombre').value = '';
         
-        // Limpiar el select de categoría filtro
+        // Limpiar el select de categoria filtro
         const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
         if (selectCategoriaFiltro) {
             selectCategoriaFiltro.value = '';
@@ -348,7 +348,7 @@ const GestionTalleres = {
     },
 
     guardarTaller: function() {
-        // const id = document.getElementById('tallerId').value;
+        const id = document.getElementById('tallerId').value;
         const selectCategoriaModal = document.querySelector('.select-categoria');
         const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
         const yearProceso = parseInt(document.getElementById('yearProceso').value);
@@ -491,7 +491,7 @@ const GestionTalleres = {
                                     <tr><th>ID:</th><td>${t.id_taller}</td></tr>
                                     <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
                                     <tr><th>Año del Proceso:</th><td>${t.year_proceso}</td></tr>
-                                    <tr><th>Categoría:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
+                                    <tr><th>Categoria:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
                                     <tr><th>Lugar:</th><td>${t.lugar}</td></tr>
                                     <tr><th>Estado:</th><td>${estadoBadge}</td></tr>
                                 </table>
@@ -514,13 +514,13 @@ const GestionTalleres = {
                                     <tr><th>Inscritos:</th><td>${inscritos}</td></tr>
                                     <tr><th>Maximo:</th><td>${maximo}</td></tr>
                                     <tr><th>Disponibles:</th><td class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</td></tr>
-                                    <tr><th>Mínimo:</th><td>${t.minimo_estudiante}</td></tr>
+                                    <tr><th>Minimo:</th><td>${t.minimo_estudiante}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Requisitos de Edad</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Edad Mínima:</th><td>${t.edad_minima} años</td></tr>
+                                    <tr><th>Edad Minima:</th><td>${t.edad_minima} años</td></tr>
                                     <tr><th>Edad Maxima:</th><td>${t.edad_maxima} años</td></tr>
                                 </table>
                             </div>
@@ -568,10 +568,10 @@ const GestionTalleres = {
         const self = this;
         Swal.fire({
             title: '¿Suspender taller?',
-            text: `¿Estás seguro de suspender el taller "${nombre}"?`,
+            text: `¿Estas seguro de suspender el taller "${nombre}"?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Sí, suspender',
+            confirmButtonText: 'Si, suspender',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {self.ejecutarEliminacion(id);}

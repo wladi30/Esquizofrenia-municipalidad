@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import traceback
 import pyodbc
 from flask import abort, flash, jsonify, redirect, url_for, session, redirect, url_for, render_template , Blueprint , request
 import functools
@@ -8,6 +9,7 @@ from src.utils.loggers import Logger
 url_funcionario = Blueprint('url_funcionario', __name__, template_folder='src/templates')
 
 from db_test import (
+    ac_profesor,
     ac_taller,
     borrar_estudiante,
     cambiar_estado_taller_de_baja,
@@ -36,6 +38,8 @@ def funcionario_required(f):
             flash('acceso denegado.', 'danger')
             # abort(403)
             #en el caso de que el usuario no sea el funcionario le deberia tirar el abord para sacarlo
+            # lo deje comentado por mientras por que estoy cambiando el tema del usuario
+            # ahora la tabla funcionario es la que dependen esto, quiere decir que no tiene tipo usuario lo cual caga casi todo el login con la session
         return f(*args, **kwargs)
     return funcionario_decorated
 
@@ -208,7 +212,7 @@ def api_crear_taller():
         tipo_taller = data.get('ind_tipo_taller')
         usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
         if not nombre_taller_v2: return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
-        if not id_categoria_v2: return jsonify({"success": False, "message": "La categoría es obligatoria"}), 400
+        if not id_categoria_v2: return jsonify({"success": False, "message": "La categoria es obligatoria"}), 400
         resultado = inscribir_el_taller(
             year_proceso=year_proceso_v2,
             id_categoria=id_categoria_v2,
@@ -260,7 +264,6 @@ def api_get_taller_id(id_taller): #C(R)UD
                 return jsonify({"success": False, "message": "taller no encontrado"}), 404
             estudiantes = obtener_estudiantes_por_taller(id_taller)
             taller['personas_inscritas'] = len(estudiantes)
-        #aqui numero 11 chupalo entonce intentando hacer que llame a los estudiantes wuap
         return jsonify({"success": True, "data": taller})
         # return print("ZA WARUDOO!!")
     except Exception as e:
@@ -357,6 +360,27 @@ def api_delete_taller(id_taller): # CRU(D)
         # return print("ZA WARUDOO!!")
         
 # -- APIS TALLERISTAS --
+# -- API TALERISTAS LISTA DE TALLERES --
+# @url_funcionario.route('/api/talleres-lista-select', methods=['GET'])
+# @funcionario_required
+# def api_talleres_lista_select():
+#     if 'id_usuario' not in session:
+#             flash('Debe iniciar sesión para acceder', 'warning')
+#             return redirect(url_for('url_principal.pagina_login'))
+#     try:
+#         from db_test import obtener_talleres
+#         talleres = obtener_talleres()
+#         lista = []
+#         for t in talleres:
+#             lista.append({
+#                 "ID_TALLER": t.get("ID_TALLER"),
+#                 "NOMBRE_TALLER": t.get("NOMBRE_TALLER"),
+#                 "YEAR_PROCESO": t.get("YEAR_PROCESO")
+#             })
+#         return jsonify({"success": True, "data": lista})
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)}), 500
+    
 # -- API TALLERISTA CRU(D) --
 @url_funcionario.route('/api/tallerista-suspender/<int:id_profesor>', methods=['PUT'])
 @funcionario_required
@@ -387,7 +411,6 @@ def api_get_tallerista(id_profesor):
                 return jsonify({"success": False, "message": "tallerista no encontrado"}), 404
             # talleres = obtener_historial_talleres_por_tallerista(id_profesor)
             # tallerista['personas_inscritas'] = len(talleres)
-        #aqui numero 11 chupalo entonce intentando hacer que llame a los talleres wuap
         return jsonify({"success": True, "data": tallerista})
         # return print("ZA WARUDOO!!")
     except Exception as e:
@@ -399,28 +422,30 @@ def api_get_tallerista(id_profesor):
 @funcionario_required
 def api_lista_tallerista():
     if 'id_usuario' not in session:
-            flash('Debe iniciar sesión para acceder', 'warning')
-            return redirect(url_for('url_principal.pagina_login'))
+        return jsonify({"success": False, "message": "No autorizado"}), 401
     try:
-        id_profesor_v1 = request.args.get('busqueda_id_profesor')
-        id_taller_v1 = request.args.get('busqueda_id_taller')
-        nombre_taller_v1 = request.args.get('busqueda_nombre_taller')
-        profesion_v1 = request.args.get('busqueda_profesion')
-        nombre_completo_v1 = request.args.get('busqueda_nombre_completo')
-        correo_electronico_v1 = request.args.get('busqueda_correo_electronico')
+        id_profesor_str = request.args.get('id_profesor')
+        id_taller_str = request.args.get('id_taller')
+        nombre_taller = request.args.get('nombre_taller')
+        profesion = request.args.get('profesion')
+        nombre_completo = request.args.get('nombre_completo')
+        correo_electronico = request.args.get('correo_electronico')
 
-        id_profesor_v2 = int(id_profesor_v1) if id_profesor_v1 and id_profesor_v1.isdigit() else None
-        id_taller_v2 = int(id_taller_v1) if id_taller_v1 and id_taller_v1.isdigit() else None
+        id_profesor = int(id_profesor_str) if id_profesor_str and id_profesor_str.isdigit() else None
+        id_taller = int(id_taller_str) if id_taller_str and id_taller_str.isdigit() else None
 
-        nombre_taller_v2 = nombre_taller_v1 if nombre_taller_v1 and nombre_taller_v1.strip() else None
-        profesion_v2 = profesion_v1 if profesion_v1 and profesion_v1.strip() else None
-        correo_electronico_v2 = correo_electronico_v1 if correo_electronico_v1 and correo_electronico_v1.strip() else None
-        nombre_completo_v2 = nombre_completo_v1 if nombre_completo_v1 and nombre_completo_v1.strip() else None
+        nombre_taller = nombre_taller if nombre_taller and nombre_taller.strip() else None
+        profesion = profesion if profesion and profesion.strip() else None
+        nombre_completo = nombre_completo if nombre_completo and nombre_completo.strip() else None
+        correo_electronico = correo_electronico if correo_electronico and correo_electronico.strip() else None
 
-        talleristas = obtener_profesores(id_profesor=id_profesor_v2,nombre_completo=nombre_completo_v2,id_taller=id_taller_v2,nombre_taller=nombre_taller_v2,profesion=profesion_v2,correo_electronico=correo_electronico_v2)
+        talleristas = obtener_profesores(id_profesor=id_profesor,nombre_completo=nombre_completo,id_taller=id_taller,nombre_taller=nombre_taller,profesion=profesion,correo_electronico=correo_electronico)
+        
         return jsonify({"success": True, "data": talleristas, "total": len(talleristas)})
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_tallerista_lista: {e}", "error_funcionario")
+        print(f"Error en api_lista_tallerista: {e}")
+        traceback.print_exc()
+        # el traceback lo aplique un poco en distintas partes , ahora que estoy mejorando el codigo deberia aplicarlo en todos los lados posibles
         return jsonify({"success": False, "message": str(e)}), 500
 
 # -- API TALLERISTA (C)RUD --
@@ -428,20 +453,38 @@ def api_lista_tallerista():
 @funcionario_required
 def api_crear_tallerista():
     if 'id_usuario' not in session:
-            flash('Debe iniciar sesión para acceder', 'warning')
-            return redirect(url_for('url_principal.pagina_login'))
+        return jsonify({"success": False, "message": "No autorizado"}), 401
     try:
         data = request.json
-        from db_test import inscribir_profesores
-        resultado = inscribir_profesores(
-            id_persona=data.get('id_persona'),
+        usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        from db_test import insertar_tallerista
+        resultado = insertar_tallerista(
+            nombre_persona=data.get('nombre_persona', ''),
+            apellido_paterno=data.get('apellido_paterno', ''),
+            apellido_materno=data.get('apellido_materno', ''),
+            genero=data.get('genero', 'O'),
+            telefono=data.get('telefono', ''),
+            correo_electronico=data.get('correo_electronico', ''),
+            telefono_contacto=data.get('telefono_contacto', ''),
+            nombre_contacto=data.get('nombre_contacto', ''),
+            correo_contacto=data.get('correo_contacto', ''),
             profesion=data.get('profesion', ''),
-            resumen_curricular=data.get('resumen_curricular', '')
+            resumen_curricular=data.get('resumen_curricular', ''),
+            ind_activo=data.get('ind_activo', 1),
+            observacion=data.get('observacion', ''),
+            id_pais=data.get('id_pais', 1),
+            id_comuna=data.get('id_comuna', 1),
+            villa=data.get('villa', ''),
+            nro_dpto=data.get('nro_dpto', ''),
+            nro_block=data.get('nro_block', ''),
+            nro_calle=data.get('nro_calle', ''),
+            calle=data.get('calle', ''),
+            aud_usuario_ingreso=usuario_ingreso
         )
         if resultado.get('success'):
-            return jsonify({"success": True, "message": "Tallerista creado exitosamente", "id_profesor": resultado.get('id_profesor')}), 201
+            return jsonify({"success": True, "message": resultado.get('message'), "id_profesor": resultado.get('id_profesor')}), 201
         else:
-            return jsonify({"success": False, "message": resultado.get('message', 'Error al crear tallerista')}), 400
+            return jsonify({"success": False, "message": resultado.get('message')}), 400
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.api_crear_tallerista: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
@@ -451,26 +494,56 @@ def api_crear_tallerista():
 @funcionario_required
 def api_actualizar_tallerista(id_profesor):
     if 'id_usuario' not in session:
-            flash('Debe iniciar sesión para acceder', 'warning')
-            return redirect(url_for('url_principal.pagina_login'))
+        return jsonify({"success": False, "message": "No autorizado"}), 401
+
     try:
-        data = request.json
-        from db_test import ac_profesor
+        data = request.get_json()
+        usuario_modifica = session.get('nombre_persona', 'sistema')
+        # esto tambien me lo dio la ia, con esto no se deberia romper en el caso que me pasen nulls o str
+        try:
+            genero = int(data.get('genero', 2))
+            if genero not in (0, 1, 2):
+                genero = 2
+        except (ValueError, TypeError):
+            genero = 2
+        def to_int(val, default=0):
+            try:
+                return int(val) if val is not None else default
+            except (ValueError, TypeError):
+                return default
+            # sera buena idea aplicarlo? o tal vez deberia preguntar? si esto es necesario bueno ya lo van a revisar en todo caso
         resultado = ac_profesor(
-            id_persona=data.get('id_persona'),
+            id_profesor=id_profesor,
+            nombre_persona=data.get('nombre_persona', ''),
+            apellido_paterno=data.get('apellido_paterno', ''),
+            apellido_materno=data.get('apellido_materno', ''),
+            genero=genero,
+            telefono=data.get('telefono', ''),
+            correo_electronico=data.get('correo_electronico', ''),
+            telefono_contacto=data.get('telefono_contacto', ''),
+            nombre_contacto=data.get('nombre_contacto', ''),
+            correo_contacto=data.get('correo_contacto', ''),
             profesion=data.get('profesion', ''),
             resumen_curricular=data.get('resumen_curricular', ''),
-            aud_usuario_ingreso=session.get('id_usuario', 'sistema'),
-            aud_fec_ingreso=None,
-            aud_usuario_modifica=session.get('id_usuario', 'sistema'),
-            aud_fec_modifica=None
+            ind_activo=to_int(data.get('ind_activo'), 1),
+            observacion=data.get('observacion', ''),
+            id_pais=to_int(data.get('id_pais'), 1),
+            id_comuna=to_int(data.get('id_comuna'), 1),
+            villa=data.get('villa', ''),
+            nro_dpto=data.get('nro_dpto', ''),
+            nro_block=data.get('nro_block', ''),
+            nro_calle=data.get('nro_calle', ''),
+            calle=data.get('calle', ''),
+            aud_usuario_modifica_pt=usuario_modifica,
+            aud_usuario_modifica_p=usuario_modifica
         )
         if resultado:
             return jsonify({"success": True, "message": "Tallerista actualizado correctamente"})
         else:
-            return jsonify({"success": False, "message": "Error al actualizar tallerista"}), 400
+            return jsonify({"success": False, "message": "Error al actualizar tallerista"}), 500
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_actualizar_tallerista: {e}", "error_funcionario")
+        print(f"Error en api_actualizar_tallerista: {e}")
+        traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
 # -- FIN DE LAS APIS DE TALLERISTA --
 
@@ -529,7 +602,7 @@ def api_eliminar_inscripcion():
         id_taller = request.args.get('id_taller')
         id_estudiante = request.args.get('id_estudiante')
         if not id_taller or not id_estudiante:
-            return jsonify({"success": False, "message": "Faltan parámetros"}), 400
+            return jsonify({"success": False, "message": "Faltan parametros"}), 400
         resultado = borrar_estudiante(int(id_estudiante), int(id_taller))
         if resultado:
             return jsonify({"success": True, "message": "Inscripción eliminada correctamente"})
@@ -625,21 +698,21 @@ def api_categoria_taller():
             return redirect(url_for('url_principal.pagina_login'))
     try:
         categorias = [
-            {"ID_CATEGORIA": 1, "DESCRIPCION_CATEGORIA": "DANZA CLÁSICA"},
+            {"ID_CATEGORIA": 1, "DESCRIPCION_CATEGORIA": "DANZA CLASICA"},
             {"ID_CATEGORIA": 2, "DESCRIPCION_CATEGORIA": "DANZAS REGIONALES"},
             {"ID_CATEGORIA": 3, "DESCRIPCION_CATEGORIA": "DANZAS DEL FOLCLORE NACIONAL"},
             {"ID_CATEGORIA": 4, "DESCRIPCION_CATEGORIA": "DANZAS URBANAS"},
             {"ID_CATEGORIA": 5, "DESCRIPCION_CATEGORIA": "ARTES VISUALES"},
-            {"ID_CATEGORIA": 6, "DESCRIPCION_CATEGORIA": "FOTOGRAFÍA"},
+            {"ID_CATEGORIA": 6, "DESCRIPCION_CATEGORIA": "FOTOGRAFIA"},
             {"ID_CATEGORIA": 7, "DESCRIPCION_CATEGORIA": "ARTES Y OFICIOS"},
-            {"ID_CATEGORIA": 8, "DESCRIPCION_CATEGORIA": "ARTES ESCÉNICAS EN TEATRO"},
+            {"ID_CATEGORIA": 8, "DESCRIPCION_CATEGORIA": "ARTES ESCENICAS EN TEATRO"},
             {"ID_CATEGORIA": 9, "DESCRIPCION_CATEGORIA": "LITERATURA"},
             {"ID_CATEGORIA": 10, "DESCRIPCION_CATEGORIA": "YOGA"},
             {"ID_CATEGORIA": 11, "DESCRIPCION_CATEGORIA": "AGRUPACIÓN ARTISTICA PERMANENTE DEL CCM"},
             {"ID_CATEGORIA": 12, "DESCRIPCION_CATEGORIA": "ARTES Y MANUALIDADES"},
             {"ID_CATEGORIA": 13, "DESCRIPCION_CATEGORIA": "BABY FUTBOL"},
             {"ID_CATEGORIA": 14, "DESCRIPCION_CATEGORIA": "MANUALIDADES"},
-            {"ID_CATEGORIA": 15, "DESCRIPCION_CATEGORIA": "ESTÉTICA"},
+            {"ID_CATEGORIA": 15, "DESCRIPCION_CATEGORIA": "ESTETICA"},
             {"ID_CATEGORIA": 16, "DESCRIPCION_CATEGORIA": "TERAPIA"},
             {"ID_CATEGORIA": 17, "DESCRIPCION_CATEGORIA": "VESTUARIO Y CORTINAJE"},
             {"ID_CATEGORIA": 18, "DESCRIPCION_CATEGORIA": "IDIOMA"},
@@ -683,4 +756,23 @@ def api_departamento_taller():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 #-- FIN DE DEPARTAMENTO --
+
+# -- API GENERO --
+@url_funcionario.route('/api/genero', methods=['GET'])
+@funcionario_required
+def api_genero_persona():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
+    try:
+        genero = [
+            {"GENERO": 0, "MASCULINO": "Masculino"},
+            {"GENERO": 1, "FEMENINO": "Femenino"},
+            {"GENERO": 2, "OTRO": "Otro"}
+        ]
+        return jsonify(genero)
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+#-- FIN DE GENERO --
+
 #-- FIN RUTAS ADICIONALES --

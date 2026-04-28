@@ -14,14 +14,37 @@ const GestionTalleristas = {
     },
 
     mapearGenero: function(codigo) {
-        if (!codigo) return 'No especificado';
-        const mapa = { 'M': 'Masculino', 'F': 'Femenino', 'O': 'Otro' };
-        return mapa[codigo.toUpperCase()] || 'No especificado';
+        if (codigo === undefined || codigo === null) return 'No especificado';
+        const mapa = { 0: 'Masculino', 1: 'Femenino', 2: 'Otro' };
+        return mapa[codigo] || 'No especificado';
     },
 
     inicializando: function() {
         this.cargarLista();
+        this.cargarGeneroSelect();
         this.bindEventos();
+    },
+
+    cargarGeneroSelect: function() {
+        fetch('/api/genero')
+            .then(response => response.json())
+            .then(data => {
+                const selectGenero = document.getElementById('genero');
+                if (selectGenero) {
+                    selectGenero.innerHTML = '<option value="2">Seleccione género...</option>';
+                    data.forEach(g => {
+                        const option = document.createElement('option');
+                        option.value = g.GENERO;  // 0,1,2
+                        let texto = '';
+                        if (g.GENERO === 0) texto = g.MASCULINO;
+                        else if (g.GENERO === 1) texto = g.FEMENINO;
+                        else if (g.GENERO === 2) texto = g.OTRO;
+                        option.textContent = texto;
+                        selectGenero.appendChild(option);
+                    });
+                }
+            })
+        .catch(error => console.error('Error cargando géneros:', error));
     },
 
     cargarLista: function() {
@@ -68,7 +91,7 @@ const GestionTalleristas = {
     },
 
     generarFila: function(t) {
-        const nombreCompleto = `${t.NOMBRE_COMPLETO}`.trim();
+        const nombreCompleto = `${t.NOMBRE_PERSONA || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
         const idTallerAsignado = t.ID_TALLER || 'No tiene, o es un nuevo Profesor';
         const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Profesor';
         return `
@@ -156,15 +179,28 @@ const GestionTalleristas = {
     abrirModalNuevo: function() {
         document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nuevo Tallerista';
         document.getElementById('formTallerista').reset();
-        document.getElementById('idProfesor').value = '';
+        let hiddenId = document.getElementById('talleristaId');
+        if (!hiddenId) {
+            hiddenId = document.createElement('input');
+            hiddenId.type = 'hidden';
+            hiddenId.id = 'talleristaId';
+            document.getElementById('formTallerista').appendChild(hiddenId);
+        }
+        hiddenId.value = '';
+        const generoSelect = document.getElementById('genero');
+        if (generoSelect) generoSelect.value = '2';
+        document.getElementById('indicadorActividad').value = '1';
+        document.getElementById('idPais').value = '1';
+        document.getElementById('idComuna').value = '1';
         new bootstrap.Modal(document.getElementById('modalTallerista')).show();
     },
 
     guardar: function() {
-        const nombre = document.getElementById('nombre').value.trim().toUpperCase();
+        const id = document.getElementById('talleristaId').value;
+        const nombre = document.getElementById('nombrePersona').value.trim().toUpperCase();
         const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
         const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
-        const genero = document.getElementById('genero').value.trim().toUpperCase();
+        const genero = parseInt(document.getElementById('genero').value) || 2;
         const telefono = document.getElementById('telefono').value.trim().toUpperCase();
         const correo = document.getElementById('correo').value.trim().toUpperCase();
         const telefono_contacto = document.getElementById('telefonoContacto').value.trim().toUpperCase();
@@ -172,71 +208,57 @@ const GestionTalleristas = {
         const correo_contacto = document.getElementById('correoContacto').value.trim().toUpperCase();
         const profesion = document.getElementById('profesion').value.trim().toUpperCase();
         const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
-        const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value);
+        const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value) || 1;
         const observacion = document.getElementById('observacion').value.trim().toUpperCase();
-        const id_pais = parseInt(document.getElementById('idPais').value);
-        const id_comuna = parseInt(document.getElementById('idComuna').value);
+        const id_pais = parseInt(document.getElementById('idPais').value) || 1;
+        const id_comuna = parseInt(document.getElementById('idComuna').value) || 1;
         const villa = document.getElementById('villa').value.trim().toUpperCase();
         const nro_dpto = document.getElementById('numeroDepartamento').value.trim().toUpperCase();
         const nro_block = document.getElementById('numeroBlock').value.trim().toUpperCase();
         const nro_calle = document.getElementById('numeroCalle').value.trim().toUpperCase();
         const calle = document.getElementById('calle').value.trim().toUpperCase();
-        const bloqueado_hasta = document.getElementById('bloqueadoHasta').value.trim().toUpperCase();
-        
+
+        if (!nombre) { this.mostrarError('El nombre es obligatorio'); return; }
+        if (!correo) { this.mostrarError('El correo es obligatorio'); return; }
+
         const data = {
             nombre_persona: nombre,
             apellido_paterno: apellido_paterno,
             apellido_materno: apellido_materno,
-            genero: genero || 'O',
+            genero: genero,
             telefono: telefono || '-',
-            correo_electronico: correo || 'prueba@test.cl',
+            correo_electronico: correo,
             telefono_contacto: telefono_contacto || '-',
             nombre_contacto: nombre_contacto || '-',
             correo_contacto: correo_contacto || '-',
             profesion: profesion || '-',
             resumen_curricular: resumen_curricular || '-',
-            ind_actividad: indicador_actividad,
+            ind_activo: indicador_actividad,
             observacion: observacion || '-',
-            id_pais: id_pais || 0,
-            id_comuna: id_comuna || 0,
+            id_pais: id_pais,
+            id_comuna: id_comuna,
             villa: villa || '-',
             nro_dpto: nro_dpto || '-',
             nro_block: nro_block || '-',
             nro_calle: nro_calle || '-',
-            calle: calle || '-',
-            bloqueado_hasta: bloqueado_hasta,
-        }
-        if (!data.nombre) {
-            this.mostrarError('El nombre es obligatorio');
-            return;
-        }
-        if (!data.correo) {
-            this.mostrarError('El correo es obligatorio');
-            return;
-        }
-        
+            calle: calle || '-'
+        };
+
         const url = id ? `/api/tallerista-actualizar/${id}` : '/api/tallerista-crear';
         const method = id ? 'PUT' : 'POST';
-        
-        fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                bootstrap.Modal.getInstance(document.getElementById('modalTallerista')).hide();
-                this.mostrarExito(result.message || 'Operación exitosa');
-                this.cargarLista();
-            } else {
-                this.mostrarError(result.message || 'Error al guardar');
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            this.mostrarError('Error de conexión');
-        });
+
+        fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalTallerista')).hide();
+                    this.mostrarExito(result.message || 'Operación exitosa');
+                    this.cargarLista();
+                } else {
+                    this.mostrarError(result.message || 'Error al guardar');
+                }
+            })
+            .catch(error => { console.error(error); this.mostrarError('Error de conexión'); });
     },
 
     editar: function(id) {
@@ -248,49 +270,48 @@ const GestionTalleristas = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
+                    console.log("Datos completos del tallerista:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
+                    let hiddenId = document.getElementById('talleristaId');
+                    if (!hiddenId) {
+                        hiddenId = document.createElement('input');
+                        hiddenId.type = 'hidden';
+                        hiddenId.id = 'talleristaId';
+                        document.getElementById('formTallerista').appendChild(hiddenId);
+                    }
+                    hiddenId.value = id;
                     document.getElementById('idProfesor').value = t.id_profesor;
-                    document.getElementById('nombrePersona').value = t.nombre_persona;
-                    document.getElementById('apellidoPaterno').value = t.apellido_paterno;
-                    document.getElementById('apellidoMaterno').value = t.apellido_materno;
-                    document.getElementById('fechaNacimiento').value = t.fec_nacimiento;
-                    document.getElementById('edad').value = t.edad;
-                    document.getElementById('genero').value = t.genero; //cempeñere tremende pene
-                    document.getElementById('telefono').value = t.telefono;
-                    document.getElementById('correo').value = t.correo_electronico;
-                    document.getElementById('telefonoContacto').value = t.telefono_contacto;
-                    document.getElementById('nombreContacto').value = t.nombre_contacto;
-                    document.getElementById('correoContacto').value = t.correo_contacto;
-                    document.getElementById('profesion').value = t.profesion;
-                    document.getElementById('resumenCurricular').value = t.resumen_curricular;
-                    document.getElementById('indicadorActividad').value = t.ind_actividad;
-                    document.getElementById('tipoUsuario').value = t.tipo_usuario;
-                    document.getElementById('observacion').value = t.observacion;
-                    document.getElementById('idPais').value = t.id_pais;
-                    document.getElementById('idComuna').value = t.id_comuna;
-                    document.getElementById('villa').value = t.villa;
-                    document.getElementById('numeroDepartamento').value = t.nro_dpto;
-                    document.getElementById('numeroBlock').value = t.nro_block;
-                    document.getElementById('numeroCalle').value = t.nro_calle;
-                    document.getElementById('calle').value = t.calle;
-                    document.getElementById('fechaCreacion').value = t.fec_creacion;
-                    document.getElementById('ultimoAcceso').value = t.ultimo_acceso;
-                    document.getElementById('intentosFallidos').value = t.intentos_fallidos;
-                    document.getElementById('bloqueadoHasta').value = t.bloqueado_hasta;
-                    document.getElementById('audUsuarioIngreso').value = t.aud_usuario_ingreso;
-                    document.getElementById('audFecIngreso').value = t.aud_fec_ingreso;
-                    document.getElementById('audUsuarioModifica').value = t.aud_usuario_modifica;
-                    document.getElementById('audFecModifica').value = t.aud_fec_modifica;
+                    document.getElementById('nombrePersona').value = t.nombre_persona || '';
+                    document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
+                    document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
+                    const generoSelect = document.getElementById('genero');
+                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) {
+                        generoSelect.value = t.genero;
+                    }
+                    document.getElementById('telefono').value = t.telefono || '';
+                    document.getElementById('correo').value = t.correo_electronico || '';
+                    document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
+                    document.getElementById('nombreContacto').value = t.nombre_contacto || '';
+                    document.getElementById('correoContacto').value = t.correo_contacto || '';
+                    document.getElementById('profesion').value = t.profesion || '';
+                    document.getElementById('resumenCurricular').value = t.resumen_curricular || '';
+                    document.getElementById('indicadorActividad').value = (t.ind_activo !== undefined) ? t.ind_activo : 1;
+                    document.getElementById('observacion').value = t.observacion || '';
+                    document.getElementById('idPais').value = t.id_pais || 1;
+                    document.getElementById('idComuna').value = t.id_comuna || 1;
+                    document.getElementById('villa').value = t.villa || '';
+                    document.getElementById('numeroDepartamento').value = t.nro_dpto || '';
+                    document.getElementById('numeroBlock').value = t.nro_block || '';
+                    document.getElementById('numeroCalle').value = t.nro_calle || '';
+                    document.getElementById('calle').value = t.calle || '';
                     new bootstrap.Modal(document.getElementById('modalTallerista')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el tallerista');
                 }
             })
-        .catch(error => {
-            console.error(error);
-            this.mostrarError('Error de conexión en editar');
-        });
+        .catch(error => { console.error(error); this.mostrarError('Error de conexión en editar'); });
     },
+
     // ESTO FALTA POR MODIFICAR la idea de esto es que se puedan ver los detalles del tallerista, pero son muchos asi que tengo que preparar esto
     verDetalles: function(id) {
         fetch(`/api/tallerista-get/${id}`)
@@ -335,10 +356,6 @@ const GestionTalleristas = {
                                     <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'No registrado'}</td></tr>
                                     <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
                                     <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de Creacion:</th><td>${t.fec_creacion || 'No registrada'}</td></tr>
-                                    <tr><th>Ultimo Acceso:</th><td>${t.ultimo_acceso || 'No registrado'}</td></tr>
-                                    <tr><th>Intentos de Inicio de Sesion:</th><td>${t.intentos_fallidos || 'No registrado'}</td></tr>
-                                    <tr><th>Bloqueado hasta:</th><td>${t.bloqueado_hasta || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
@@ -346,6 +363,9 @@ const GestionTalleristas = {
                                 <table class="table table-sm">
                                     <tr><th>Profesion:</th><td>${t.profesion || 'No registrado'}</td></tr>
                                     <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
+                                    <tr><th>ID del Taller:</th><td>${t.id_taller || 'No existe'}</td></tr>
+                                    <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
+                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
@@ -376,10 +396,10 @@ const GestionTalleristas = {
     confirmarEliminar: function(id, nombre) {
         Swal.fire({
             title: '¿Suspender tallerista?',
-            text: `¿Estás seguro de suspender a ${nombre}? Quedará inactivo.`,
+            text: `¿Estas seguro de suspender a ${nombre}? Quedara inactivo.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Sí, suspender',
+            confirmButtonText: 'Si, suspender',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -406,7 +426,7 @@ const GestionTalleristas = {
     },
 
     mostrarExito: function(mensaje) {
-        Swal.fire({ icon: 'success', title: 'Éxito', text: mensaje, timer: 2000, showConfirmButton: false });
+        Swal.fire({ icon: 'success', title: 'exito', text: mensaje, timer: 2000, showConfirmButton: false });
     },
     mostrarError: function(mensaje) {
         Swal.fire({ icon: 'error', title: 'Error', text: mensaje });
@@ -437,6 +457,7 @@ const GestionTalleristas = {
             e.preventDefault(); 
             this.guardar(); 
         });
+        document.getElementById('btnNuevoTallerista')?.addEventListener('click', () => this.abrirModalNuevo());
     }
 };
 

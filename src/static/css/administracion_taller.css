@@ -88,13 +88,13 @@
     box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
 }
 
-/* --- Estilos para modales (más serios) --- */
+/* --- Estilos para modales (mas serios) --- */
 .modal-content {
     border-radius: 0; /* Modal cuadrado */
     border: 1px solid #cbd5e1;
 }
 .modal-header {
-    background-color: #0B3B5C; /* Color primario más oscuro y serio */
+    background-color: #0B3B5C; /* Color primario mas oscuro y serio */
     color: white;
     border-radius: 0;
     padding: 1rem 1.5rem;
@@ -114,7 +114,7 @@
     padding: 1rem 1.5rem;
 }
 
-/* --- Estilos para botones (más consistentes) --- */
+/* --- Estilos para botones (mas consistentes) --- */
 .btn {
     border-radius: 0; /* Botones cuadrados */
     font-weight: 500;
@@ -137,7 +137,7 @@
     color: white;
 }
 
-/* --- Estilos para la paginación (más compacta) --- */
+/* --- Estilos para la paginación (mas compacta) --- */
 .pagination .page-link {
     border-radius: 0;
     color: #0B3B5C;

@@ -49,7 +49,7 @@ function handleLogout(e) {
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, cerrar sesión',
+        confirmButtonText: 'Si, cerrar sesión',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {

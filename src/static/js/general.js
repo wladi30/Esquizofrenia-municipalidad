@@ -41,7 +41,7 @@ if (typeof data !== 'undefined' && data !== null) {
 } else {
     // esto lo hice para que no mandara un error cada vez que se accede a una nueba pagina, el general,js se le tira un llamado desde base.html el cual lo tienen con extendes todos
     // asi que puede ser algo molesto ver que el error sale todo el rato
-    console.warn("La variable 'data' no está definida en esta página.");
+    console.warn("La variable 'data' no esta definida en esta pagina.");
 }
 // la idea de esto es obtener el año y restarlo para obtener los talleres anteriores , etc
 // IMPORTANTE, podria ser buena idea hacer un export con todo lo demas, jamas se me habia ocurrido y lo aprendi hace poco que se puede, podria separar gran parte del codigo de este modo

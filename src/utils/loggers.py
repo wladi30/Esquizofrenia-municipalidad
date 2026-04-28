@@ -30,7 +30,7 @@ class Logger:
     
     
     def sanitize_input(self,input_string):
-    # Permitir solo caracteres alfanuméricos, guiones y guiones bajos
+    # Permitir solo caracteres alfanumericos, guiones y guiones bajos
         # return re.sub(r'[^a-zA-Z0-9_-]', '_', input_string)
         return re.sub(r'[^\w\s.,@|-]', '_', input_string)
     

@@ -23,39 +23,33 @@ def pagina_login():
 # DD JWT token firmados, investigar, probar unitest , pasar datos como url , usar postman, token , pytest
 @url_principal.route('/login', methods=['GET'])
 def login():
-    return redirect(url_for('url_funcionario.funcionario_dashboard'))  
+    return redirect(url_for('url_funcionario.funcionario_dashboard'))
 
 @url_principal.route('/api/login', methods=['POST'])
 def api_login():
-    print(f"DEBUG - : contrasena{type(contrasena)}, {(contrasena)}")
     try:
-        datos = request.get_json()
-        rut = datos.get('rut')
-        dv = datos.get('dv')
-        contrasena = datos.get('password')
-
-        if not rut or not dv or not contrasena:
-            return jsonify({"success": False, "message": "Faltan datos"}), 400
-        if not rut.isdigit():
-            return jsonify({"success": False, "message": "RUT inválido"}), 400
-        if len(rut) not in (7, 8):
-            return jsonify({"success": False, "message": "El RUT es muy largo o muy pequeño"}), 400
-        rut_num = int(rut)
-        dv_mayus = dv.upper()
-        resultado = autenticar_simple(rut_num, dv_mayus, contrasena)
-
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'message': 'Datos invalidos'}), 400
+        rut = data.get('rut')
+        dv = data.get('dv')
+        password = data.get('password')
+        if not rut or not dv or not password:
+            return jsonify({'success': False, 'message': 'RUT, DV y contraseña son requeridos'}), 400
+        resultado = autenticar_simple(rut, dv, password)
         if resultado['success']:
             session['id_usuario'] = resultado['datos']['ID_F']
-            session['nombre_completo'] = resultado['datos']['NOMBRE_COMPLETO']
-            session['rut_f'] = rut_num
-            session['dv_f'] = dv_mayus
-            redirect_url = url_for('url_funcionario.funcionario_dashboard')
-            return jsonify({"success": True, "redirect": redirect_url})
+            session['nombre_persona'] = resultado['datos']['NOMBRE_COMPLETO']
+            session['tipo_usuario'] = 'FUNCIONARIO'
+            session.permanent = True
+            return jsonify({'success': True,'message': 'Login exitoso','redirect': url_for('url_funcionario.funcionario_dashboard')})
         else:
-            return jsonify({"success": False, "message": "Usuario o contraseña incorrectos"}), 401
+            return jsonify({'success': False, 'message': resultado['message']})
     except Exception as e:
         print(f"Error en api_login: {e}")
-        return jsonify({"success": False, "message": "Error interno"}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 @url_principal.route('/logout')
 def logout():

@@ -155,7 +155,7 @@
 //     let contenido = `
 //         <div class="row">
 //             <div class="col-md-6">
-//                 <h6>Información Básica</h6>
+//                 <h6>Información Basica</h6>
 //                 <table class="table table-sm">
 //                     <tr>
 //                         <th width="40%">ID Taller:</th>
@@ -166,7 +166,7 @@
 //                         <td>${datos.nombre_taller}</td>
 //                     </tr>
 //                     <tr>
-//                         <th>Categoría:</th>
+//                         <th>Categoria:</th>
 //                         <td>${datos.id_categoria || 'No especificada'}</td>
 //                     </tr>
 //                     <tr>
@@ -176,7 +176,7 @@
 //                 </table>
 //             </div>
 //             <div class="col-md-6">
-//                 <h6>Estadísticas</h6>
+//                 <h6>Estadisticas</h6>
 //                 <table class="table table-sm">
 //                     <tr>
 //                         <th width="40%">Cupos:</th>
@@ -187,11 +187,11 @@
 //                         </td>
 //                     </tr>
 //                     <tr>
-//                         <th>Mínimo:</th>
+//                         <th>Minimo:</th>
 //                         <td>${datos.minimo_estudiante}</td>
 //                     </tr>
 //                     <tr>
-//                         <th>Máximo:</th>
+//                         <th>Maximo:</th>
 //                         <td>${datos.maximo_estudiante}</td>
 //                     </tr>
 //                     <tr>
@@ -212,7 +212,7 @@
 //                     <tr>
 //                         <th width="20%">Fecha Inicio:</th>
 //                         <td>${datos.fec_inicio || 'No especificada'}</td>
-//                         <th width="20%">Fecha Término:</th>
+//                         <th width="20%">Fecha Termino:</th>
 //                         <td>${datos.fec_termino || 'No especificada'}</td>
 //                     </tr>
 //                     <tr>

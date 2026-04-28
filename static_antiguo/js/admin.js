@@ -90,12 +90,12 @@ function handleLogout(e) {
     
     Swal.fire({
         title: '¿Cerrar Sesion?',
-        text: '¿Estás seguro de que deseas cerrar sesión?',
+        text: '¿Estas seguro de que deseas cerrar sesión?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, cerrar sesión',
+        confirmButtonText: 'Si, cerrar sesión',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -122,7 +122,7 @@ function confirmarAccion(titulo, mensaje, callback) {
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, continuar',
+        confirmButtonText: 'Si, continuar',
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {

@@ -76,120 +76,119 @@ def admin_required(f):
     return decorated_function
 
 #--AUTENTIFICACION--
-def autenticar(rut_numerico, dv, password):
-    conn = get_connection()
-    if not conn:
-        return {"success": False, "message": "Error de conexion a la base de datos"}
-    cursor = conn.cursor()
-    try:
-        # import hashlib
-        # contrasena_hash = hashlib.sha256(password.encode()).hexdigest()
-        query = """
-        SELECT TOP 1
-            P.ID_PERSONA,
-            P.NOMBRE_PERSONA,
-            P.APELLIDO_PATERNO,
-            P.APELLIDO_MATERNO,
-            P.CORREO_ELECTRONICO,
-            P.TIPO_USUARIO,
-            P.RUT_PERSONA,
-            P.DV_PERSONA
-        FROM SGT_PERSONA_TALLER P
-        WHERE P.RUT_PERSONA = ?
-            AND LOWER(P.DV_PERSONA) = LOWER(?)
-            AND P.CONTRASENA_HASH = ?
-            AND P.IND_ACTIVO = 1
-        """
-        print(f"DEBUG BD - Bsucando la persona: rut={rut_numerico}, dv={dv}") #probando si llega hasta aqui
-        cursor.execute(query, (rut_numerico,dv,password))
-        row = cursor.fetchone()
-        if row:
-            nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
-            return {
-                "success": True,
-                "message": "Autenticacion exitosa",
-                "datos":{
-                    "ID_PERSONA": row[0],
-                    "NOMBRE_COMPLETO": nombre_completo,
-                    "CORREO_ELECTRONICO": row[4],
-                    "TIPO_USUARIO": row[5],
-                    "RUT_PERSONA": row[6],
-                    "DV_PERSONA": row[7]
-                }
-            }
-        else:
-            print("DEBUG - hola esto es para probar si tenemos un problema con las cosas del usuario, usuario no encontrado")
-            check_query = "SELECT COUNT (*) FROM SGT_PERSONA_TALLER WHERE RUT_PERSONA = ? AND LOWER(DV_PERSONA) = LOWER(?)"
-            cursor.execute(check_query, (rut_numerico, dv))
-            count = cursor.fetchone()[0]
-            if count > 0:
-                print("DEBUG BD - El usuario existe pero la contraseña es incorrecta")
-            else:
-                print("DEBUG BD - El usuario no existe en la BD")
-            return {"success": False, "message": "RUT o contraseña incorrectos"}
-    except Exception as e:
-        print(f"error en autenticacion: {e}")
-        import traceback
-        traceback.print_exc()
-        return {"success": False, "message": "error in the servidor causas"}
-    finally:
-        cursor.close()
-        conn.close()
+# def autenticar(rut_numerico, dv, password):
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexion a la base de datos"}
+#     cursor = conn.cursor()
+#     try:
+#         # import hashlib
+#         # contrasena_hash = hashlib.sha256(password.encode()).hexdigest()
+#         query = """
+#         SELECT TOP 1
+#             P.ID_PERSONA,
+#             P.NOMBRE_PERSONA,
+#             P.APELLIDO_PATERNO,
+#             P.APELLIDO_MATERNO,
+#             P.CORREO_ELECTRONICO,
+#             P.TIPO_USUARIO,
+#             P.RUT_PERSONA,
+#             P.DV_PERSONA
+#         FROM SGT_PERSONA_TALLER P
+#         WHERE P.RUT_PERSONA = ?
+#             AND LOWER(P.DV_PERSONA) = LOWER(?)
+#             AND P.CONTRASENA_HASH = ?
+#             AND P.IND_ACTIVO = 1
+#         """
+#         print(f"DEBUG BD - Bsucando la persona: rut={rut_numerico}, dv={dv}") #probando si llega hasta aqui
+#         cursor.execute(query, (rut_numerico,dv,password))
+#         row = cursor.fetchone()
+#         if row:
+#             nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
+#             return {
+#                 "success": True,
+#                 "message": "Autenticacion exitosa",
+#                 "datos":{
+#                     "ID_PERSONA": row[0],
+#                     "NOMBRE_COMPLETO": nombre_completo,
+#                     "CORREO_ELECTRONICO": row[4],
+#                     "TIPO_USUARIO": row[5],
+#                     "RUT_PERSONA": row[6],
+#                     "DV_PERSONA": row[7]
+#                 }
+#             }
+#         else:
+#             print("DEBUG - hola esto es para probar si tenemos un problema con las cosas del usuario, usuario no encontrado")
+#             check_query = "SELECT COUNT (*) FROM SGT_PERSONA_TALLER WHERE RUT_PERSONA = ? AND LOWER(DV_PERSONA) = LOWER(?)"
+#             cursor.execute(check_query, (rut_numerico, dv))
+#             count = cursor.fetchone()[0]
+#             if count > 0:
+#                 print("DEBUG BD - El usuario existe pero la contraseña es incorrecta")
+#             else:
+#                 print("DEBUG BD - El usuario no existe en la BD")
+#             return {"success": False, "message": "RUT o contraseña incorrectos"}
+#     except Exception as e:
+#         print(f"error en autenticacion: {e}")
+#         import traceback
+#         traceback.print_exc()
+#         return {"success": False, "message": "error in the servidor causas"}
+#     finally:
+#         cursor.close()
+#         conn.close()
 
-def autenticar_usuario(identificador, password):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("EXEC autenticar ?, ?", (identificador, password))
-    resultado = cursor.fetchone()
-    if resultado and resultado[0] == 1:
-        cursor.execute("""
-            SELECT ID_PERSONA, NOMBRE_PERSONA, APELLIDO_PATERNO, 
-                   CORREO_ELECTRONICO, TIPO_USUARIO
-            FROM SGT_PERSONA_TALLER 
-            WHERE RUT_PERSONA = ?
-        """)
-        user = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        if user:
-            id_rol = None
-            if user[4] == 'FUNCIONARIO':
-                cur2 = conn.cursor()
-                cur2.execute("SELECT ID_PERSONA FROM SGT_PERSONA_TALLER WHERE ID_PERSONA = ?", (user[0],))
-                rol = cur2.fetchone()
-                id_rol = rol[0] if rol else None
-                cur2.close()
-            elif user[4] == 'ADMIN':
-                cur2 = conn.cursor()
-                cur2.execute("SELECT ID_PERSONA FROM SGT_PERSONA_TALLER WHERE ID_PERSONA = ?", (user[0],))
-                rol = cur2.fetchone()
-                id_rol = rol[0] if rol else None
-                cur2.close()
-            return {
-                'success': True,
-                'id_persona': user[0],
-                'nombre': user[1],
-                'apellido': user[2],
-                'nombre_completo': f"{user[1]} {user[2] or ''}".strip(),
-                'email': user[3],
-                'tipo_usuario': user[4],
-                'id_rol': id_rol
-            }
-    cursor.close()
-    conn.close()
-    return {"success": False, "message": "Credenciales incorrectas"}
+# def autenticar_usuario(identificador, password):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("EXEC autenticar ?, ?", (identificador, password))
+#     resultado = cursor.fetchone()
+#     if resultado and resultado[0] == 1:
+#         cursor.execute("""
+#             SELECT ID_PERSONA, NOMBRE_PERSONA, APELLIDO_PATERNO, 
+#                    CORREO_ELECTRONICO, TIPO_USUARIO
+#             FROM SGT_PERSONA_TALLER 
+#             WHERE RUT_PERSONA = ?
+#         """)
+#         user = cursor.fetchone()
+#         cursor.close()
+#         conn.close()
+#         if user:
+#             id_rol = None
+#             if user[4] == 'FUNCIONARIO':
+#                 cur2 = conn.cursor()
+#                 cur2.execute("SELECT ID_PERSONA FROM SGT_PERSONA_TALLER WHERE ID_PERSONA = ?", (user[0],))
+#                 rol = cur2.fetchone()
+#                 id_rol = rol[0] if rol else None
+#                 cur2.close()
+#             elif user[4] == 'ADMIN':
+#                 cur2 = conn.cursor()
+#                 cur2.execute("SELECT ID_PERSONA FROM SGT_PERSONA_TALLER WHERE ID_PERSONA = ?", (user[0],))
+#                 rol = cur2.fetchone()
+#                 id_rol = rol[0] if rol else None
+#                 cur2.close()
+#             return {
+#                 'success': True,
+#                 'id_persona': user[0],
+#                 'nombre': user[1],
+#                 'apellido': user[2],
+#                 'nombre_completo': f"{user[1]} {user[2] or ''}".strip(),
+#                 'email': user[3],
+#                 'tipo_usuario': user[4],
+#                 'id_rol': id_rol
+#             }
+#     cursor.close()
+#     conn.close()
+#     return {"success": False, "message": "Credenciales incorrectas"}
 
 def autenticar_simple(rut, dv, contrasena):
-    print(f"DEBUG - autenticar_simple({type(rut)},{rut}, {type(dv)},{dv}, ***)")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL AUTENTIFICACION_SIMPLE(?, ?, ?)}", (rut, dv, contrasena))
+        cursor.execute("{CALL AUTENTIFICACION_SIN_HASH(?, ?, ?)}", (rut, dv, contrasena))
         row = cursor.fetchone()
         if row and row.EXITO == 1:
-            return {"success": True,  "datos": {"ID_F": row.ID_F, "NOMBRE_COMPLETO": row.NOMBRE}}
+            return {"success": True, "message": row.MENSAJE, "datos": {"ID_F": row.ID_F, "NOMBRE_COMPLETO": row.NOMBRE}}
         else:
             mensaje = row.MENSAJE if row else "Error desconocido"
             return {"success": False, "message": mensaje}
@@ -207,6 +206,8 @@ def registrar_persona(rut_persona,dv_persona,nombre_persona,apellido_paterno,ape
         return {"success": False, "message": "Error de conexcion"}
     cursor = conn.cursor()
     try: #admin solo se puede crear en la base de datos por ahora, eso si no creo que sea buena idea que en la misma pagina un admin pueda crear otro admin, podria ser peligroso asi que primero se registran y en la base se les actualiza
+    # POR El momento no uso mas esto, me servia para crear usuarios de los cuales separaba en estudiante , profesor y funcionario, tambien admin pero ahora tengo 2 tablas distintas
+    # persona taller son est y profes , persona funcionario es para los funcionarios y tal vez admins?    
         pasaporte_sql = f"'{pasaporte}'" if pasaporte else "NULL"
         calle_sql = f"'{calle}'" if calle else "NULL"
         nro_calle_sql = f"'{nro_calle}'" if nro_calle else "NULL"
@@ -238,34 +239,34 @@ def registrar_persona(rut_persona,dv_persona,nombre_persona,apellido_paterno,ape
         cursor.close()
         conn.close()
 
-def crear_persona(rut,dv,nombre_persona,apellido_paterno,apellido_materno,correo,telefono,contrasena,tipo_usuario):
-    conn = get_connection()
-    if not conn:
-        return {"success": False, "message": "Error de conexion"}
-    cursor = conn.cursor()
-    try:
-        import hashlib
-        contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
-        query = f"""
-        INSERT INTO SGT_PERSONA_TALLER (RUT_PERSONA, DV_PERSONA, NOMBRE_PERSONA, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, TELEFONO, CONTRASENA_HASH,TIPO_USUARIO, IND_ACTIVO, AUD_USUARIO_INGRESO, AUD_FEC_INGRESO) 
-        VALUES ({rut}, '{dv}', '{nombre_persona}', '{apellido_paterno}', '{apellido_materno}', '{correo}', '{telefono}', '{contrasena_hash}', '{tipo_usuario}', 1, 'sistema', GETDATE())
-        SELECT SCOPE_IDENTITY() AS ID_PERSONA
-        """
-        cursor.execute(query)
-        id_persona = cursor.fetchone()[0]
-        conn.commit()
-        return {
-            "success": True,
-            "message": "Persona creada exitosamente",
-            "id_persona": id_persona
-        }
-    except Exception as e:
-        conn.rollback()
-        print(f"Error creando persona: {e}")
-        return {"success": False, "message": str(e)}
-    finally:
-        cursor.close()
-        conn.close()
+# def crear_persona(rut,dv,nombre_persona,apellido_paterno,apellido_materno,correo,telefono,contrasena,tipo_usuario):
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexion"}
+#     cursor = conn.cursor()
+#     try:
+#         import hashlib
+#         contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
+#         query = f"""
+#         INSERT INTO SGT_PERSONA_TALLER (RUT_PERSONA, DV_PERSONA, NOMBRE_PERSONA, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, TELEFONO, CONTRASENA_HASH,TIPO_USUARIO, IND_ACTIVO, AUD_USUARIO_INGRESO, AUD_FEC_INGRESO) 
+#         VALUES ({rut}, '{dv}', '{nombre_persona}', '{apellido_paterno}', '{apellido_materno}', '{correo}', '{telefono}', '{contrasena_hash}', '{tipo_usuario}', 1, 'sistema', GETDATE())
+#         SELECT SCOPE_IDENTITY() AS ID_PERSONA
+#         """
+#         cursor.execute(query)
+#         id_persona = cursor.fetchone()[0]
+#         conn.commit()
+#         return {
+#             "success": True,
+#             "message": "Persona creada exitosamente",
+#             "id_persona": id_persona
+#         }
+#     except Exception as e:
+#         conn.rollback()
+#         print(f"Error creando persona: {e}")
+#         return {"success": False, "message": str(e)}
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 #--FUNCIONARIO(ANTIGUAMENTE ESTUDIANTE)--
 def ver_estudiante(id_estudiante, id_taller=None): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LAS FECHAS TODAS RANCIAS
@@ -306,6 +307,7 @@ def ver_estudiante(id_estudiante, id_taller=None): #ESTO DEBERIA SOLUCIONAR LOS 
         conn.close()
 
 def obtener_estudiantes(): # lo mismo de arriba pero ahora son estudiants , profesores podran ver a su clase con esto
+    # se tiene que actualizar con un procedimiento
     conn = get_connection()
     if not conn:
         return []
@@ -492,10 +494,9 @@ def ver_taller(id_taller):
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        # print(f"DEBUG - Consultando taller ID: {id_taller}")
-        query = f"""{{CALL VER_TALLERES({id_taller})}}"""
-        cursor.execute(query)
+        cursor.execute("{CALL VER_TALLERES(?)}", (id_taller))
         row = cursor.fetchone()
+        
         if row:
             resultado = {
                 'id_taller': row[0],
@@ -528,12 +529,9 @@ def ver_taller(id_taller):
             }
             return resultado
         else:
-            print(f"DEBUG - No se encontró el taller ID {id_taller} o no está activo")
             return None
     except Exception as e:
         print(f"Error en ver_taller: {e}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
         return None
     finally:
         cursor.close()
@@ -593,58 +591,22 @@ def buscar_talleres(nombre_taller=None, id_categoria=None, year_proceso=None, id
         cursor.close()
         conn.close()
 
-def ac_taller(id_taller,
-            year_proceso,
-            id_categoria,
-            nombre_taller,
-            objetivo_taller,
-            fec_inicio,
-            fec_termino,
-            nro_minutos,
-            nro_clases_anual,
-            horas_totales,
-            id_estado_taller,
-            observacion,
-            lugar,
-            minimo_estudiante,
-            maximo_estudiante,
-            requisito,
-            edad_minima,
-            edad_maxima,
-            material,
-            ind_tipo_taller,
-            aud_usuario_modifica
-            ):
+def ac_taller(id_taller, year_proceso, id_categoria, nombre_taller, objetivo_taller, fec_inicio, fec_termino, nro_minutos, nro_clases_anual, horas_totales, id_estado_taller, observacion, lugar, minimo_estudiante, maximo_estudiante, requisito, edad_minima, edad_maxima, material, ind_tipo_taller, aud_usuario_modifica):
     conn = get_connection()
     if not conn:
         return False
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL AC_TALLER(
-            {id_taller},
-            {year_proceso},
-            {id_categoria},
-            '{nombre_taller}',
-            '{objetivo_taller}',
-            '{fec_inicio}',
-            '{fec_termino}',
-            {nro_minutos},
-            {nro_clases_anual},
-            {horas_totales},
-            {id_estado_taller},
-            '{observacion}',
-            '{lugar}',
-            {minimo_estudiante},
-            {maximo_estudiante},
-            '{requisito}',
-            {edad_minima},
-            {edad_maxima},
-            '{material}',
-            {ind_tipo_taller},
-            '{aud_usuario_modifica}'
-        )}}"""
-        print(f"DEBUG - : {query}")
-        cursor.execute(query)
+        sql = "{CALL AC_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+        params = (
+            id_taller, year_proceso, id_categoria, nombre_taller, 
+            objetivo_taller, fec_inicio, fec_termino, nro_minutos, 
+            nro_clases_anual, horas_totales, id_estado_taller, 
+            observacion, lugar, minimo_estudiante, maximo_estudiante, 
+            requisito, edad_minima, edad_maxima, material, 
+            ind_tipo_taller, aud_usuario_modifica
+        )
+        cursor.execute(sql, params)
         conn.commit()
         return True
     except Exception as e:
@@ -661,33 +623,16 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL INSCRIBIR_EL_TALLER(
-            {year_proceso},
-            {id_categoria},
-            '{nombre_taller}',
-            '{objetivo_taller}',
-            '{fec_inicio}',
-            '{fec_termino}',
-            {nro_minutos},
-            {nro_clases_anual},
-            {horas_totales},
-            {id_estado_taller},
-            '{observacion}',
-            '{lugar}',
-            {minimo_estudiante},
-            {maximo_estudiante},
-            '{requisito}',
-            {edad_minima},
-            {edad_maxima},
-            '{material}',
-            {ind_tipo_taller},
-            '{aud_usuario_ingreso}'
-        )}}"""
-        # print(f"DEBUG - : {query}")
-        # print(f"DEBUG - : year_proceso{type(year_proceso)},ID_CATEGORIA{type(id_categoria)},OBJ_TALLER{type(objetivo_taller)},fecha_inicio{type(fec_inicio)},fecha_inicio{type(fec_termino)}")
-        # print(f"DEBUG - : numero_minutos{type(nro_minutos)},nro_clases_anual{type(nro_clases_anual)},horas_totales{type(horas_totales)},id_estado_taller{type(id_estado_taller)},observacion{type(observacion)},lugar{type(lugar)}")
-        # print(f"DEBUG - : minimo_estudiante{type(minimo_estudiante)},maximo_estudiante{type(maximo_estudiante)},requisito{type(requisito)},edad_minima{type(edad_minima)},edad_maxima{type(edad_maxima)},material{type(material)},ind_tipo_taller{type(ind_tipo_taller)}")
-        cursor.execute(query)
+        sql = "{CALL INSCRIBIR_EL_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+        params = (
+            year_proceso, id_categoria, nombre_taller, objetivo_taller,
+            fec_inicio, fec_termino, nro_minutos, nro_clases_anual,
+            horas_totales, id_estado_taller, observacion, lugar,
+            minimo_estudiante, maximo_estudiante, requisito,
+            edad_minima, edad_maxima, material, ind_tipo_taller,
+            aud_usuario_ingreso
+        )
+        cursor.execute(sql, params)
         resultado = cursor.fetchone()
         conn.commit()
         return {
@@ -703,15 +648,15 @@ def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,
         cursor.close()
         conn.close()
 
-def cambiar_estado_taller_de_baja(id_taller,aud_usuario_modifica):
+def cambiar_estado_taller_de_baja(id_taller, aud_usuario_modifica):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL DE_BAJA_ESTADO_TALLER({id_taller},'{aud_usuario_modifica}')}}"""
-        print(f"DEBUG - : {query}")
-        cursor.execute(query)
+        cursor.execute("{CALL DE_BAJA_ESTADO_TALLER(?, ?)}",
+            (id_taller, aud_usuario_modifica)
+        )
         conn.commit()
         return True
     except Exception as e:
@@ -729,10 +674,9 @@ def ver_profesor(id_profesor):
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try: 
-        query = f"""{{CALL VER_PROFESOR({id_profesor})}}"""
-    #   cursor.execute(f'{{CALL VER_PROFESOR({id_profesor})}}')
-        cursor.execute(query)
+        cursor.execute("{CALL VER_PROFESOR(?)}", (id_profesor))
         row = cursor.fetchone()
+
         if row:
             profesor = {
                 'id_persona' : row[0],
@@ -761,24 +705,21 @@ def ver_profesor(id_profesor):
                 'id_comuna' : row[23],
                 'id_pais' : row[24],
                 'profesion' : row[25],
-                'fec_creacion' : row[26].strftime('%Y-%m-%d %H:%M:%S') if row[26] else None,
-                'ultimo_acceso' : row[27],
-                'intentos_fallidos' : row[28],
-                'bloqueado_hasta' : row[29].strftime('%Y-%m-%d %H:%M:%S') if row[29] else None,
-                'resumen_curricular' : row[30],
-                'aud_usuario_ingreso' : row[31],
-                'aud_fec_ingreso':row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
-                'aud_usuario_modifica' : row[33],
-                'aud_fec_modifica':row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None
+                'resumen_curricular' : row[26],
+                'id_taller' : row[27],
+                'nombre_taller' : row[28],
+                'year_proceso' : row[29],
+                'aud_usuario_ingreso' : row[30],
+                'aud_fec_ingreso':row[31].strftime('%Y-%m-%d %H:%M:%S') if row[31] else None,
+                'aud_usuario_modifica' : row[32],
+                'aud_fec_modifica':row[33].strftime('%Y-%m-%d %H:%M:%S') if row[33] else None
             }
             return profesor
         else:
             print(f"DEBUG - No se encontro el profesor ID {id_profesor} o no existe en las 3 tablas")
             return None
     except Exception as e:
-        print(f"Error en VER_PROFESOR. revisa las urls o la ID: {e}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
+        print(f"Error en ver_profesor: {e}")
         return None
     finally:
         cursor.close()
@@ -800,62 +741,22 @@ def obtener_profesores(id_profesor=None, nombre_completo=None, id_taller=None, n
         cursor.close()
         conn.close()
 
-def ac_profesor(id_persona,
-                nombre_persona,
-                apellido_paterno,
-                apellido_materno,
-                genero,
-                telefono,
-                correo_electronico,
-                telefono_contacto,
-                nombre_contacto,
-                correo_contacto,
-                profesion,
-                resumen_curricular,
-                ind_activo,
-                observacion,
-                id_pais,
-                id_comuna,
-                villa,
-                nro_dpto,
-                nro_block,
-                nro_calle,
-                calle,
-                bloqueado_hasta,
-                aud_usuario_modifica_pt,
-                aud_usuario_modifica_p):
+def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno, genero,
+                telefono, correo_electronico, telefono_contacto, nombre_contacto, correo_contacto,
+                profesion, resumen_curricular, ind_activo, observacion, id_pais, id_comuna,
+                villa, nro_dpto, nro_block, nro_calle, calle,
+                aud_usuario_modifica_pt, aud_usuario_modifica_p):
     conn = get_connection()
     if not conn:
-        return {"success": False, "message": "Error de conexión"}
+        return False
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL AC_TALLERISTAS(
-        {id_persona}, 
-        '{nombre_persona}',
-        '{apellido_paterno}',
-        '{apellido_materno}',
-        '{genero}',
-        '{telefono}',
-        '{correo_electronico}',
-        '{telefono_contacto}',
-        '{nombre_contacto}',
-        '{correo_contacto}',
-        '{profesion}', 
-        '{resumen_curricular}',
-        {ind_activo},
-        '{observacion}',
-        {id_pais},
-        {id_comuna},
-        '{villa}',
-        '{nro_dpto}',
-        '{nro_block}',
-        '{nro_calle}',
-        '{calle}',
-        '{bloqueado_hasta}',
-        '{aud_usuario_modifica_pt}',
-        '{aud_usuario_modifica_p}')}}"""
-        print(f"DEBUG - : {query}")
-        cursor.execute(query)
+        cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+                       (id_profesor, nombre_persona, apellido_paterno, apellido_materno, genero,
+                        telefono, correo_electronico, telefono_contacto, nombre_contacto, correo_contacto,
+                        profesion, resumen_curricular, ind_activo, observacion, id_pais, id_comuna,
+                        villa, nro_dpto, nro_block, nro_calle, calle,
+                        aud_usuario_modifica_pt, aud_usuario_modifica_p))
         conn.commit()
         return True
     except Exception as e:
@@ -866,28 +767,24 @@ def ac_profesor(id_persona,
         cursor.close()
         conn.close()
 
-def inscribir_profesores(id_persona,profesion,resumen_curricular,aud_usuario_ingreso):
-    conn = get_connection()
-    if not conn:
-        return {"success": False, "message": "Error de conexión"}
-    cursor = conn.cursor()
-    try:
-        query = f"""{{CALL INSCRIBIR_TALLERISTAS(
-        {id_persona}, 
-        '{profesion}', 
-        '{resumen_curricular}',
-        '{aud_usuario_ingreso}'
-        )}}"""
-        cursor.execute(query)
-        conn.commit()
-        return True
-    except Exception as e:
-        print(f"Error en INSCRIBIR_TALLERISTAS: {e}")
-        conn.rollback()
-        return {"success": False, "message": str(e)}
-    finally:
-        cursor.close()
-        conn.close()
+# def inscribir_profesores(id_persona, profesion, resumen_curricular, aud_usuario_ingreso):
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexión"}
+#     cursor = conn.cursor()
+#     try:
+#         cursor.execute("{CALL INSCRIBIR_TALLERISTAS(?, ?, ?, ?)}",
+#             (id_persona, profesion, resumen_curricular, aud_usuario_ingreso)
+#         )
+#         conn.commit()
+#         return True
+#     except Exception as e:
+#         print(f"Error en INSCRIBIR_TALLERISTAS: {e}")
+#         conn.rollback()
+#         return {"success": False, "message": str(e)}
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,pi_fec_nacimiento,pi_edad,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
                          pi_calle,pi_villa,pi_id_comuna,pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,pi_correo_contacto,pi_observacion,
@@ -897,33 +794,32 @@ def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_a
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL INSCRIBIR_TALLERISTAS(
-        {pi_rut_profesor}, 
-        '{pi_dv_profesor}', 
-        '{pi_nombre_profesor}',
-        '{pi_apellido_paterno}',
-        '{pi_apellido_materno}',
-        '{pi_fec_nacimiento}',
-        {pi_edad},
-        '{pi_genero}',
-        '{pi_nro_calle}',
-        '{pi_nro_block}',
-        '{pi_nro_dpto}',
-        '{pi_calle}',
-        '{pi_villa}',
-        {pi_id_comuna},
-        {pi_id_pais},
-        '{pi_telefono}',
-        '{pi_correo_electronico}',
-        '{pi_nombre_contacto}',
-        '{pi_telefono_contacto}',
-        '{pi_correo_contacto}',
-        '{pi_observacion}',
-        '{pi_id_usuario}',
-        '{pi_profesion}',
-        '{pi_resumen_curricular}'
-        )}}"""
-        cursor.execute(query)
+        cursor.execute("{CALL INSCRIBIR_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+        (
+        pi_rut_profesor, 
+        pi_dv_profesor, 
+        pi_nombre_profesor,
+        pi_apellido_paterno,
+        pi_apellido_materno,
+        pi_fec_nacimiento,
+        pi_edad,
+        pi_genero,
+        pi_nro_calle,
+        pi_nro_block,
+        pi_nro_dpto,
+        pi_calle,
+        pi_villa,
+        pi_id_comuna,
+        pi_id_pais,
+        pi_telefono,
+        pi_correo_electronico,
+        pi_nombre_contacto,
+        pi_telefono_contacto,
+        pi_correo_contacto,
+        pi_observacion,
+        pi_id_usuario,
+        pi_profesion,
+        pi_resumen_curricular))
         conn.commit()
         return True
     except Exception as e:
@@ -940,11 +836,11 @@ def suspender_tallerista(id_profesor,aud_usuario_modifica):
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        query = f"""{{CALL SUSPENDER_TALLERISTA(
-        {id_profesor}, 
-        '{aud_usuario_modifica}'
-        )}}"""
-        conn.commit(query)
+        cursor.execute("{CALL SUSPENDER_TALLERISTA(?,?)}",
+        (
+        id_profesor, 
+        aud_usuario_modifica))
+        conn.commit()
         return True
     except Exception as e:
         print(f"Error en SUSPENDER_TALLERISTA: {e}")
@@ -960,7 +856,7 @@ def obtener_historial_talleres_por_tallerista(id_profesor):
         return []
     cursor = conn.cursor()
     try:
-        cursor.execute(f"{{CALL OBTENER_HISTORIAL_TALLERES_TALLERISTA({id_profesor})}}")
+        cursor.execute("{CALL OBTENER_HISTORIAL_TALLERES_TALLERISTA(?)}", (id_profesor,))
         columns = [column[0] for column in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
     except Exception as e:
@@ -970,13 +866,14 @@ def obtener_historial_talleres_por_tallerista(id_profesor):
         cursor.close()
         conn.close()
 
+
 def obtener_estudiantes_por_taller_proc(id_taller):
     conn = get_connection()
     if not conn:
         return []
     cursor = conn.cursor()
     try:
-        cursor.execute(f"{{CALL OBTENER_ESTUDIANTES_POR_TALLER({id_taller})}}")
+        cursor.execute("{CALL OBTENER_ESTUDIANTES_POR_TALLER(?)}", (id_taller,))
         columns = [column[0] for column in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
     except Exception as e:

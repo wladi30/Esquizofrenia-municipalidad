@@ -1,4 +1,4 @@
-// Al principio del archivo, después de la clase, agrega:
+// Al principio del archivo, despues de la clase, agrega:
 console.log('DEBUG - estudiante.js cargado');
 
 class EstudianteApp {
@@ -50,16 +50,16 @@ class EstudianteApp {
             console.log('DEBUG - Response status:', response.status);
             
             const data = await response.json();
-            console.log('DEBUG - Datos de categorías:', data);
+            console.log('DEBUG - Datos de categorias:', data);
             
             // Verificar la estructura de la respuesta
             if (data.success && Array.isArray(data.categorias)) {
                 const categoriaSelect = document.getElementById('categoria');
                 if (categoriaSelect) {
-                    console.log('DEBUG - Select de categorías encontrado');
+                    console.log('DEBUG - Select de categorias encontrado');
                     
                     // Limpiar y llenar el select
-                    let opciones = '<option value="">TODAS LAS CATEGORÍAS</option>';
+                    let opciones = '<option value="">TODAS LAS CATEGORiAS</option>';
                     data.categorias.forEach(c => {
                         // Asegurar que los nombres de propiedades coinciden
                         const id = c.ID_CATEGORIA || c.id_categoria;
@@ -116,7 +116,7 @@ class EstudianteApp {
         }
     }
 
-    // El resto de los métodos permanecen igual...
+    // El resto de los metodos permanecen igual...
 }
 
 // Asegurar que la app se inicializa
