@@ -386,7 +386,8 @@ def api_delete_taller(id_taller): # CRU(D)
 @funcionario_required
 def api_tallerista_suspender(id_profesor):
     if 'id_usuario' not in session:
-        return jsonify({'success': False, 'message': 'No autorizado'}), 401
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
         resultado = suspender_tallerista(id_profesor, usuario)
@@ -422,7 +423,8 @@ def api_get_tallerista(id_profesor):
 @funcionario_required
 def api_lista_tallerista():
     if 'id_usuario' not in session:
-        return jsonify({"success": False, "message": "No autorizado"}), 401
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         id_profesor_str = request.args.get('id_profesor')
         id_taller_str = request.args.get('id_taller')
@@ -453,7 +455,8 @@ def api_lista_tallerista():
 @funcionario_required
 def api_crear_tallerista():
     if 'id_usuario' not in session:
-        return jsonify({"success": False, "message": "No autorizado"}), 401
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.json
         usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
@@ -494,8 +497,8 @@ def api_crear_tallerista():
 @funcionario_required
 def api_actualizar_tallerista(id_profesor):
     if 'id_usuario' not in session:
-        return jsonify({"success": False, "message": "No autorizado"}), 401
-
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.get_json()
         usuario_modifica = session.get('nombre_persona', 'sistema')
