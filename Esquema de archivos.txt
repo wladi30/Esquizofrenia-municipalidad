@@ -82,14 +82,6 @@ FLASK_APP
 -db_test.py
 -requerimientos.txt
 
-este proyecto esta bastante avanzado, le falta seguridad a su vez que falta completar ciertos tramos, por ejemplo en el app_funcionario.py la funcion api_actualizar_taller me falla el tema de
-poder subir la fecha_inicio, fecha_termino, fec_modifica y fecha_estado, los demas parametros son capaz de actualizarce bien pero las fecha me arroja errores, tambien necesito que la fec_modifica
-se cambie automaticamente apenas realize un cambio , ya que esta fecha marca cuando se realizo el ultimo cambio, a su vez necesito que el usuario_modifica se cambie por si solo, utilizando
-el usuario el cual inicio sesion, de este modo queda registro inalterable de quien realiza los cambios, tambien necesito solucionar el tema del delete para taller, ya sea borrar el taller o
-cambiarlo a cerrado/de baja para que se demuestre que ya no sera utilizado, necesito ambas. tambien necesito que se termine el masivo talleres ya sea eliminacion masiva y subida masiva.
-todo tiene que ser con procedimientos almacenados para mayor seguridad, tambien se tienen que aplicar bastantes seguridades ya que este proyecto sera atacado a modo de prueba, pero primero
-centremosnos en terminar bien lo de taller
-
 Administracion de talleres
 1.- Revision de inscripciones |
 2.- Mantenedores |
@@ -100,6 +92,3 @@ Administracion de talleres
 6.- Masivo Talleres |
 7.- Lista de espera funcional |
 8.- Gestion de cupos |
-
-La base de datos que se esta utilizando es sql server 2008 r2 , en el archivo BASE_DE_DATOS.txt esta lo que tengo en sql server, existen mas cosas que son de la base de datos de por si pero si
-necesitas algo me dices, tambien si tienes que hacer cambios en la base de datos me dices con respecto a realizar cambios en las tablas o procedimientos que te estoy entregando, etc 
