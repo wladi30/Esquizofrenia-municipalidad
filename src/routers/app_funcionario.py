@@ -143,6 +143,9 @@ def funcionario_masivo_taller():
 @url_funcionario.route('/api/taller-lista', methods=['GET'])
 @funcionario_required
 def api_taller_lista():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         year = request.args.get('year')
         estado = request.args.get('estado')
@@ -172,6 +175,9 @@ def api_taller_lista():
 @url_funcionario.route('/api/taller-crear', methods=['POST'])
 @funcionario_required
 def api_crear_taller():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.json
         year_proceso_v2 = data.get('year_proceso')
@@ -244,6 +250,9 @@ def api_crear_taller():
 @url_funcionario.route('/api/taller-get/<int:id_taller>', methods=['GET'])
 @funcionario_required
 def api_get_taller_id(id_taller): #C(R)UD
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         if request.method == 'GET':
             taller = ver_taller(id_taller)
@@ -262,6 +271,9 @@ def api_get_taller_id(id_taller): #C(R)UD
 @url_funcionario.route('/api/taller-ac/<int:id_taller>', methods=['PUT'])
 @funcionario_required
 def api_actualizar_taller(id_taller): #CR(U)D
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         if request.method ==  'PUT':
             data = request.json
@@ -326,6 +338,9 @@ def api_actualizar_taller(id_taller): #CR(U)D
 @url_funcionario.route('/api/taller-cambiar/<int:id_taller>', methods=['PUT'])
 @funcionario_required
 def api_delete_taller(id_taller): # CRU(D)
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         if request.method ==  'PUT':
             usuario_modifica = session.get('nombre_persona', session.get('id_usuario'))
@@ -362,6 +377,9 @@ def api_tallerista_suspender(id_profesor):
 @url_funcionario.route('/api/tallerista-get/<int:id_profesor>', methods=['GET'])
 @funcionario_required
 def api_get_tallerista(id_profesor):
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         if request.method == 'GET':
             tallerista = ver_profesor(id_profesor)
@@ -380,6 +398,9 @@ def api_get_tallerista(id_profesor):
 @url_funcionario.route('/api/tallerista-lista', methods=['GET'])
 @funcionario_required
 def api_lista_tallerista():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         id_profesor_v1 = request.args.get('busqueda_id_profesor')
         id_taller_v1 = request.args.get('busqueda_id_taller')
@@ -406,6 +427,9 @@ def api_lista_tallerista():
 @url_funcionario.route('/api/tallerista-crear', methods=['POST'])
 @funcionario_required
 def api_crear_tallerista():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.json
         from db_test import inscribir_profesores
@@ -426,6 +450,9 @@ def api_crear_tallerista():
 @url_funcionario.route('/api/tallerista-actualizar/<int:id_profesor>', methods=['PUT'])
 @funcionario_required
 def api_actualizar_tallerista(id_profesor):
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.json
         from db_test import ac_profesor
@@ -452,6 +479,9 @@ def api_actualizar_tallerista(id_profesor):
 @url_funcionario.route('/api/inscripcion-lista', methods=['GET'])
 @funcionario_required
 def api_inscripcion_lista():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         taller_id = request.args.get('taller_id')
         from db_test import obtener_estudiantes
@@ -468,6 +498,9 @@ def api_inscripcion_lista():
 @url_funcionario.route('/api/inscripcion-crear', methods=['POST'])
 @funcionario_required
 def api_crear_inscripcion():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.json
         id_taller_ins=data.get('id_taller')
@@ -489,6 +522,9 @@ def api_crear_inscripcion():
 @url_funcionario.route('/api/inscripcion-eliminar', methods=['DELETE'])
 @funcionario_required
 def api_eliminar_inscripcion():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         id_taller = request.args.get('id_taller')
         id_estudiante = request.args.get('id_estudiante')
@@ -507,6 +543,9 @@ def api_eliminar_inscripcion():
 @url_funcionario.route('/api/lista-espera', methods=['GET'])
 @funcionario_required
 def api_lista_espera():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         return jsonify({"success": True, "data": [], "total": 0})
     except Exception as e:
@@ -519,7 +558,7 @@ def api_lista_espera():
 @funcionario_required
 def joven_guts():
     return render_template('a_massive_creature.html')
-#--- EL FIN DE LA GUTS ---
+#--- EL DESTINO DE LA GUTS ---
 
 #-- LOS QUE ESTEN AQUI NO LOS USARE POR MIENTRAS --
 # -- vere si sigo utilizando este , estoy cambiando las cosas y no se si usare este pero no afecta en nada dejarlo aqui, mientras no lo llame 
@@ -545,6 +584,9 @@ def joven_guts():
 @url_funcionario.route('/taller/<int:id_taller>/inscritos')
 @funcionario_required
 def ver_inscritos_taller(id_taller):
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         return render_template("inscripcion/talleres.html", id_taller=id_taller)
         # return print("ZA WARUDOO!!")
@@ -558,6 +600,9 @@ def ver_inscritos_taller(id_taller):
 @url_funcionario.route('/api/taller/<int:id_taller>/inscritos')
 @funcionario_required
 def ver_inscritos_taller_est(id_taller):
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try: # aqui se tiene que hacer algo con respecto al ver los talleres, se obtienen estudiantes pero con la lista de arriba esto pasa a ser casi inutil
         estudiantes = obtener_estudiantes_por_taller(id_taller)
         return jsonify({"success": True, "data": estudiantes})
@@ -575,6 +620,9 @@ def ver_inscritos_taller_est(id_taller):
 # para hacer esto mismo asi que no tengo problemas, lo dejo aqui por esta bonito
 @funcionario_required
 def api_categoria_taller():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         categorias = [
             {"ID_CATEGORIA": 1, "DESCRIPCION_CATEGORIA": "DANZA CLÁSICA"},
@@ -622,6 +670,9 @@ def api_categoria_taller():
 @url_funcionario.route('/api/departamento', methods=['GET'])
 @funcionario_required
 def api_departamento_taller():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
     try:
         departamentos = [
             {"ID_DEPARTAMENTO": 169, "DESCRIPCION_DEPARTAMENTO": "desconocido"},

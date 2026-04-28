@@ -162,6 +162,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
+    // lptm que sueño colegaaaaaaaAAAAAA
 });
 
 document.getElementById('togglePassword')?.addEventListener('click', function() {
@@ -172,7 +173,7 @@ document.getElementById('togglePassword')?.addEventListener('click', function() 
     icon.classList.toggle('bi-eye');
     icon.classList.toggle('bi-eye-slash');
 });
-
+// revisando no se por que me daba 2 ojitos para la cotraseña, veo y me doy cuenta que tengo lo mismo en el login xd, bueno lo dejo por que me parece gracioso, por ahora
 // window.location.href = '/api/taller-ac/<int:id_taller>';
 // window.location.href = 'funcionario/administracion_taller.html';
 // window.location.href = `/dashboard/settings`;

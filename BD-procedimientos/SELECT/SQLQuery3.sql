@@ -1,0 +1,35 @@
+USE [GESTION_TALLER]
+GO
+
+SELECT [ID_TALLER]
+      ,[YEAR_PROCESO]
+      ,[ID_CATEGORIA]
+      ,[NOMBRE_TALLER]
+      ,[ID_DEPARTAMENTO]
+      ,[OBJETIVO_TALLER]
+      ,[FEC_INICIO]
+      ,[FEC_TERMINO]
+      ,[NRO_MINUTOS]
+      ,[NRO_CLASES_ANUAL]
+      ,[HORAS_TOTALES]
+      ,[ID_ESTADO_TALLER]
+      ,[FEC_ESTADO_TALLER]
+      ,[OBSERVACION]
+      ,[LUGAR]
+      ,[MINIMO_ESTUDIANTE]
+      ,[MAXIMO_ESTUDIANTE]
+      ,[REQUISITO]
+      ,[EDAD_MINIMA]
+      ,[EDAD_MAXIMA]
+      ,[MATERIAL]
+      ,[IND_TIPO_TALLER]
+      ,[AUD_USUARIO_INGRESO]
+      ,[AUD_FEC_INGRESO]
+      ,[AUD_USUARIO_MODIFICA]
+      ,[AUD_FEC_MODIFICA]
+  FROM [dbo].[SGT_TALLER]
+  where ID_TALLER = 1;
+
+GO
+
+

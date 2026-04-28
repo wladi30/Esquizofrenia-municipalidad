@@ -179,51 +179,6 @@ def autenticar_usuario(identificador, password):
     conn.close()
     return {"success": False, "message": "Credenciales incorrectas"}
 
-# este es el sin hash , lo usare por mientras por que no quiero complicar las cosas al momento de ingresar a la pagina
-# def autenticar_simple(identificador,contrasena):
-#     print(f"DEBUG - : identificador{type(identificador)}, {(identificador)}")
-#     print(f"DEBUG - : contrasena{type(contrasena)}, {(contrasena)}")
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexión"}
-#     cursor = conn.cursor()
-#     try:
-#         query = "{CALL AUTENTIFICACION_SIN_HASH(?, ?)}"
-#         cursor.execute(query, (identificador, contrasena))
-#         # row = cursor.fetchone()
-#         # if row:
-#         #     nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
-#         #     return {"success": True, "message": "Autenticación exitosa", "datos": {"ID_F": row[0], "NOMBRE_COMPLETO": nombre_completo}}
-#         # else:
-#         #     return {"success": False, "message": "Usuario o contraseña incorrectos"}  
-#     except Exception as e:
-#         print(f"Error en autenticación: {e}")
-#         return {"success": False, "message": "Error en el servidor"}
-#     finally:
-#         cursor.close()
-#         conn.close()
-
-# def autenticar_simple(rut, dv, contrasena):
-#     print(f"DEBUG - autenticar_simple({rut}, {dv}, ***)")
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexión"}
-#     cursor = conn.cursor()
-#     try:
-#         cursor.execute("{CALL AUTENTIFICACION_SIN_HASH(?, ?, ?)}", (rut, dv, contrasena))
-#         row = cursor.fetchone()
-#         if row and row.EXITO == 1:
-#             return {"success": True,"datos": {"ID_F": row.ID_F,"NOMBRE_COMPLETO": row.NOMBRE}}
-#         else:
-#             mensaje = row.MENSAJE if row else "Error desconocido"
-#             return {"success": False, "message": mensaje}
-#     except Exception as e:
-#         print(f"Error en autenticación: {e}")
-#         return {"success": False, "message": "Error interno del servidor"}
-#     finally:
-#         cursor.close()
-#         conn.close()
-
 def autenticar_simple(rut, dv, contrasena):
     print(f"DEBUG - autenticar_simple({type(rut)},{rut}, {type(dv)},{dv}, ***)")
     conn = get_connection()
@@ -244,53 +199,6 @@ def autenticar_simple(rut, dv, contrasena):
     finally:
         cursor.close()
         conn.close()
-
-# def validar_rut(rut_str,dv_ingresado):
-#     # un validor del digito verificador del ruf, no lo pongo en el js por que nmguta js
-#     # conn = get_connection()
-#     # if not conn:
-#     #     return {"success": False, "message": "error de conexion"}
-#     # cursor = conn.cursor()
-#     try:
-#         # aqui se vienen un monton de matematicas
-#         suma = 0
-#         multiplicador = 2
-#         for digito in reversed(rut_str):
-#             suma += int(digito) * multiplicador
-#             multiplicador = 9 if multiplicador == 7 else multiplicador + 1
-#         resto = suma % 11
-#         dv_esperado = 11 - resto
-
-#         if dv_esperado == 11:
-#             dv_esperado = '0'
-#         elif dv_esperado == 10:
-#             dv_esperado = 'K'
-#         else:
-#             dv_esperado = str(dv_esperado)
-#         return dv_esperado == dv_ingresado.upper()
-#     except:
-#         return False
-
-# def validar_dv_rut(rut_str, dv_ingresado):
-#     """Recibe el RUT sin DV (solo números) y el DV ingresado. Retorna True si coincide."""
-#     try:
-#         # Algoritmo del módulo 11
-#         suma = 0
-#         multiplicador = 2
-#         for digito in reversed(rut_str):
-#             suma += int(digito) * multiplicador
-#             multiplicador = 9 if multiplicador == 7 else multiplicador + 1
-#         resto = suma % 11
-#         dv_esperado = 11 - resto
-#         if dv_esperado == 11:
-#             dv_esperado = '0'
-#         elif dv_esperado == 10:
-#             dv_esperado = 'K'
-#         else:
-#             dv_esperado = str(dv_esperado)
-#         return dv_esperado == dv_ingresado.upper()
-#     except:
-#         return False
 
 #--REGISTRAR PERSONAS--
 def registrar_persona(rut_persona,dv_persona,nombre_persona,apellido_paterno,apellido_materno,fec_nacimiento, genero, telefono, correo, contrasena, tipo_usuario='ESTUDIANTE', pasaporte=None, calle=None, nro_calle=None, id_comuna=None, id_pais=None):

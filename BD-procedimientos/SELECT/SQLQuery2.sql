@@ -1,0 +1,10 @@
+USE [GESTION_TALLER]
+GO
+
+SELECT [ID_TALLER]
+       [IND_TIPO_TALLER]
+  FROM [dbo].[SGT_TALLER]
+  order by IND_TIPO_TALLER asc;
+GO
+
+

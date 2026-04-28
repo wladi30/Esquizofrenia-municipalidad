@@ -240,6 +240,9 @@ const GestionTalleristas = {
     },
 
     editar: function(id) {
+        // con esto cualquiera se vuelve ezquiso, me daba un problema de que no modificaba , reviso aqui y alla, veo el app funcionario, veo el procedimiento(mentira), todo bien todo correcto, 
+        // pero seguia sin funcionar, despues me di cuenta que podria ser el db_test, encuentro errores y digo ya bien ahora debe funcionar, sigue sin hacerlo
+        // reviso mas aun , hasta manoseo el css y nada, el problema? le puse la mierda right join en vez de left, salu2
         fetch(`/api/tallerista-get/${id}`)
             .then(response => response.json())
             .then(result => {
@@ -252,7 +255,7 @@ const GestionTalleristas = {
                     document.getElementById('apellidoMaterno').value = t.apellido_materno;
                     document.getElementById('fechaNacimiento').value = t.fec_nacimiento;
                     document.getElementById('edad').value = t.edad;
-                    document.getElementById('genero').value = t.genero;
+                    document.getElementById('genero').value = t.genero; //cempeñere tremende pene
                     document.getElementById('telefono').value = t.telefono;
                     document.getElementById('correo').value = t.correo_electronico;
                     document.getElementById('telefonoContacto').value = t.telefono_contacto;

@@ -1,0 +1,11 @@
+USE [GESTION_TALLER]
+GO
+
+UPDATE [dbo].[SGT_TALLER]
+   SET,[FEC_INICIO] = <FEC_INICIO, date,>
+      ,[FEC_TERMINO] = <FEC_TERMINO, date,>
+
+ WHERE 
+GO
+
+

@@ -43,9 +43,8 @@ if (typeof data !== 'undefined' && data !== null) {
     // asi que puede ser algo molesto ver que el error sale todo el rato
     console.warn("La variable 'data' no está definida en esta página.");
 }
-
 // la idea de esto es obtener el año y restarlo para obtener los talleres anteriores , etc
-
 // IMPORTANTE, podria ser buena idea hacer un export con todo lo demas, jamas se me habia ocurrido y lo aprendi hace poco que se puede, podria separar gran parte del codigo de este modo
 //asi para cuando tenga que hacer unos arreglos o debug pueda encargarme de revisar mas a detaller
 // se puede utilizar el * para realizar un import masivo, en el caso de que se quiera trar multiples funciones de un js a otro
+// me gustan los numeros pares, todo termina en par o mi mente no podra dormir, cunado no terminar en par, prefiero ignorar
