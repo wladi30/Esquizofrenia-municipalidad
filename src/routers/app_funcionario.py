@@ -468,7 +468,7 @@ def api_crear_tallerista():
             pi_apellido_paterno=data.get('apellido_paterno', ''),
             pi_apellido_materno=data.get('apellido_materno', ''),
             pi_fec_nacimiento=data.get('fec_nacimiento', '1900-01-01 00:00:00.001'),
-            pi_genero=data.get('genero', 2),
+            pi_genero=data.get('genero'),
             pi_nro_calle=data.get('nro_calle', ''),
             pi_nro_block=data.get('nro_block', ''),
             pi_nro_dpto=data.get('nro_dpto', ''),

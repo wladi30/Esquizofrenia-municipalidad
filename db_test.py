@@ -18,12 +18,12 @@ DB_PWD = "tallertest"
 
 #--SISTEMA--
 def get_connection():
-     try:
-          conn = pyodbc.connect(f'DRIVER={{{DB_DRIVER}}};SERVER={DB_SERVER};DATABASE={DB_NAME};UID={DB_UID};PWD={DB_PWD};Encrypt=no;TrustServerCertificate=yes',autocommit=False)
-          return conn
-     except Exception as e:
-          print(f"Error de conexion. revisa el get_connection en FLASK_APP/db_test.py: {e}")
-          return None
+    try:
+        conn = pyodbc.connect(f'DRIVER={{{DB_DRIVER}}};SERVER={DB_SERVER};DATABASE={DB_NAME};UID={DB_UID};PWD={DB_PWD};Encrypt=no;TrustServerCertificate=yes',autocommit=False)
+        return conn
+    except Exception as e:
+        print(f"Error de conexion. revisa el get_connection en FLASK_APP/db_test.py: {e}")
+        return None
 
 def sql_date(date_value,datetime):
     if date_value:

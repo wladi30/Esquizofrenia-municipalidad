@@ -25,7 +25,7 @@ const GestionTalleristas = {
             .then(data => {
                 const selectGenero = document.getElementById('genero');
                 if (selectGenero) {
-                    selectGenero.innerHTML = '<option value="2">Seleccione género...</option>';
+                    selectGenero.innerHTML = '<option value="0">Otro</option>';
                     data.forEach(g => {
                         const option = document.createElement('option');
                         option.value = g.GENERO;  // 0,1,2
@@ -191,8 +191,8 @@ const GestionTalleristas = {
 
     guardar: function() {
         const id = document.getElementById('talleristaId').value;
-        const RutProfesor = document.getElementById('rutProfesor').value;
-        const DvProfesor = document.getElementById('dvProfesor').value;
+        const RutProfesor = parseInt(document.getElementById('rutProfesor').value);
+        const DvProfesor = parseInt(document.getElementById('dvProfesor').value);
         const nombre = document.getElementById('nombrePersona').value.trim().toUpperCase();
         const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
         const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
@@ -318,6 +318,7 @@ const GestionTalleristas = {
                 if (result.success) {
                     const t = result.data;
                     console.log("Datos del tallerista:", t);
+                    // const 
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
@@ -328,8 +329,8 @@ const GestionTalleristas = {
                                     <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
                                     <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
                                     <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
-                                    <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
+                                    <tr><th>R.U.T:</th><td>${t.rut_profesor || 'No registrado'}</td></tr>
+                                    <tr><th>Digito Verificador:</th><td>${t.dv_profesor || 'No registrado'}</td></tr>
                                     <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
                                     <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
                                     <tr><th>Genero:</th><td>${t.genero || 'No registrado'}</td></tr>
