@@ -318,3 +318,4 @@
 2026-04-28 15:15:31 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ missing 1 required positional argument_ _pi_edad_
 2026-04-28 15:15:44 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
 2026-04-28 15:18:55 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-28 16:58:13 | Thread-21 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_

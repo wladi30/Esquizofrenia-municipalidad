@@ -25,7 +25,7 @@ const GestionTalleristas = {
             .then(data => {
                 const selectGenero = document.getElementById('genero');
                 if (selectGenero) {
-                    selectGenero.innerHTML = '<option value="0">Otro</option>';
+                    selectGenero.innerHTML = '<option value="2">-</option>';
                     data.forEach(g => {
                         const option = document.createElement('option');
                         option.value = g.GENERO;  // 0,1,2

@@ -752,11 +752,11 @@ def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno,
     cursor = conn.cursor()
     try:
         cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
-                       (id_profesor, nombre_persona, apellido_paterno, apellido_materno, genero,
-                        telefono, correo_electronico, telefono_contacto, nombre_contacto, correo_contacto,
-                        profesion, resumen_curricular, ind_activo, observacion, id_pais, id_comuna,
-                        villa, nro_dpto, nro_block, nro_calle, calle,
-                        aud_usuario_modifica_pt, aud_usuario_modifica_p))
+                    (id_profesor, nombre_persona, apellido_paterno, apellido_materno, genero,
+                    telefono, correo_electronico, telefono_contacto, nombre_contacto, correo_contacto,
+                    profesion, resumen_curricular, ind_activo, observacion, id_pais, id_comuna,
+                    villa, nro_dpto, nro_block, nro_calle, calle,
+                    aud_usuario_modifica_pt, aud_usuario_modifica_p))
         conn.commit()
         return True
     except Exception as e:
