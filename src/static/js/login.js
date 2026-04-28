@@ -84,24 +84,27 @@ function validarRut(rutCompleto) {
 }
 
 // aqui un document para mandar el envio del formulario
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-    console.time('submit-handler');
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.querySelector('.btn-login');
     const originalText = btn.innerHTML;
     const rutInput = document.getElementById('identificador');
     const passwordInput = document.getElementById('password');
     // aqui valido el rut antes de enviarlo a la base de datos todo sanitizado my sangre
-    if (!rutInput.value.trim()) {alert('Por favor ingrese su RUT');
+    if (!rutInput.value.trim()) {
+        Swal.fire('Error', 'Por favor ingrese su RUT', 'error');
         rutInput.focus();
         return;
     }
     //mensaje de alerta que pide ingresar el rut
-    if (!validarRut(rutInput.value)) {alert('RUT inválido. Ejemplo: 12.345.678-9');
+    if (!validarRut(rutInput.value)) {
+        Swal.fire('Error', 'RUT inválido. Ejemplo: 12.345.678-9', 'error');
         rutInput.focus();
         return;
     }
-    if (!passwordInput.value.trim()) {alert('Ingrese la contraseña');
+
+    if (!passwordInput.value.trim()) {
+        Swal.fire('Error', 'Ingrese la contraseña', 'error');
         passwordInput.focus();
         return;
     }
@@ -114,8 +117,10 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     let dv = rutLimpio.slice(-1); // aqui solo seteo el dv
     const data = { rut: rut, dv: dv, password: passwordInput.value };
     // aqui hago un envio del rut y el dv por separado
-    console.log('Enviando sus datos:', { rut: rut, dv: dv, password: '******'}); // HOLAAAAA esto es para debug y ver si todo llega bien
-    fetch('/api/login', {method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify(data)})
+     try {
+        console.log('Enviando sus datos:', { rut: rut, dv: dv, password: '******'}); // HOLAAAAA esto es para debug y ver si todo llega bien
+        const response = await fetch('/api/login', {method: 'POST',headers: { 'Content-Type': 'application/json' },body: JSON.stringify(data)
+        });
     //yico yico fetch mi amigo que no siempre me sirve pero siempre esta
     // .then(response => {
     //     if (!response.ok) {
@@ -123,76 +128,49 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     //     }
     //     return response.json();
     // }) // this may be converted to my bolas no va a pasar, en el mejor de lo casos
-    .then(async response =>{
         const contentType = response.headers.get('content-type');
-        if (!response.ok) {
-            if (contentType && contentType.includes('application/json')) {const errorData = await response.json();
-                throw new Error(errorData.message || `Error ${response.status}`);
-            }
-            else {
-                const text = await response.text();
-                console.error('Respuesta no-JSON:', text.substring(0, 200));
-                throw new Error('Error del servidor');
-            }
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('El servidor no respondió con JSON');
         }
-        if (contentType && contentType.includes('application/json')) {return response.json();
-        }
-        else {throw new Error('Respuesta invalida del servidor');
-        }
-    })
-    .then(data => {
-        if (data.success) {window.location.href = data.redirect;
-        }
+        
+        const result = await response.json();
+        console.log('Respuesta del servidor:', result);
+        if (result.success) {
+            // aqui si el login funciona
+            Swal.fire({
+                icon: 'success',
+                title: 'Bienvenido',
+                text: 'Iniciando sesión...',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = result.redirect || '/funcionario/dashboard';
+            });
+        } 
         else {
-            alert(data.message || 'error al inicar sesion');
+            // login cago
+            Swal.fire('Error de acceso', result.message || 'RUT o contraseña incorrectos', 'error');
             btn.innerHTML = originalText;
             btn.disabled = false;
-            // restaura el boton , si no qued a stuck
+            passwordInput.value = '';
+            passwordInput.focus();
         }
-    })
-    // fetch('/api/login', {method: 'POST',headers: { 'Content-Type': 'application/json' },body: JSON.stringify(data)
-    //hice mas complejo el tema de atrapar los errores por que el anterior resulto ser pija corta
-    // })
-    // .then(async response => {
-    //     const contentType = response.headers.get('content-type');
-    //     if (!response.ok) {
-    //         if (contentType && contentType.includes('application/json')) {
-    //             const errorData = await response.json();
-    //             throw new Error(errorData.message || `Error ${response.status}`);
-    //         } else {
-    //             const text = await response.text();
-    //             console.error('Respuesta no-JSON:', text.substring(0, 200));
-    //             throw new Error('Error del servidor');
-    //         }
-    //     }
-    //     if (contentType && contentType.includes('application/json')) {
-    //         return response.json();
-    //     } else {
-    //         throw new Error('Respuesta invalida del servidor');
-    //     }
-    // })
-    // .then(data => {
-    //     if (data.success) {
-    //         window.location.href = data.redirect || '/funcionario/dashboard';} 
-    //     else {
-    //         alert(data.message || 'Error al iniciar sesion');
-    //         btn.innerHTML = originalText;
-    //         btn.disabled = false;
-    //     }
-    // })
-    .catch(error => {
-        console.error('Error detallado:', error);
-        let mensajeError = 'Error de conexion. ';
-        if (error.message.includes('RUT no registrado')) {mensajeError = 'RUT no registrado en el sistema';} 
-        else if (error.message.includes('Contraseña incorrecta')) {mensajeError = 'Contraseña incorrecta';}
-        else {mensajeError += error.message || 'Intente nuevamente.';}
-        // lo mismo con lo del boton, el catch me servira para lo que ya sabe muchacho
-        // deberia colocarlo en un 'finally{}'?
-        alert(mensajeError);
+        
+    } 
+    catch (error) {console.error('Error de conexión:', error);
+        Swal.fire('Error', 'No se pudo conectar con el servidor. Intente nuevamente.', 'error');
         btn.innerHTML = originalText;
         btn.disabled = false;
-    });
-    console.timeEnd('submit-handler');
+    }
+});
+
+document.getElementById('togglePassword')?.addEventListener('click', function() {
+    const password = document.getElementById('password');
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    const icon = this.querySelector('i');
+    icon.classList.toggle('bi-eye');
+    icon.classList.toggle('bi-eye-slash');
 });
 
 // window.location.href = '/api/taller-ac/<int:id_taller>';

@@ -41,10 +41,14 @@ def funcionario_required(f):
 
 #-- RUTAS BASES --
 #-- DASHBOARD/FUNCIONARIO --
+#aqui me aseguro solo puedan acceder funcionarios, tambien sirve para cuando se cierra la session y se vuelve atras en la pagina
 @url_funcionario.route('/dashboard')
-@funcionario_required #aqui me aseguro solo puedan acceder funcionarios, tambien sirve para cuando se cierra la session y se vuelve atras en la pagina
+@funcionario_required 
 def funcionario_dashboard():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/dashboard.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_dashboard: {e}","error_funcionario")
@@ -55,6 +59,9 @@ def funcionario_dashboard():
 @funcionario_required
 def funcionario_admin_taller():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/administracion_taller.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_admin_taller : {e}", "error_funcionario")
@@ -65,6 +72,9 @@ def funcionario_admin_taller():
 @funcionario_required
 def funcionario_gestion_tallerista():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/administracion_tallerista.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_gestion_tallerista: {e}", "error_funcionario")
@@ -75,6 +85,9 @@ def funcionario_gestion_tallerista():
 @funcionario_required
 def funcionario_gestion_inscripciones():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/gestion_inscripciones.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_gestion_inscripciones: {e}", "error_funcionario")
@@ -85,6 +98,9 @@ def funcionario_gestion_inscripciones():
 @funcionario_required
 def funcionario_lista_espera():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/lista_espera.html")
         # return print("ZA WARUDOO!!")
     except Exception as e:
@@ -98,6 +114,9 @@ def funcionario_lista_espera():
 @funcionario_required
 def funcionario_revision_inscripciones():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/revision_inscripciones.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_gestion_inscripciones: {e}", "error_funcionario")
@@ -108,6 +127,9 @@ def funcionario_revision_inscripciones():
 @funcionario_required
 def funcionario_masivo_taller():
     try:
+        if 'id_usuario' not in session:
+            flash('debe iniciar sesion para acceder', 'warning')
+            return redirect(url_for('url_principal.login'))
         return render_template("funcionario/taller_masivo.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_masivo_taller: {e}", "error_funcionario")
@@ -324,6 +346,8 @@ def api_delete_taller(id_taller): # CRU(D)
 @url_funcionario.route('/api/tallerista-suspender/<int:id_profesor>', methods=['PUT'])
 @funcionario_required
 def api_tallerista_suspender(id_profesor):
+    if 'id_usuario' not in session:
+        return jsonify({'success': False, 'message': 'No autorizado'}), 401
     try:
         usuario = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
         resultado = suspender_tallerista(id_profesor, usuario)
