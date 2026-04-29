@@ -41,7 +41,7 @@ def api_login():
             session['id_usuario'] = resultado['datos']['ID_F']
             session['nombre_persona'] = resultado['datos']['NOMBRE_COMPLETO']
             session['tipo_usuario'] = 'FUNCIONARIO'
-            session.permanent = True
+            # session.permanent = True
             return jsonify({'success': True,'message': 'Login exitoso','redirect': url_for('url_funcionario.funcionario_dashboard')})
         else:
             return jsonify({'success': False, 'message': resultado['message']})

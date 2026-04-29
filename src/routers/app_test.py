@@ -7,8 +7,8 @@ url_test = Blueprint('url_test', __name__, template_folder='src/templates')
 def index_chamuco():
     return render_template("index.html")
 
-resultado = autenticar_simple(12345678, 9, '123')
-print(resultado)
+# resultado = autenticar_simple(12345678, 9, '123')
+# print(resultado)
 
 # RECORDAR poner un trigger para que cada vez que se abra el flask_app se actualice todas las edades de las personas taller y tambien funcionarios
 # aqui mismo podria poner el trigger cosas que se active todo el rato

@@ -19,7 +19,7 @@
     .header-navbar{
        position: fixed;
        top: 0;
-       z-index: 1030; /* to prevent the navbar getting covered up by other content yeah speak english ou yes */
+       z-index: 1030;
     }
     </style>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg,#940a0a, #001cbb);">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('url_admin.debug_rutas') }}">
+                        <a class="nav-link" href="{{ url_for('url_admin.guts') }}">
                             <i class="bi bi-file-earmark-text-fill"></i> (DEBUG)Generador de datos
                         </a>
                     </li>
@@ -110,27 +110,27 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- <script src="{{ url_for('static', filename='js/funcionario.js') }}"></script> -->
     <script>
-        const deleteButton = document.getElementById('deleteButton');
-        deleteButton.addEventListener('click', () => {
-            Swal.fire({
-                title: 'Cerrar Sesion',
-                text: '¿Estas seguro de cerrar la sesion y volver a la pagina de ingreso?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, cerrar sesion'
-                })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Sesion Cerrada',
-                        'Volveras a la pagina del login.',
-                        'success'
-                    );
-                }
-            });
-        });
+        // const deleteButton = document.getElementById('deleteButton');
+        // deleteButton.addEventListener('click', () => {
+        //     Swal.fire({
+        //         title: 'Cerrar Sesion',
+        //         text: '¿Estas seguro de cerrar la sesion y volver a la pagina de ingreso?',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Si, cerrar sesion'
+        //         })
+        //     .then((result) => {
+        //         if (result.isConfirmed) {
+        //             Swal.fire(
+        //                 'Sesion Cerrada',
+        //                 'Volveras a la pagina del login.',
+        //                 'success'
+        //             );
+        //         }
+        //     });
+        // });
     </script>   
     {% block extra_js %}
     {% endblock %}

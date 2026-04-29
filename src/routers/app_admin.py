@@ -6,6 +6,10 @@ url_admin = Blueprint('url_admin', __name__, template_folder='src/templates')
 def guts():
     return render_template("a_massive_creature.html")
 
+@url_admin.route("/masiva-guts-2")
+def guts2():
+    return render_template("a_massive_creature_2.hmtl")
+
 @url_admin.route('/debug-rutas')
 def debug_rutas():
     from flask import current_app
