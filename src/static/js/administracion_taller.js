@@ -101,15 +101,16 @@ const GestionTalleres = {
                 this.configuracion.datos.talleristas = result.data;
                 const selectTallerista = document.getElementById('tallerista');
                 // option value, la idea que esto muestre un valor default
-                selectTallerista.innerHTML = '<option value="">Aun no se que poner aqui asi que hola 23/03</option>'
+                selectTallerista.innerHTML = '<option value="" disabled selected>--Seleccione un tallerista--</option>'
                 result.data.forEach(t => {
                     const option = document.createElement('option');
                     option.value = t.ID_PROFESOR;
-                    option.textContent = `${t.NOMBRE_PERSONA} ${t.APELLIDO_PATERNO || ''}`.trim();
+                    // option.textContent = `${t.nombre_completo || 'Sin nombre'}`.trim();
+                    option.textContent = `ID: ${t.ID_PROFESOR}, ${t.NOMBRE_COMPLETO || 'Sin nombre'}`.trim();
                     selectTallerista.appendChild(option);
                 });
             }
-            // solucion simple
+            // solucion simple , no deberia romper la carga de talleres
             else {
                 this.mostrarError('Error al cargar a los talleristas: ' + result.message);
             }
@@ -125,8 +126,6 @@ const GestionTalleres = {
         document.getElementById('busqueda_id').value = '';
         document.getElementById('busqueda_lugar').value = '';
         document.getElementById('busqueda_nombre').value = '';
-        
-        // Limpiar el select de categoria filtro
         const selectCategoriaFiltro = document.querySelector('.select-categoria-filtro');
         if (selectCategoriaFiltro) {
             selectCategoriaFiltro.value = '';
@@ -349,7 +348,17 @@ const GestionTalleres = {
 
     guardarTaller: function() {
         const id = document.getElementById('tallerId').value;
+        // const idProfesor = document.getElementById('id_profesor').value;
         const selectCategoriaModal = document.querySelector('.select-categoria');
+        const selectTallerista = document.getElementById('tallerista');
+        console.log('Select tallerista:', selectTallerista);
+        console.log('Valor seleccionado:', selectTallerista ? selectTallerista.value : 'null');
+        const idProfesor = selectTallerista ? parseInt(selectTallerista.value) : null;
+        console.log('idProfesor después de parseInt:', idProfesor);
+        if (!idProfesor || isNaN(idProfesor)) {
+            this.mostrarError('Debe seleccionar un tallerista obligatoriamente.');
+            return;
+        }
         const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
         const yearProceso = parseInt(document.getElementById('yearProceso').value);
         const objTaller = document.getElementById('objetivo').value.trim().toUpperCase();
@@ -372,6 +381,7 @@ const GestionTalleres = {
     // validacion nametaller
     
     const data = {
+        id_profesor: idProfesor && !isNaN(idProfesor) ? idProfesor : 133,
         year_proceso: yearProceso || new Date().getFullYear(),
         id_categoria: selectCategoriaModal ? parseInt(selectCategoriaModal.value) : 0,
         nombre_taller: nameTaller,
@@ -447,6 +457,10 @@ const GestionTalleres = {
                     document.getElementById('edadMaxima').value = t.edad_maxima;
                     document.getElementById('material').value = t.material;
                     document.getElementById('tipoTaller').value = t.ind_tipo_taller;
+                    const selectTallerista = document.getElementById('tallerista');
+                    if (selectTallerista && t.id_profesor) {
+                        selectTallerista.value = t.id_profesor;
+                    }
                     document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
                     document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
                     document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
@@ -534,6 +548,19 @@ const GestionTalleres = {
                                     <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
                                     <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
                                     <tr><th>Fecha de la ultima modificación en el estado de taller:</th><td>${t.fec_estado_taller}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Informacion del Tallerista</h6>
+                                <table class="table table-sm">
+                                    <tr><th>ID del Tallerista:</th><td>${t.id_profesor || 'Sin Profesor'}</td></tr>
+                                    <tr><th>Nombre Tallerista:</th><td>${t.nombre_persona || 'Sin Nombre'}</td></tr>
+                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'Sin Apellido Paterno'}</td></tr>
+                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'Sin Apellido Materno'}</td></tr>
+                                    <tr><th>Edad:</th><td>${t.edad || 'No Registrada'}</td></tr>
+                                    <tr><th>Genero:</th><td>${t.genero || 'No Regristrado'}</td></tr>
+                                    <tr><th>Profesion:</th><td>${t.profesion || 'No existe'}</td></tr>
+                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'Sin Datos'}</td></tr>
                                 </table>
                             </div>
                         </div>

@@ -522,10 +522,18 @@ def ver_taller(id_taller):
                 'edad_maxima': row[20] if len(row) > 20 else 0,
                 'material': row[21] if len(row) > 21 else '',
                 'ind_tipo_taller': row[22],
-                'aud_usuario_ingreso': row[23],
-                'aud_fec_ingreso': row[24].strftime('%Y-%m-%d %H:%M:%S') if row[24] else None,
-                'aud_usuario_modifica': row[25],
-                'aud_fec_modifica': row[26].strftime('%Y-%m-%d %H:%M:%S') if row[26] else None
+                'id_profesor': row[23],
+                'nombre_persona': row[24],
+                'apellido_paterno': row[25],
+                'apellido_materno': row[26],
+                'edad': row[27],
+                'genero': row[28],
+                'profesion': row[29],
+                'ind_activo': row[30],
+                'aud_usuario_ingreso': row[31],
+                'aud_fec_ingreso': row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
+                'aud_usuario_modifica': row[33],
+                'aud_fec_modifica': row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None
             }
             return resultado
         else:
@@ -591,7 +599,27 @@ def buscar_talleres(nombre_taller=None, id_categoria=None, year_proceso=None, id
         cursor.close()
         conn.close()
 
-def ac_taller(id_taller, year_proceso, id_categoria, nombre_taller, objetivo_taller, fec_inicio, fec_termino, nro_minutos, nro_clases_anual, horas_totales, id_estado_taller, observacion, lugar, minimo_estudiante, maximo_estudiante, requisito, edad_minima, edad_maxima, material, ind_tipo_taller, aud_usuario_modifica):
+def ac_taller(id_taller, 
+              year_proceso, 
+              id_categoria,
+              nombre_taller, 
+              objetivo_taller, 
+              fec_inicio, 
+              fec_termino, 
+              nro_minutos, 
+              nro_clases_anual, 
+              horas_totales, 
+              id_estado_taller, 
+              observacion, 
+              lugar, 
+              minimo_estudiante, 
+              maximo_estudiante, 
+              requisito, 
+              edad_minima, 
+              edad_maxima, 
+              material, 
+              ind_tipo_taller, 
+              aud_usuario_modifica):
     conn = get_connection()
     if not conn:
         return False
@@ -599,12 +627,27 @@ def ac_taller(id_taller, year_proceso, id_categoria, nombre_taller, objetivo_tal
     try:
         sql = "{CALL AC_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
         params = (
-            id_taller, year_proceso, id_categoria, nombre_taller, 
-            objetivo_taller, fec_inicio, fec_termino, nro_minutos, 
-            nro_clases_anual, horas_totales, id_estado_taller, 
-            observacion, lugar, minimo_estudiante, maximo_estudiante, 
-            requisito, edad_minima, edad_maxima, material, 
-            ind_tipo_taller, aud_usuario_modifica
+            id_taller, 
+            year_proceso, 
+            id_categoria, 
+            nombre_taller, 
+            objetivo_taller, 
+            fec_inicio, 
+            fec_termino, 
+            nro_minutos, 
+            nro_clases_anual, 
+            horas_totales, 
+            id_estado_taller, 
+            observacion, 
+            lugar, 
+            minimo_estudiante, 
+            maximo_estudiante, 
+            requisito, 
+            edad_minima, 
+            edad_maxima, 
+            material, 
+            ind_tipo_taller, 
+            aud_usuario_modifica
         )
         cursor.execute(sql, params)
         conn.commit()
@@ -617,15 +660,15 @@ def ac_taller(id_taller, year_proceso, id_categoria, nombre_taller, objetivo_tal
         cursor.close()
         conn.close()
 
-def inscribir_el_taller(year_proceso,id_categoria,nombre_taller,objetivo_taller,fec_inicio,fec_termino,nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,observacion,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller,aud_usuario_ingreso):
+def inscribir_el_taller(id_profesor,year_proceso,id_categoria,nombre_taller,objetivo_taller,fec_inicio,fec_termino,nro_minutos,nro_clases_anual,horas_totales,id_estado_taller,observacion,lugar,minimo_estudiante,maximo_estudiante,requisito,edad_minima,edad_maxima,material,ind_tipo_taller,aud_usuario_ingreso):
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        sql = "{CALL INSCRIBIR_EL_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+        sql = "{CALL INSCRIBIR_EL_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
         params = (
-            year_proceso, id_categoria, nombre_taller, objetivo_taller,
+            id_profesor,year_proceso, id_categoria, nombre_taller, objetivo_taller,
             fec_inicio, fec_termino, nro_minutos, nro_clases_anual,
             horas_totales, id_estado_taller, observacion, lugar,
             minimo_estudiante, maximo_estudiante, requisito,
@@ -786,9 +829,18 @@ def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno,
 #         cursor.close()
 #         conn.close()
 
-def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,pi_fec_nacimiento,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
+def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,
+                          pi_fec_nacimiento,
+                          pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
                         pi_calle,pi_villa,pi_id_comuna,pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,pi_correo_contacto,pi_observacion,
                         pi_id_usuario,pi_profesion,pi_resumen_curricular):
+    # print(f"DEBUG - : pi_rut_profesor{type(pi_rut_profesor)}, {(pi_rut_profesor)}")
+    # print(f"DEBUG - : pi_nombre_profesor{type(pi_nombre_profesor)}, {(pi_nombre_profesor)}")
+    # print(f"DEBUG - : pi_dv_profesor{type(pi_dv_profesor)}, {(pi_dv_profesor)}")
+    # print(f"DEBUG - : pi_apellido_paterno{type(pi_apellido_paterno)}, {(pi_apellido_paterno)}")
+    # print(f"DEBUG - : pi_apellido_materno{type(pi_apellido_materno)}, {(pi_apellido_materno)}")
+    # print(f"DEBUG - : pi_genero{type(pi_genero)}, {(pi_genero)}")
+    # print(f"DEBUG - : pi_fec_nacimiento{type(pi_fec_nacimiento)}, {(pi_fec_nacimiento)}")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
@@ -820,7 +872,7 @@ def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_a
         pi_profesion,
         pi_resumen_curricular))
         conn.commit()
-        return True
+        return {"success": True, "message": "Tallerista creado exitosamente"}
     except Exception as e:
         print(f"Error en INSCRIBIR_TALLERISTAS: {e}")
         conn.rollback()

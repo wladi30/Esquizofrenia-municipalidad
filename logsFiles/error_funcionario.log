@@ -324,3 +324,27 @@
 2026-04-29 09:39:32 | Thread-444 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
 2026-04-29 09:39:33 | Thread-445 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
 2026-04-29 10:33:06 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_tallerista_ Could not build url for endpoint _url_admin.a_massive_creature_2_. Did you mean _url_admin.guts2_ instead_
+2026-04-29 13:16:35 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ descriptor _strftime_ for _datetime.date_ objects doesn_t apply to a _str_ object
+2026-04-29 13:32:50 | Thread-58 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ descriptor _strftime_ for _datetime.date_ objects doesn_t apply to a _str_ object
+2026-04-29 13:37:45 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _fecha_nacimiento_. Did you mean _pi_fec_nacimiento__
+2026-04-29 13:37:51 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _fecha_nacimiento_. Did you mean _pi_fec_nacimiento__
+2026-04-29 13:40:11 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:40:24 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:41:01 | Thread-4 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:41:46 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ got an unexpected keyword argument _pi_fec_nacimiento_
+2026-04-29 13:42:56 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ missing 1 required positional argument_ _pi_fec_nacimiento_
+2026-04-29 13:43:08 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:43:38 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:43:46 | Thread-4 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:45:33 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:45:35 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:47:04 | Thread-4 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 13:47:25 | Thread-5 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 14:53:07 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ unconverted data remains_ T13_31
+2026-04-29 14:54:49 | Thread-11 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 14:56:16 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 14:57:16 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 14:58:01 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 15:02:16 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ inscribir_talleristas__ missing 1 required positional argument_ _pi_resumen_curricular_
+2026-04-29 15:04:15 | Thread-2 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
+2026-04-29 15:05:01 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_

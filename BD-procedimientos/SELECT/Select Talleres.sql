@@ -4,7 +4,7 @@ IF OBJECT_ID('VER_TALLERES', 'P') IS NOT NULL
     DROP PROCEDURE VER_TALLERES;
 GO
 
-CREATE PROCEDURE VER_TALLERES
+CREATE PROCEDURE VER_TALLERES -- vamos a añadirle los datos del tallerista
     @ID_TALLER NUMERIC(10)
 AS 
 BEGIN
@@ -37,11 +37,22 @@ BEGIN
         A.EDAD_MAXIMA AS 'Edad maxima',
         A.MATERIAL AS 'Materiales',
         A.IND_TIPO_TALLER AS 'Tipo de taller',
+        I.ID_PROFESOR AS 'ID del Profesor',
+        O.NOMBRE_PERSONA AS 'Nombre del Profesor',
+        O.APELLIDO_PATERNO AS 'Apellido Paterno',
+        O.APELLIDO_MATERNO AS 'Apellido Materno',
+        O.EDAD AS 'Edad',
+        O.GENERO AS 'Genero',
+        I.PROFESION AS 'Profesion',
+        O.IND_ACTIVO AS 'Indicador de Actividad',
         A.AUD_USUARIO_INGRESO AS 'Usuario que ingreso el taller',
         A.AUD_FEC_INGRESO AS 'Fecha del ingreso',
         A.AUD_USUARIO_MODIFICA AS 'Usuario que hizo la ultima modificación',
         A.AUD_FEC_MODIFICA AS 'Fecha de la ultima modificación'
     FROM SGT_TALLER A
+    LEFT JOIN SGT_GESTION_TALLER E ON A.ID_TALLER = E.ID_TALLER
+    LEFT JOIN SGT_PROFESOR I ON E.ID_PROFESOR = I.ID_PROFESOR
+    LEFT JOIN SGT_PERSONA_TALLER O ON I.ID_PERSONA = O.ID_PERSONA
     WHERE A.ID_ESTADO_TALLER IN (1,2,3,4)
       AND A.ID_TALLER = @ID_TALLER
 END;

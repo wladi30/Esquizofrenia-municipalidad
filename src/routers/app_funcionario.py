@@ -185,6 +185,7 @@ def api_crear_taller():
             return redirect(url_for('url_principal.pagina_login'))
     try:
         data = request.json
+        id_profesor_v2 = data.get('id_profesor')
         year_proceso_v2 = data.get('year_proceso')
         id_categoria_v2 = data.get('id_categoria')
         nombre_taller_v2 = data.get('nombre_taller')
@@ -215,6 +216,7 @@ def api_crear_taller():
         if not nombre_taller_v2: return jsonify({"success": False, "message": "El nombre del taller es obligatorio"}), 400
         if not id_categoria_v2: return jsonify({"success": False, "message": "La categoria es obligatoria"}), 400
         resultado = inscribir_el_taller(
+            id_profesor=id_profesor_v2,
             year_proceso=year_proceso_v2,
             id_categoria=id_categoria_v2,
             nombre_taller=nombre_taller_v2,
@@ -456,10 +458,11 @@ def api_lista_tallerista():
 @funcionario_required
 def api_crear_tallerista():
     if 'id_usuario' not in session:
-            flash('Debe iniciar sesión para acceder', 'warning')
-            return redirect(url_for('url_principal.pagina_login'))
+        return jsonify({"success": False, "message": "Debe iniciar sesión"}), 401
     try:
         data = request.json
+        fecha_nacimiento_str = data.get('fec_nacimiento')
+        fecha_nacimiento = datetime.strptime(fecha_nacimiento_str, "%Y-%m-%d").date()
         usuario_ingreso = session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
         resultado = inscribir_talleristas(
             pi_rut_profesor=data.get('rut_profesor'),
@@ -467,7 +470,7 @@ def api_crear_tallerista():
             pi_nombre_profesor=data.get('nombre_persona', ''),
             pi_apellido_paterno=data.get('apellido_paterno', ''),
             pi_apellido_materno=data.get('apellido_materno', ''),
-            pi_fec_nacimiento=data.get('fec_nacimiento', '1900-01-01 00:00:00.001'),
+            pi_fec_nacimiento=fecha_nacimiento,
             pi_genero=data.get('genero'),
             pi_nro_calle=data.get('nro_calle', ''),
             pi_nro_block=data.get('nro_block', ''),
@@ -481,8 +484,8 @@ def api_crear_tallerista():
             pi_nombre_contacto=data.get('nombre_contacto', ''),
             pi_telefono_contacto=data.get('telefono_contacto', ''),
             pi_correo_contacto=data.get('correo_contacto', ''),
-            pi_observacion=data.get('observacion', ''),
-            pi_profesion=data.get('profesion', ''),
+            pi_observacion=data.get('observacion', '-'),
+            pi_profesion=data.get('profesion', '-'),
             pi_resumen_curricular=data.get('resumen_curricular', ''),
             pi_id_usuario=usuario_ingreso
         )
