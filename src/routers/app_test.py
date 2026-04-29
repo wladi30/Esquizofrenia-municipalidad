@@ -7,6 +7,13 @@ url_test = Blueprint('url_test', __name__, template_folder='src/templates')
 def index_chamuco():
     return render_template("index.html")
 
+# https://pypi.org/project/python-ipware/
+# registrar todos los cambios en los logs, tambien poder tener una sesion unica, poder sacar la ip del usuario junto con su navegador, etc
+# hacer que se generen por mes 
+# fpdf2, weasyprint, jspdf
+# se tiene que crear 2 tipos de usuarios mas, el usuario vista para que puedan ver el taller y admin para que puedan tal vez revisar a los funcionarios , podria hacer algo como lo que hizo el
+# victor y hacer que pueda ver los inicios de session junto con poder descargarlos etc, 
+
 # resultado = autenticar_simple(12345678, 9, '123')
 # print(resultado)
 

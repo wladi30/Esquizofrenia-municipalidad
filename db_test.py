@@ -599,7 +599,8 @@ def buscar_talleres(nombre_taller=None, id_categoria=None, year_proceso=None, id
         cursor.close()
         conn.close()
 
-def ac_taller(id_taller, 
+def ac_taller(id_profesor,
+              id_taller, 
               year_proceso, 
               id_categoria,
               nombre_taller, 
@@ -625,8 +626,9 @@ def ac_taller(id_taller,
         return False
     cursor = conn.cursor()
     try:
-        sql = "{CALL AC_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+        sql = "{CALL AC_TALLER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
         params = (
+            id_profesor,
             id_taller, 
             year_proceso, 
             id_categoria, 

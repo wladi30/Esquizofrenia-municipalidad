@@ -196,7 +196,7 @@ const GestionTalleres = {
             case 1: estadoClass = 'estado 1' ; estadoTexto = 'INGRESADO'; break;
             case 2: estadoClass = 'estado 2' ; estadoTexto = 'CALENDARIZADO'; break;
             case 3: estadoClass = 'estado 3' ; estadoTexto = 'CERRADO'; break;
-            case 4: estadoClass = 'estado 4' ; estadoTexto = 'DE BAJA'; break;
+            case 4: estadoClass = 'estado 4' ; estadoTexto = '<i class="bi bi-circle-fill" style="color:red"></i><br> DE BAJA'; break;
             default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO-DEFAULT'; break;
         }
         return `

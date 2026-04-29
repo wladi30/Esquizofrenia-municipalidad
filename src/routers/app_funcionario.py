@@ -283,6 +283,7 @@ def api_actualizar_taller(id_taller): #CR(U)D
     try:
         if request.method ==  'PUT':
             data = request.json
+            id_profesor_v2 = data.get('id_profesor')
             year_proceso_v2 = data.get('year_proceso')
             id_categoria_v2 = data.get('id_categoria')
             nombre_taller_v2 = data.get('nombre_taller')
@@ -311,6 +312,7 @@ def api_actualizar_taller(id_taller): #CR(U)D
             usuario_modifica = session.get('nombre_persona', session.get('id_usuario'))
 
             resultado = ac_taller(
+                id_profesor=id_profesor_v2,
                 id_taller=id_taller,
                 year_proceso=year_proceso_v2,
                 id_categoria=id_categoria_v2,
