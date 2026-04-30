@@ -1,24 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Administración de Talleristas - Municipalidad de Quilicura{% endblock %}
+{% block title %}Administración de Inscripciones - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_tallerista.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_Inscripcion.css') }}">
 {% endblock %}
 {% block content %}
 <div class="funcionario-container">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('url_funcionario.funcionario_dashboard') }}"><i class="bi bi-house-door"></i> Inicio</a></li>
-            <li class="breadcrumb-item active">Gestión de Talleristas</li>
+            <li class="breadcrumb-item active">Gestión de Inscripciones</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="ms-4">
-            <h2 class="h4 text-primary mb-1"><i class="bi bi-person-badge me-2"></i>Gestión de Talleristas</h2>
-            <p class="text-muted small mb-0">Administra talleristas, profesiones y talleres asignados</p>
+            <h2 class="h4 text-primary mb-1"><i class="bi bi-person-badge me-2"></i>Gestión de Inscripciones</h2>
+            <p class="text-muted small mb-0">Administra las inscripciones, cupos y lista de espera</p>
         </div>
         <div class="d-grid gap-2 me-3">
-            <button class="btn btn-primary" onclick="GestionTalleristas.abrirModalNuevo()"><i class="bi bi-plus-lg me-1"></i>Nuevo Tallerista</button>
+            <button class="btn btn-primary" onclick="GestionInscripciones.abrirModalNuevo()"><i class="bi bi-plus-lg me-1"></i>Nueva Inscripcion</button>
         </div>
     </div>
 
@@ -26,8 +26,8 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-1">
-                    <label class="form-label small fw-semibold">ID Tallerista</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_id_profesor" placeholder="ID del Tallerista">
+                    <label class="form-label small fw-semibold">ID del/la Estudiante</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_id_estudiante" placeholder="Coloque la ID">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label small fw-semibold">Nombre Completo</label>
@@ -35,21 +35,21 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Correo Electronico</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_correo_electronico" placeholder="Correo del Tallerista">
+                    <input type="text" class="form-control form-control-sm" id="busqueda_correo_electronico" placeholder="Correo de la Persona">
                 </div>
             </div>
             <div class="row g-3">
-                <div class="col-md-1">
-                    <label class="form-label small fw-semibold">ID Taller</label>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Estado del/la Integrante</label>
                     <input type="text" class="form-control form-control-sm" id="busqueda_id_taller" placeholder="ID del Taller">
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Nombre Taller</label>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Fecha de Inscripcion en el Taller</label>
                     <input type="text" class="form-control form-control-sm" id="busqueda_nombre_taller" placeholder="Busque el nombre del Taller">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Profesion</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_profesion" placeholder="Profesion del Tallerista">
+                    <label class="form-label small fw-semibold">Año del Proceso del Taller</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_year_proceso" placeholder="Profesion del Inscripcion">
                 </div>
             </div>
             <div class="row g-3">
@@ -71,12 +71,12 @@
                             <th>Nombre Completo</th>
                             <th>ID Taller</th>
                             <th>Nombre Taller</th>
-                            <th>Profesion</th>
+                            <th>Año del Proceso</th>
                             <th>Correo</th>
                             <th class="text-end pe-4">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaTalleristasCuerpo">
+                    <tbody id="tablaInscripcionesCuerpo">
                         <tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-arrow-repeat me-2"></i>Cargando...</td></tr>
                     </tbody>
                 </table>
@@ -84,19 +84,19 @@
         </div>
         <div class="card-footer bg-white d-flex justify-content-between align-items-center">
             <div class="text-muted small" id="infoPaginacion"></div>
-            <nav><ul class="pagination pagination-sm mb-0" id="paginacionTalleristas"></ul></nav>
+            <nav><ul class="pagination pagination-sm mb-0" id="paginacionInscripciones"></ul></nav>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalTallerista" tabindex="-1">
+<div class="modal fade" id="modalInscripcion" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalTitulo"><i class="bi bi-plus-circle me-2"></i>Nuevo Tallerista</h5>
+                <h5 class="modal-title" id="modalTitulo"><i class="bi bi-plus-circle me-2"></i>Nueva Inscripcion</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form id="formTallerista">
+            <form id="formInscripcion">
                 <div class="modal-body">
                     <input type="hidden" id="idProfesor">
                     <div class="row">
@@ -153,14 +153,14 @@
 
                     <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
                     
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label class="form-label fw-semibold">Profesión</label>
                         <textarea class="form-control" id="profesion" rows="2" maxlength="500"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Resumen Curricular</label>
                         <textarea class="form-control" id="resumenCurricular" rows="2" maxlength="500"></textarea>
-                    </div>
+                    </div> -->
 
                     <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 5px;">
                     
@@ -264,7 +264,7 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que ingreso al tallerista</label>
+                            <label class="form-label fw-semibold">Usuario que ingreso la inscripcion</label>
                             <input type="text" class="form-control" id="audUsuarioIngreso" disabled>
                         </div>
                         <div class="col-md-5 mb-3">
@@ -300,14 +300,14 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalDetallesTallerista" tabindex="-1">
+<div class="modal fade" id="modalDetallesInscripcion" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title"><i class="bi bi-person-lines-fill me-2"></i>Detalles del Tallerista</h5>
+                <h5 class="modal-title"><i class="bi bi-person-lines-fill me-2"></i>Detalles de la Inscripcion</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="detallesTalleristaBody">
+            <div class="modal-body" id="detallesInscripcionBody">
                 Cargando...
             </div>
             <div class="modal-footer">
@@ -319,5 +319,5 @@
 {% endblock %}
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ url_for('static', filename='js/administracion_tallerista.js') }}"></script>
+<script src="{{ url_for('static', filename='js/administracion_inscripcion.js') }}"></script>
 {% endblock %}

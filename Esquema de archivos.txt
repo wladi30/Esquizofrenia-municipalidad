@@ -83,12 +83,12 @@ FLASK_APP
 -requerimientos.txt
 
 Administracion de talleres
-1.- Revision de inscripciones |
-2.- Mantenedores |
-3.- Crud Talleristas |
-4.- Crud Talleres ||
+1.- Revision de inscripciones
+2.- Mantenedores
+3.- Crud Talleristas
+4.- Crud Talleres
 5.- Crud inscripciones
 
-6.- Masivo Talleres |
-7.- Lista de espera funcional |
-8.- Gestion de cupos |
+6.- Masivo Talleres
+7.- Lista de espera funcional
+8.- Gestion de cupos

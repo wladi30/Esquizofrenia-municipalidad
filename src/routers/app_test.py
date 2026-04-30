@@ -11,8 +11,14 @@ def index_chamuco():
 # registrar todos los cambios en los logs, tambien poder tener una sesion unica, poder sacar la ip del usuario junto con su navegador, etc
 # hacer que se generen por mes 
 # fpdf2, weasyprint, jspdf
+
 # se tiene que crear 2 tipos de usuarios mas, el usuario vista para que puedan ver el taller y admin para que puedan tal vez revisar a los funcionarios , podria hacer algo como lo que hizo el
-# victor y hacer que pueda ver los inicios de session junto con poder descargarlos etc, 
+# victor y hacer que pueda ver los inicios de session junto con poder descargarlos etc
+
+# en la base de datos existe la tabla calendarizacion taller. esta sirve para registrar los talleres cuando se modifican , tambien se marca si el taller es mensual o semanal
+# esta es la informacion que me faltaba respecto a los talleres
+
+# integrante taller es lo del estudiante, con esto pude calcular la cantidad de estudiantes que existe en un taller
 
 # resultado = autenticar_simple(12345678, 9, '123')
 # print(resultado)

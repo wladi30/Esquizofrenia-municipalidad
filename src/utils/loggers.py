@@ -35,7 +35,7 @@ class Logger:
         return re.sub(r'[^\w\s.,@|-]', '_', input_string)
     
 
-    def add_to_log(self, level, message, log_type="geneal"):
+    def add_to_log(self, level, message, log_type="general"):
         try:
             logger = self.__set_logger(log_type)
             message = self.sanitize_input(message)

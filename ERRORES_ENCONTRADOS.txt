@@ -26,3 +26,4 @@ DEBUG BD - Bsucando la persona: rut=10000000, dv=8
 127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /static/sm_5b348d4c557a7.png HTTP/1.1" 304 -
 127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /static/js/login.js HTTP/1.1" 200 -
 - Voy a probar cambiar el PROCEDIMIENTO en sql
+- Error Solucionado

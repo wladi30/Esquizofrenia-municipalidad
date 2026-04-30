@@ -16,6 +16,7 @@ from db_test import (
     inscribir_el_taller,
     inscribir_taller_o_espera,
     inscribir_talleristas,
+    obtener_estudiantes,
     # obtener_historial_talleres_por_tallerista,
     obtener_profesores,
     obtener_estudiantes_por_taller,
@@ -93,7 +94,7 @@ def funcionario_gestion_inscripciones():
         if 'id_usuario' not in session:
             flash('debe iniciar sesion para acceder', 'warning')
             return redirect(url_for('url_principal.login'))
-        return render_template("funcionario/gestion_inscripciones.html")
+        return render_template("funcionario/administracion_inscripciones.html")
     except Exception as e:
         logger.add_to_log("error", f"error en funcionario.funcionario_gestion_inscripciones: {e}", "error_funcionario")
         return render_template("error/500.html"), 500
@@ -548,6 +549,7 @@ def api_actualizar_tallerista(id_profesor):
             aud_usuario_modifica_p=usuario_modifica
         )
         if resultado:
+            logger.add_to_log("info", f"modificacion realizada en api_actualizar_tallerista. ID Afectada: {id_profesor} , Usuario que realizo el cambio:{session}", "ac_tallerista")
             return jsonify({"success": True, "message": "Tallerista actualizado correctamente"})
         else:
             return jsonify({"success": False, "message": "Error al actualizar tallerista"}), 500
@@ -566,14 +568,26 @@ def api_inscripcion_lista():
             flash('Debe iniciar sesión para acceder', 'warning')
             return redirect(url_for('url_principal.pagina_login'))
     try:
-        taller_id = request.args.get('taller_id')
-        from db_test import obtener_estudiantes
-        estudiantes = obtener_estudiantes()
-        if taller_id:
-            estudiantes_taller = obtener_estudiantes_por_taller(int(taller_id))
-            return jsonify({"success": True, "data": estudiantes_taller, "total": len(estudiantes_taller)})
+        id_estudiante_str = request.args.get('id_estudiante')
+        id_taller_str = request.args.get('id_taller')
+        nombre_taller_str = request.args.get('nombre_taller')
+        year_proceso_str = request.args.get('year_proceso')
+        nombre_completo_str = request.args.get('nombre_completo')
+        correo_electronico_str = request.args.get('correo_electronico')
+        
+        id_estudiante = int(id_estudiante_str) if id_estudiante_str and id_estudiante_str.isdigit() else None
+        id_taller = int(id_taller_str) if id_taller_str and id_taller_str.isdigit() else None
+        year_proceso = int(year_proceso_str) if year_proceso_str and year_proceso_str.isdigit() else None
+
+        nombre_taller = nombre_taller_str if nombre_taller_str and nombre_taller_str.strip() else None
+        nombre_completo = nombre_completo_str if nombre_completo_str and nombre_completo_str.strip() else None
+        correo_electronico = correo_electronico_str if correo_electronico_str and correo_electronico_str.strip() else None
+
+        estudiantes = obtener_estudiantes(id_estudiante=id_estudiante,id_taller=id_taller,year_proceso=year_proceso,nombre_taller=nombre_taller,nombre_completo=nombre_completo,correo_electronico=correo_electronico)
         return jsonify({"success": True, "data": estudiantes, "total": len(estudiantes)})
     except Exception as e:
+        print(f"Error en api_lista_tallerista: {e}")
+        traceback.print_exc()
         logger.add_to_log("error", f"error en funcionario.api_inscripcion_lista: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
 
@@ -601,26 +615,74 @@ def api_crear_inscripcion():
         logger.add_to_log("error", f"error en funcionario.api_crear_inscripcion: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
     
-# -- API INSCRIPCION CRU(D) --
-@url_funcionario.route('/api/inscripcion-eliminar', methods=['DELETE'])
+# -- API INSCRIPCION C(R)UD --
+@url_funcionario.route('/api/inscripcion-get', methods=['GET'])
 @funcionario_required
-def api_eliminar_inscripcion():
+def api_get_inscripcion():
     if 'id_usuario' not in session:
             flash('Debe iniciar sesión para acceder', 'warning')
             return redirect(url_for('url_principal.pagina_login'))
     try:
-        id_taller = request.args.get('id_taller')
-        id_estudiante = request.args.get('id_estudiante')
-        if not id_taller or not id_estudiante:
-            return jsonify({"success": False, "message": "Faltan parametros"}), 400
-        resultado = borrar_estudiante(int(id_estudiante), int(id_taller))
-        if resultado:
-            return jsonify({"success": True, "message": "Inscripción eliminada correctamente"})
-        else:
-            return jsonify({"success": False, "message": "Error al eliminar inscripción"}), 400
+        data = request.json
+        id_taller_ins=data.get('id_taller')
+        id_estudiante_ins=data.get('id_estudiante')
+        year_proceso_ins=data.get('year_proceso')
+        aud_usuario_ingreso_ins=session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        resultado = inscribir_taller_o_espera(
+            id_taller=id_taller_ins,
+            id_estudiante=id_estudiante_ins,
+            year_proceso=year_proceso_ins,
+            aud_usuario_ingreso=aud_usuario_ingreso_ins
+        )
+        return jsonify(resultado)
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_eliminar_inscripcion: {e}", "error_funcionario")
+        logger.add_to_log("error", f"error en funcionario.api_crear_inscripcion: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
+    
+# -- API INSCRIPCION CR(U)D --
+@url_funcionario.route('/api/inscripcion-actualizar', methods=['PUT'])
+@funcionario_required
+def api_actualizar_inscripcion():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
+    try:
+        data = request.json
+        id_taller_ins=data.get('id_taller')
+        id_estudiante_ins=data.get('id_estudiante')
+        year_proceso_ins=data.get('year_proceso')
+        aud_usuario_ingreso_ins=session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
+        resultado = inscribir_taller_o_espera(
+            id_taller=id_taller_ins,
+            id_estudiante=id_estudiante_ins,
+            year_proceso=year_proceso_ins,
+            aud_usuario_ingreso=aud_usuario_ingreso_ins
+        )
+        return jsonify(resultado)
+    except Exception as e:
+        logger.add_to_log("error", f"error en funcionario.api_crear_inscripcion: {e}", "error_funcionario")
+        return jsonify({"success": False, "message": str(e)}), 500
+    
+# -- API INSCRIPCION CRU(D) --
+# @url_funcionario.route('/api/inscripcion-eliminar', methods=['DELETE'])
+# @funcionario_required
+# def api_eliminar_inscripcion():
+#     if 'id_usuario' not in session:
+#             flash('Debe iniciar sesión para acceder', 'warning')
+#             return redirect(url_for('url_principal.pagina_login'))
+#     try:
+#         id_taller = request.args.get('id_taller')
+#         id_estudiante = request.args.get('id_estudiante')
+#         if not id_taller or not id_estudiante:
+#             return jsonify({"success": False, "message": "Faltan parametros"}), 400
+#         resultado = borrar_estudiante(int(id_estudiante), int(id_taller))
+#         if resultado:
+#             return jsonify({"success": True, "message": "Inscripción eliminada correctamente"})
+#         else:
+#             return jsonify({"success": False, "message": "Error al eliminar inscripción"}), 400
+#     except Exception as e:
+#         logger.add_to_log("error", f"error en funcionario.api_eliminar_inscripcion: {e}", "error_funcionario")
+#         return jsonify({"success": False, "message": str(e)}), 500
 
 # -- API INSCRIPCION C(R)UD , V2 --
 @url_funcionario.route('/api/lista-espera', methods=['GET'])

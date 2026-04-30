@@ -3,11 +3,7 @@ import datetime
 import functools,pyodbc
 from flask import flash, redirect, request, session, url_for
 
-DB_DRIVER = "ODBC Driver 18 for SQL Server" 
-DB_SERVER = "SRV-SQDES" 
-DB_NAME = "GESTION_TALLER"
-DB_UID = "tallertest"
-DB_PWD = "tallertest"
+from configuracion import DB_DRIVER, DB_NAME, DB_PWD, DB_SERVER, DB_UID
 
 # info , alert , waring , danger
 
@@ -306,15 +302,23 @@ def ver_estudiante(id_estudiante, id_taller=None): #ESTO DEBERIA SOLUCIONAR LOS 
         cursor.close()
         conn.close()
 
-def obtener_estudiantes(): # lo mismo de arriba pero ahora son estudiants , profesores podran ver a su clase con esto
+# CREATE PROCEDURE LISTAR_ESTUDIANTES
+#     @ID_ESTUDIANTE INT,
+#     @ID_TALLER INT,
+#     @NOMBRE_TALLER VARCHAR(80),
+#     @YEAR_PROCESO INT,
+#     @NOMBRE_COMPLETO VARCHAR(153),
+#     @CORREO_ELECTRONICO VARCHAR(100)
+
+def obtener_estudiantes(id_estudiante=None, id_taller=None, nombre_taller=None, year_proceso=None, nombre_completo=None, correo_electronico=None): 
+    # lo mismo de arriba pero ahora son estudiants , profesores podran ver a su clase con esto
     # se tiene que actualizar con un procedimiento
     conn = get_connection()
     if not conn:
-        return []
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        sql = "SELECT e.ID_ESTUDIANTE, pe.ID_PERSONA, pe.NOMBRE_PERSONA, pe.APELLIDO_PATERNO, pe.APELLIDO_MATERNO, pe.EDAD, pe.TELEFONO, pe.CORREO_ELECTRONICO FROM SGT_ESTUDIANTE e JOIN SGT_PERSONA_TALLER pe ON e.ID_PERSONA = pe.ID_PERSONA"
-        cursor.execute(sql)
+        cursor.execute("{LISTAR_ESTUDIANTES(?,?,?,?,?,?)}",(id_estudiante, id_taller, nombre_taller, year_proceso, nombre_completo, correo_electronico))
         cols = [c[0] for c in cursor.description]
         return [dict(zip(cols, row)) for row in cursor.fetchall()]
     except Exception as e:
@@ -554,7 +558,7 @@ def obtener_talleres(year_proceso=None, id_categoria=None, id_estado_taller=None
     # print(f"DEBUG - : nombre_taller{type(nombre_taller)}, {(nombre_taller)}")
     conn = get_connection()
     if not conn:
-        return []
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
         cursor.execute("{CALL LISTAR_TALLERES_FILTRADOS(?, ?, ?, ?, ?, ?)}",(year_proceso, id_categoria, id_estado_taller, id_taller, lugar, nombre_taller))
