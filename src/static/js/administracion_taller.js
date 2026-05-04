@@ -16,6 +16,18 @@ if (typeof data !== 'undefined' && data !== null) {
 // Aqui doy inicio al js principal que se encargara de casi todo sobre administracion de talleres
 
 // el de aca sera lo que definira a lo que se muestra en la pag de talleres, aqui hare definiciones de cuandos talleres se muestran por pagina al igual que setear cuales seran los filtros
+
+// el 'Ingresado' quiere decir que esta registrado, 'calendarizado' quiere decir que ya tiene horarios, dias las horas inicio/termino, etc, 'cerrado' es cuando el taller ya termino.
+// mientras que 'de baja' quiere decir que ya no se hara mas ese taller.
+
+const nombresGenero = {
+    0: 'Masculino',
+    1: 'Femenino',
+    2: 'No Binario',
+    3: 'Otro',
+    4: 'Prefiero no Decirlo'
+};
+
 const GestionTalleres = {
     // Van a estar aqui la configuracion y los datos junto con el estado de la app en si, esta parte se 
     configuracion: {
@@ -120,6 +132,7 @@ const GestionTalleres = {
             this.mostrarError('Error al cargar a los talleristas');
         })
     },
+
     limpiarFiltros: function() {
         document.getElementById('filtroAnio').value = '';
         document.getElementById('filtroEstado').value = '';
@@ -193,10 +206,10 @@ const GestionTalleres = {
         // si lo desactivo y dejo solo los 4 case todos tendran el estado 'DE BAJA' , hrmano esta wea esta entera mala xd
         // 25/03/2026 11:34 am, ahora funciona salu2 solo tuve que ponerle el break; al final, no me crucifiquen salu2 salu2 y recuerd salu2
         switch (t.ID_ESTADO_TALLER) {
-            case 1: estadoClass = 'estado 1' ; estadoTexto = 'INGRESADO'; break;
-            case 2: estadoClass = 'estado 2' ; estadoTexto = 'CALENDARIZADO'; break;
-            case 3: estadoClass = 'estado 3' ; estadoTexto = 'CERRADO'; break;
-            case 4: estadoClass = 'estado 4' ; estadoTexto = '<i class="bi bi-circle-fill" style="color:red"></i><br> DE BAJA'; break;
+            case 1: estadoClass = 'estado 1' ; estadoTexto = '<span class="badge bg-info" style="font-size: 0.8rem;">INGRESADO</span>'; break;
+            case 2: estadoClass = 'estado 2' ; estadoTexto = '<span class="badge bg-success" style="font-size: 0.8rem;">CALENDARIZADO</span>'; break;
+            case 3: estadoClass = 'estado 3' ; estadoTexto = '<span class="badge bg-secondary" style="font-size: 0.8rem;">CERRADO</span>'; break;
+            case 4: estadoClass = 'estado 4' ; estadoTexto = '<span class="badge bg-danger" style="font-size: 0.8rem;">DE BAJA</span>'; break;
             default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO-DEFAULT'; break;
         }
         return `
@@ -471,11 +484,12 @@ const GestionTalleres = {
                     this.mostrarError('No se pudo cargar el taller para editar.');
                 }
             })
-            .catch(error => {
-                console.error('Error en fetch editarTaller:', error);
-                this.mostrarError('Error de conexion al cargar datos del taller.');
-            });
+        .catch(error => {
+            console.error('Error en fetch editarTaller:', error);
+            this.mostrarError('Error de conexion al cargar datos del taller.');
+        });
     },
+
     // AQUI VA LO DEL VER DETALLES , ESTO DEBERIA MOSTRAR TODO LO NECESARIO TANTO FECHA DE CREACION, TALLERISTA, NRO DE ALUMNOS, ETC
     verDetalles: function(id) {
         fetch(`/api/taller-get/${id}`)
@@ -489,8 +503,8 @@ const GestionTalleres = {
                     // SE DETERMINA EL BADGE DEL ESTADO DEL TALLER, DIFERENTE AL DE ARRIBA POR QUE ESTO ES LO QUE TIENE QUE VER EL USUARIO, LO DE ARRIBA SON LAS IDS
                     let estadoBadge = '';
                     switch(t.id_estado_taller) {
-                        case 1: estadoBadge = '<span class="badge bg-success">INGRESADO</span>'; break;
-                        case 2: estadoBadge = '<span class="badge bg-info">CANDALERIZADO</span>'; break;
+                        case 1: estadoBadge = '<span class="badge bg-info">INGRESADO</span>'; break;
+                        case 2: estadoBadge = '<span class="badge bg-success">CANDALERIZADO</span>'; break;
                         case 3: estadoBadge = '<span class="badge bg-secondary">CERRADO</span>'; break;
                         case 4: estadoBadge = '<span class="badge bg-danger">DE BAJA</span>'; break;
                         default: estadoBadge = '<span class="badge bg-light text-dark">DESCONOCIDO</span>';
@@ -558,7 +572,7 @@ const GestionTalleres = {
                                     <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'Sin Apellido Paterno'}</td></tr>
                                     <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'Sin Apellido Materno'}</td></tr>
                                     <tr><th>Edad:</th><td>${t.edad || 'No Registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${t.genero || 'No Regristrado'}</td></tr>
+                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No Regristrado'}</td></tr>
                                     <tr><th>Profesion:</th><td>${t.profesion || 'No existe'}</td></tr>
                                     <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'Sin Datos'}</td></tr>
                                 </table>
@@ -625,6 +639,7 @@ const GestionTalleres = {
             this.mostrarError('Error de conexión');
         });
     },
+
     // AQUI VAN LAS UTILIDADES UQE SON LOS MENSAJE, CABE DECIR QUE ESTO ES DE MI CODIGO ANTIGUO ASI QUE TAL VEZ FALLE, POR MIENTRAS AQUI ESTAN
     mostrarExito: function(mensaje) {
         Swal.fire({
@@ -635,6 +650,7 @@ const GestionTalleres = {
             showConfirmButton: false
         });
     },
+
     mostrarError: function(mensaje) {
         Swal.fire({
             icon: 'error',

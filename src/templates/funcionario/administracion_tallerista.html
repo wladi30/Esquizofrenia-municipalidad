@@ -27,7 +27,7 @@
             <div class="row g-3">
                 <div class="col-md-1">
                     <label class="form-label small fw-semibold">ID Tallerista</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_id_profesor" placeholder="ID del Tallerista">
+                    <input type="number" class="form-control form-control-sm" id="busqueda_id_profesor" placeholder="ID del Tallerista">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label small fw-semibold">Nombre Completo</label>
@@ -41,7 +41,7 @@
             <div class="row g-3">
                 <div class="col-md-1">
                     <label class="form-label small fw-semibold">ID Taller</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_id_taller" placeholder="ID del Taller">
+                    <input type="number" class="form-control form-control-sm" id="busqueda_id_taller" placeholder="ID del Taller">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Nombre Taller</label>
@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Rut <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="rutProfesor" required>
+                            <input type="number" class="form-control" id="rutProfesor" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">DV <span class="text-danger">*</span></label>
@@ -141,13 +141,9 @@
                             <label class="form-label fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fechaNacimiento" required>
                         </div>
-                        <div class="col-md-3 mb-1">
+                        <div class="col-md-4 mb-1">
                             <label class="form-label fw-semibold">Género</label>
-                            <select class="form-select" id="genero">
-                                <option value="0">Masculino</option>
-                                <option value="1">Femenino</option>
-                                <option value="2">Otro</option>
-                            </select>
+                            <select class="form-select" id="genero"></select>
                         </div>
                     </div>
 
@@ -199,13 +195,15 @@
                     <hr style="height: 1px; background-color: black; border: none; opacity: 0.4; margin-top: 4px;">
                     
                     <div class="row">
-                        <div class="col-md-2 mb-3">
-                            <label class="form-label fw-semibold">ID Pais</label>
-                            <input type="text" class="form-control" id="idPais">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Pais</label>
+                            <!-- <input type="text" class="form-control" id="idPais"> -->
+                            <select class="form-select select-pais"></select>
                         </div>
-                        <div class="col-md-2 mb-3">
-                            <label class="form-label fw-semibold">ID Comuna</label>
-                            <input type="text" class="form-control" id="idComuna">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Comuna</label>
+                            <!-- <input type="text" class="form-control" id="idComuna"> -->
+                            <select class="form-select select-comuna"></select>
                         </div>
                     </div>
 

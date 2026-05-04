@@ -310,7 +310,7 @@ def ver_estudiante(id_estudiante, id_taller=None): #ESTO DEBERIA SOLUCIONAR LOS 
 #     @NOMBRE_COMPLETO VARCHAR(153),
 #     @CORREO_ELECTRONICO VARCHAR(100)
 
-def obtener_estudiantes(id_estudiante=None, id_taller=None, nombre_taller=None, year_proceso=None, nombre_completo=None, correo_electronico=None): 
+def obtener_estudiantes(id_estudiante=None, nombre_taller=None, year_proceso=None, nombre_completo=None, correo_electronico=None, ind_estado_integrante=None): 
     # lo mismo de arriba pero ahora son estudiants , profesores podran ver a su clase con esto
     # se tiene que actualizar con un procedimiento
     conn = get_connection()
@@ -318,7 +318,7 @@ def obtener_estudiantes(id_estudiante=None, id_taller=None, nombre_taller=None, 
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        cursor.execute("{LISTAR_ESTUDIANTES(?,?,?,?,?,?)}",(id_estudiante, id_taller, nombre_taller, year_proceso, nombre_completo, correo_electronico))
+        cursor.execute("{CALL LISTAR_ESTUDIANTES(?,?,?,?,?,?)}",(id_estudiante, nombre_taller, year_proceso, nombre_completo, correo_electronico, ind_estado_integrante))
         cols = [c[0] for c in cursor.description]
         return [dict(zip(cols, row)) for row in cursor.fetchall()]
     except Exception as e:
@@ -923,7 +923,6 @@ def obtener_historial_talleres_por_tallerista(id_profesor):
         cursor.close()
         conn.close()
 
-
 def obtener_estudiantes_por_taller_proc(id_taller):
     conn = get_connection()
     if not conn:
@@ -935,6 +934,24 @@ def obtener_estudiantes_por_taller_proc(id_taller):
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
     except Exception as e:
         print(f"Error en obtener_estudiantes_por_taller_proc: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+#--AQUI TERMINA--
+
+#--EXTRAS--
+def obtener_paises(id_pais=None,nombre_pais=None):
+    conn = get_connection()
+    if not conn:
+        return []
+    cursor = conn.cursor()
+    try:
+        cursor.execute("{CALL LISTAR_PAISES(?, ?)}",(id_pais,nombre_pais))
+        cols = [c[0] for c in cursor.description]
+        return [dict(zip(cols, row)) for row in cursor.fetchall()]
+    except Exception as e:
+        print(f"Error en obtener_paises: {e}")
         return []
     finally:
         cursor.close()

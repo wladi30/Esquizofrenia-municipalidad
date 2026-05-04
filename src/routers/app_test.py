@@ -7,6 +7,12 @@ url_test = Blueprint('url_test', __name__, template_folder='src/templates')
 def index_chamuco():
     return render_template("index.html")
 
+# IMPORTANTE
+# el nombre de los paises, comunas y tambien las categorias de los talleres, estan todos puestos en el backend, esto no debe ser asi
+# los paises y comunas no van a cambiar pero las categorias si asi que tengo que adaptarlo ya que pueden añadir nuevas categorias o tal evz sacar algunas , asi que deberia tomarlas de la
+# base y con eso actualizarse , tambien seria buena idea que hiciera lo mismo con los paises y comunas, genero por otro lado es puro frontend, en la base solo es un int, pero en el frontend
+# toma valor y se le asigna un nombre(string)
+
 # https://pypi.org/project/python-ipware/
 # registrar todos los cambios en los logs, tambien poder tener una sesion unica, poder sacar la ip del usuario junto con su navegador, etc
 # hacer que se generen por mes 

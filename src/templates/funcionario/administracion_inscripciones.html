@@ -27,7 +27,7 @@
             <div class="row g-3">
                 <div class="col-md-1">
                     <label class="form-label small fw-semibold">ID del/la Estudiante</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_id_estudiante" placeholder="Coloque la ID">
+                    <input type="number" class="form-control form-control-sm" id="busqueda_id_estudiante" placeholder="Coloque la ID">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label small fw-semibold">Nombre Completo</label>
@@ -39,17 +39,38 @@
                 </div>
             </div>
             <div class="row g-3">
-                <div class="col-md-2">
-                    <label class="form-label small fw-semibold">Estado del/la Integrante</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_id_taller" placeholder="ID del Taller">
+                <div class="col-md-1">
+                    <label class="form-label small fw-semibold">Estado</label>
+                    <select class="form-select" id="busqueda_ind_estado_integrante">
+                        <option value="" selected>Todos</option>
+                        <option value="1">Inscrito</option>
+                        <option value="2">Retirado</option>
+                        <option value="3">En espera</option>
+                    </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small fw-semibold">Fecha de Inscripcion en el Taller</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_nombre_taller" placeholder="Busque el nombre del Taller">
+                    <label class="form-label small fw-semibold">Fecha de Inscripcion</label>
+                    <input type="date" class="form-control" id="busqueda_fecha_inscripcion">
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Año del Proceso del Taller</label>
-                    <input type="text" class="form-control form-control-sm" id="busqueda_year_proceso" placeholder="Profesion del Inscripcion">
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Año del Proceso</label>
+                    <select class="form-select" id="busqueda_year_proceso">
+                        <option value="" selected>Todos</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <!-- <option value="0">0, existe solo un taller asi</option> -->
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold">Nombre del Taller</label>
+                    <input type="text" class="form-control form-control-sm" id="busqueda_nombre_taller" placeholder="Correo de la Persona">
                 </div>
             </div>
             <div class="row g-3">
@@ -69,9 +90,10 @@
                         <tr>
                             <th class="ps-4">ID</th>
                             <th>Nombre Completo</th>
-                            <th>ID Taller</th>
-                            <th>Nombre Taller</th>
+                            <th>Datos Taller</th>
+                            <th>Estado de la Persona</th>
                             <th>Año del Proceso</th>
+                            <th>Fecha de Inicio/Termino</th>
                             <th>Correo</th>
                             <th class="text-end pe-4">Acciones</th>
                         </tr>
@@ -102,7 +124,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Rut <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="rutProfesor" required>
+                            <input type="number" class="form-control" id="rutProfesor" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">DV <span class="text-danger">*</span></label>
@@ -201,11 +223,11 @@
                     <div class="row">
                         <div class="col-md-2 mb-3">
                             <label class="form-label fw-semibold">ID Pais</label>
-                            <input type="text" class="form-control" id="idPais">
+                            <input type="number" class="form-control" id="idPais">
                         </div>
                         <div class="col-md-2 mb-3">
                             <label class="form-label fw-semibold">ID Comuna</label>
-                            <input type="text" class="form-control" id="idComuna">
+                            <input type="number" class="form-control" id="idComuna">
                         </div>
                     </div>
 

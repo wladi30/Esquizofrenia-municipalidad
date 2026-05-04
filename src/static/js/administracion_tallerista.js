@@ -1,3 +1,21 @@
+const nombresGenero = {
+    0: 'Masculino',
+    1: 'Femenino',
+    2: 'No Binario',
+    3: 'Otro',
+    4: 'Prefiero no Decirlo'
+};
+
+const nombresPaises = {
+    1: 'Chile'
+
+};
+
+const nombresComunas = {
+    1: 'Quilicura'
+
+};
+
 const GestionTalleristas = {
     configuracion: {
         paginaActual: 1,
@@ -16,6 +34,8 @@ const GestionTalleristas = {
     inicializando: function() {
         this.cargarLista();
         this.cargarGeneroSelect();
+        this.cargarPaisSelect();
+        this.cargarComunaSelect();
         this.bindEventos();
     },
 
@@ -25,20 +45,67 @@ const GestionTalleristas = {
             .then(data => {
                 const selectGenero = document.getElementById('genero');
                 if (selectGenero) {
-                    selectGenero.innerHTML = '<option value="2">-</option>';
+                    selectGenero.innerHTML = '<option value="">Seleccione un Genero...</option>';
                     data.forEach(g => {
                         const option = document.createElement('option');
-                        option.value = g.GENERO;  // 0,1,2
-                        let texto = '';
-                        if (g.GENERO === 0) texto = g.MASCULINO;
-                        else if (g.GENERO === 1) texto = g.FEMENINO;
-                        else if (g.GENERO === 2) texto = g.OTRO;
-                        option.textContent = texto;
+                        option.value = g.GENERO; // 0,1,2,3,4
+                        const nombres = {
+                            0: 'Masculino',
+                            1: 'Femenino',
+                            2: 'No Binario',
+                            3: 'Otro',
+                            4: 'Prefiero no Decirlo'
+                        };
+                        option.textContent = nombres[g.GENERO] || 'No definido';
                         selectGenero.appendChild(option);
                     });
                 }
             })
-        .catch(error => console.error('Error cargando géneros:', error));
+        .catch(error => console.error('Error cargando generos:', error));
+    },
+
+    cargarPaisSelect: function() {
+        fetch('/api/pais')
+            .then(response => response.json())
+            .then(data => {
+                this.configuracion.datos.paises = data;
+                const selectsPaises = document.querySelectorAll('.select-pais');
+                selectsPaises.forEach(select => {
+                    select.innerHTML = '<option value="">Seleccione un Pais...</option>';
+                    data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.ID_PAIS;
+                        option.textContent = cat.NOMBRE_PAIS;
+                        select.appendChild(option);
+                    });
+                });
+            })
+        .catch(error => {
+            console.error('Error cargando Paises:', error);
+            this.mostrarError('No se puedieron cargar los Paises.');
+        });
+    },
+
+    cargarComunaSelect: function() {
+        fetch('/api/comuna')
+            .then(response => response.json())
+            .then(data => {
+                this.configuracion.datos.comunas = data;
+                const selectsComunas = document.querySelectorAll('.select-comuna');
+                selectsComunas.forEach(select => {
+                    select.innerHTML = '<option value="">Seleccione una Comuna...</option>';
+                    data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.ID_COMUNA;
+                        option.textContent = cat.NOMBRE_COMUNA;
+                        select.appendChild(option);
+                    });
+                });
+            })
+        .catch(error => {
+            console.error('Error cargando Comunas:', error);
+            this.mostrarError('No se pudieron cargas las Comunas')
+        });
     },
 
     cargarLista: function() {
@@ -169,11 +236,22 @@ const GestionTalleristas = {
             fecNaci.disabled = false;
         }
         const generoSelect = document.getElementById('genero');
-        if (generoSelect) generoSelect.value = '2';
-        document.getElementById('idPais').value = '1';
-        document.getElementById('idComuna').value = '1';
+        if (generoSelect) generoSelect.value = '';
+        const paisSelect = document.querySelector('.select-pais');
+        if (paisSelect) {
+            paisSelect.value = '';
+        }
+        const comunaSelect = document.querySelector('.select-comuna');
+        if (comunaSelect) {
+            comunaSelect.value = '';
+        }
+        // const comunaSelect = document.getElementById('idComuna');
+        // if (comunaSelect) comunaSelect.value = '1';
+        // document.getElementById('idPais').value = '1';
+        // document.getElementById('idComuna').value = '1';
         new bootstrap.Modal(document.getElementById('modalTallerista')).show();
     },
+
     guardar: function() {
         const id = document.getElementById('talleristaId').value;
         const RutProfesor = parseInt(document.getElementById('rutProfesor').value);
@@ -191,8 +269,8 @@ const GestionTalleristas = {
         const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
         // const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value) || 1;
         const observacion = document.getElementById('observacion').value.trim().toUpperCase();
-        const id_pais = parseInt(document.getElementById('idPais').value) || 1;
-        const id_comuna = parseInt(document.getElementById('idComuna').value) || 1;
+        const paisSelect = document.querySelector('.select-pais');
+        const comunaSelect = document.querySelector('.select-comuna');
         const villa = document.getElementById('villa').value.trim().toUpperCase();
         const nro_dpto = document.getElementById('numeroDepartamento').value.trim().toUpperCase();
         const nro_block = document.getElementById('numeroBlock').value.trim().toUpperCase();
@@ -219,8 +297,8 @@ const GestionTalleristas = {
             resumen_curricular: resumen_curricular || '-',
             // ind_activo: indicador_actividad,
             observacion: observacion || '-',
-            id_pais: id_pais,
-            id_comuna: id_comuna,
+            id_pais: paisSelect ? parseInt(paisSelect.value): 1,
+            id_comuna: comunaSelect ? parseInt(comunaSelect.value): 1,
             villa: villa || '-',
             nro_dpto: nro_dpto || '-',
             nro_block: nro_block || '-',
@@ -281,9 +359,7 @@ const GestionTalleristas = {
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
                     document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
                     const generoSelect = document.getElementById('genero');
-                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) {
-                        generoSelect.value = t.genero;
-                    }
+                    if (generoSelect && t.genero) {generoSelect.value = t.genero;}
                     document.getElementById('telefono').value = t.telefono || '';
                     document.getElementById('correo').value = t.correo_electronico || '';
                     document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
@@ -292,8 +368,10 @@ const GestionTalleristas = {
                     document.getElementById('profesion').value = t.profesion || '';
                     document.getElementById('resumenCurricular').value = t.resumen_curricular || '';
                     document.getElementById('observacion').value = t.observacion || '';
-                    document.getElementById('idPais').value = t.id_pais || 1;
-                    document.getElementById('idComuna').value = t.id_comuna || 1;
+                    const paisSelect = document.querySelector('.select-pais');
+                    if (paisSelect && t.id_pais) {paisSelect.value = t.id_pais;}
+                    const comunaSelect = document.getElementById('.select-comuna');
+                    if (comunaSelect && t.id_comuna) {comunaSelect.value = t.id_comuna;}
                     document.getElementById('villa').value = t.villa || '';
                     document.getElementById('numeroDepartamento').value = t.nro_dpto || '';
                     document.getElementById('numeroBlock').value = t.nro_block || '';
@@ -339,7 +417,9 @@ const GestionTalleristas = {
                                     <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
                                     <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
                                     <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${t.genero || 'No registrado'}</td></tr>
+                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
+                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
+                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">

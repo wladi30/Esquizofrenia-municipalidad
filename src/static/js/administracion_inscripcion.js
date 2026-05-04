@@ -5,11 +5,13 @@ const GestionInscripciones = {
         datos: [],
         filtros: { 
             id_estudiante: '', 
-            id_taller: '',
+            // id_taller: '',
+            nombre_completo: '',
+            correo_electronico: '',
+            estado: '',
             nombre_taller: '',
             year_proceso: '',
-            nombre_completo: '',
-            correo_electronico: ''
+            fecha_inscripcion: ''
         }
     },
 
@@ -26,30 +28,98 @@ const GestionInscripciones = {
             .then(data => {
                 const selectGenero = document.getElementById('genero');
                 if (selectGenero) {
-                    selectGenero.innerHTML = '<option value="2">-</option>';
+                    selectGenero.innerHTML = '<option value="">Seleccione un Genero...</option>';
                     data.forEach(g => {
                         const option = document.createElement('option');
-                        option.value = g.GENERO;  // 0,1,2
-                        let texto = '';
-                        if (g.GENERO === 0) texto = g.MASCULINO;
-                        else if (g.GENERO === 1) texto = g.FEMENINO;
-                        else if (g.GENERO === 2) texto = g.OTRO;
-                        option.textContent = texto;
+                        option.value = g.GENERO; // 0,1,2,3,4
+                        const nombres = {
+                            0: 'Masculino',
+                            1: 'Femenino',
+                            2: 'No Binario',
+                            3: 'Otro',
+                            4: 'Prefiero no Decirlo'
+                        };
+                        option.textContent = nombres[g.GENERO] || 'No definido';
                         selectGenero.appendChild(option);
                     });
                 }
             })
-        .catch(error => console.error('Error cargando géneros:', error));
+        .catch(error => console.error('Error cargando generos:', error));
+    },
+
+    cargarPaisesSelect: function() {
+        fetch('/api/pais')
+            .then(response => response.json())
+            .then(data => {
+                this.configuracion.datos.paises = data;
+                const selectsModal = document.querySelectorAll('.select-pais');
+                selectsModal.forEach(select => {
+                    select.innerHTML = '<option value="">Seleccione un Pais...</option>';
+                    data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.ID_PAIS;
+                        option.textContent = cat.NOMBRE_PAIS;
+                        select.appendChild(option);
+                    });
+                });
+                const selectsFiltro = this.document.querySelectorAll('.select-pais-filtro');
+                selectsFiltro.forEach(select => {
+                    select.innerHTML = '<option value="">Todos los Paises</option>';
+                    data.forEach(cat => {
+                        const option = this.document.createElement('option');
+                        option.value = cat.ID_PAIS;
+                        option.textContent = cat.NOMBRE_PAIS;
+                        select.appendChild(option);
+                    });
+                });
+            })
+        .catch(error => {
+            console.error('Error cargando Paises:', error);
+            this.mostrarError('No se puedieron cargar los Paises.');
+        });
+    },
+
+    cargarComunaSelect: function() {
+        fetch('/api/comuna')
+            .then(response => response.json())
+            .then(data => {
+                this.configuracion.datos.comunas = data;
+                const selectsModal = document.querySelectorAll('.select-comuna');
+                selectsModal.forEach(select => {
+                    select.innerHTML = '<option value="">Seleccione una Comuna...</option>';
+                    data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.ID_COMUNA;
+                        option.textContent = cat.NOMBRE_COMUNA;
+                        select.appendChild(option);
+                    });
+                });
+                const selectsFiltro = document.querySelectorAll('.select-categoria-filtro');
+                selectsFiltro.forEach(select => {
+                    select.innerHTML = '<option value="">Todas las Comunas</option>';
+                    data.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.ID_COMUNA;
+                        option.textContent = cat.NOMBRE_COMUNA;
+                        select.appendChild(option);
+                    });
+                });
+            })
+        .catch(error => {
+            console.error('Error cargando Comunas:', error);
+            this.mostrarError('No se pudieron cargas las Comunas')
+        });
     },
 
     cargarLista: function() {
         const params = new URLSearchParams();
         if (this.configuracion.filtros.id_estudiante) params.append('id_estudiante', this.configuracion.filtros.id_estudiante);
-        if (this.configuracion.filtros.id_taller) params.append('id_taller', this.configuracion.filtros.id_taller);
-        if (this.configuracion.filtros.nombre_taller) params.append('nombre_taller', this.configuracion.filtros.nombre_taller);
-        if (this.configuracion.filtros.year_proceso) params.append('year_proceso', this.configuracion.filtros.year_proceso);
         if (this.configuracion.filtros.nombre_completo) params.append('nombre_completo', this.configuracion.filtros.nombre_completo);
         if (this.configuracion.filtros.correo_electronico) params.append('correo_electronico', this.configuracion.filtros.correo_electronico);
+        if (this.configuracion.filtros.estado) params.append('ind_estado_integrante', this.configuracion.filtros.ind_estado_integrante);
+        if (this.configuracion.filtros.nombre_taller) params.append('nombre_taller', this.configuracion.filtros.nombre_taller);
+        if (this.configuracion.filtros.year_proceso) params.append('year_proceso', this.configuracion.filtros.year_proceso);
+        if (this.configuracion.filtros.fecha_inscripcion) params.append('fecha_inscripcion', this.configuracion.filtros.fecha_inscripcion);
         
         document.getElementById('tablaInscripcionesCuerpo').innerHTML = '<tr><td colspan="6" class="text-center py-4"><i class="bi bi-arrow-repeat me-2"></i>Cargando...</td></tr>';
         
@@ -118,28 +188,31 @@ const GestionInscripciones = {
 
     aplicarFiltros: function() {
         this.configuracion.filtros.id_estudiante = document.getElementById('busqueda_id_estudiante').value;
-        this.configuracion.filtros.id_taller = document.getElementById('busqueda_id_taller').value;
-        this.configuracion.filtros.nombre_taller = document.getElementById('busqueda_nombre_taller').value;
-        this.configuracion.filtros.year_proceso = document.getElementById('busqueda_year_proceso').value;
         this.configuracion.filtros.nombre_completo = document.getElementById('busqueda_nombre_completo').value;
         this.configuracion.filtros.correo_electronico = document.getElementById('busqueda_correo_electronico').value;
+        this.configuracion.filtros.estado = document.getElementById('busqueda_ind_estado_integrante').value;
+        this.configuracion.filtros.nombre_taller = document.getElementById('busqueda_nombre_taller').value;
+        this.configuracion.filtros.year_proceso = document.getElementById('busqueda_year_proceso').value;
+        this.configuracion.filtros.fecha_inscripcion = document.getElementById('busqueda_fecha_inscripcion').value;
         this.cargarLista();
     },
 
     limpiarFiltros: function() {
         document.getElementById('busqueda_id_estudiante').value = '';
-        document.getElementById('busqueda_id_taller').value = '';
-        document.getElementById('busqueda_nombre_taller').value = '';
-        document.getElementById('busqueda_year_proceso').value = '';
         document.getElementById('busqueda_nombre_completo').value = '';
         document.getElementById('busqueda_correo_electronico').value = '';
+        document.getElementById('busqueda_estado').value = '';
+        document.getElementById('busqueda_nombre_taller').value = '';
+        document.getElementById('busqueda_year_proceso').value = '';
+        document.getElementById('busqueda_fecha_inscripcion').value = '';
         this.configuracion.filtros = { 
-            id_estudiante: '', 
-            id_taller: '',
+            id_estudiante: '',
+            nombre_completo: '',
+            correo_electronico: '',
+            estado: '',
             nombre_taller: '',
             year_proceso: '',
-            nombre_completo: '',
-            correo_electronico: ''
+            fecha_inscripcion: ''
         };
         this.cargarLista();
     },
@@ -397,17 +470,23 @@ const GestionInscripciones = {
         });
     },
 
+    // debo usar small para poner mas cosas en pantalla
     generarFila: function(t) {
     const nombreCompleto = `${t.NOMBRE_ESTUDIANTE || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
-    const idTallerAsignado = t.ID_TALLER || 'No tiene, o es un nuevo Profesor';
-    const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Profesor';
+    const idTallerAsignado = t.ID_TALLER || '...';
+    const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Integrante';
+    const correoElectronico = t.CORREO_ELECTRONICO || 'No tiene o no esta Registrado';
         return `
             <tr>
                 <td class="ps-4 fw-semibold">${t.ID_ESTUDIANTE}</td>
                 <td>${t.NOMBRE_COMPLETO || 'Sin nombre'}</td>
-                <td>${idTallerAsignado}</td>
-                <td>${tallerAsignado}</td>
-                <td>${t.CORREO_ELECTRONICO || '-'}</td>
+                <td>
+                    <small>${tallerAsignado}</small><br>
+                    <small class="text-muted">ID Taller: ${idTallerAsignado}</small>
+                </td>
+                <td>${t.YEAR_PROCESO}</td>
+                <td>${t.AUD_FEC_INGRESO}</td>
+                <td>${correoElectronico}</td>
                 <td class="text-end pe-4">
                     <button class="btn btn-sm btn-outline-info me-1" onclick="GestionInscripciones.verDetalles(${t.id_estudiante})" title="Ver detalles">
                         <i class="bi bi-eye"></i>
@@ -471,16 +550,22 @@ const GestionInscripciones = {
         document.getElementById('busqueda_id_taller')?.addEventListener('keypress', (e) => { 
             if (e.key === 'Enter') { this.aplicarFiltros(); }
         });
+        document.getElementById('busqueda_nombre_completo')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_correo_electronico')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
+        document.getElementById('busqueda_ind_estado_integrante')?.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') { this.aplicarFiltros(); }
+        });
         document.getElementById('busqueda_nombre_taller')?.addEventListener('keypress', (e) => { 
             if (e.key === 'Enter') { this.aplicarFiltros(); } 
         });
         document.getElementById('busqueda_year_proceso')?.addEventListener('keypress', (e) => { 
             if (e.key === 'Enter') { this.aplicarFiltros(); }
         });
-        document.getElementById('busqueda_nombre_completo')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_correo_electronico')?.addEventListener('keypress', (e) => { 
+        document.getElementById('busqueda_fecha_inscripcion')?.addEventListener('keypress', (e) => { 
             if (e.key === 'Enter') { this.aplicarFiltros(); }
         });
         document.getElementById('formInsripcion')?.addEventListener('submit', (e) => { 

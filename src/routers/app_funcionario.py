@@ -569,21 +569,28 @@ def api_inscripcion_lista():
             return redirect(url_for('url_principal.pagina_login'))
     try:
         id_estudiante_str = request.args.get('id_estudiante')
-        id_taller_str = request.args.get('id_taller')
+        # id_taller_str = request.args.get('id_taller')
         nombre_taller_str = request.args.get('nombre_taller')
+        estado_str = request.args.get('ind_estado_integrante')
         year_proceso_str = request.args.get('year_proceso')
         nombre_completo_str = request.args.get('nombre_completo')
         correo_electronico_str = request.args.get('correo_electronico')
+        fecha_inscripcion_str = request.args.get('fecha_inscripcion')
+
+        # fecha_inscripcion = datetime.strftime(fecha_inscripcion_str, "%Y-%m-%d").date()
         
         id_estudiante = int(id_estudiante_str) if id_estudiante_str and id_estudiante_str.isdigit() else None
-        id_taller = int(id_taller_str) if id_taller_str and id_taller_str.isdigit() else None
+        # id_taller = int(id_taller_str) if id_taller_str and id_taller_str.isdigit() else None
         year_proceso = int(year_proceso_str) if year_proceso_str and year_proceso_str.isdigit() else None
+        ind_estado_integrante = int(estado_str) if estado_str and estado_str.isdigit() else None
 
         nombre_taller = nombre_taller_str if nombre_taller_str and nombre_taller_str.strip() else None
         nombre_completo = nombre_completo_str if nombre_completo_str and nombre_completo_str.strip() else None
         correo_electronico = correo_electronico_str if correo_electronico_str and correo_electronico_str.strip() else None
 
-        estudiantes = obtener_estudiantes(id_estudiante=id_estudiante,id_taller=id_taller,year_proceso=year_proceso,nombre_taller=nombre_taller,nombre_completo=nombre_completo,correo_electronico=correo_electronico)
+        estudiantes = obtener_estudiantes(id_estudiante=id_estudiante,year_proceso=year_proceso,nombre_taller=nombre_taller,nombre_completo=nombre_completo,correo_electronico=correo_electronico,ind_estado_integrante=ind_estado_integrante
+                                        #   ,fecha_inscripcion=fecha_inscripcion
+                                          )
         return jsonify({"success": True, "data": estudiantes, "total": len(estudiantes)})
     except Exception as e:
         print(f"Error en api_lista_tallerista: {e}")
@@ -838,13 +845,49 @@ def api_genero_persona():
             return redirect(url_for('url_principal.pagina_login'))
     try:
         genero = [
-            {"GENERO": 0, "MASCULINO": "Masculino"},
-            {"GENERO": 1, "FEMENINO": "Femenino"},
-            {"GENERO": 2, "OTRO": "Otro"}
+            {"GENERO": 0},
+            {"GENERO": 1},
+            {"GENERO": 2},
+            {"GENERO": 3},
+            {"GENERO": 4}
         ]
         return jsonify(genero)
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 #-- FIN DE GENERO --
+
+# -- API PAIS --
+@url_funcionario.route('/api/pais', methods=['GET'])
+@funcionario_required
+def api_pais_persona():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
+    try:
+        paises = [
+            {"ID_PAIS": 1, "NOMBRE_PAIS": "Chile"}
+            # tengo que poner mas paises en la base de datos
+        ]
+        return jsonify(paises)
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+#-- FIN DE PAIS --
+
+# -- API COMUNA --
+@url_funcionario.route('/api/comuna', methods=['GET'])
+@funcionario_required
+def api_comuna_persona():
+    if 'id_usuario' not in session:
+            flash('Debe iniciar sesión para acceder', 'warning')
+            return redirect(url_for('url_principal.pagina_login'))
+    try:
+        comunas = [
+            {"ID_COMUNA": 1, "NOMBRE_COMUNA": "Quilicura"}
+            # tengo que poner mas comunas en la base de datos
+        ]
+        return jsonify(comunas)
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+#-- FIN DE COMUNA --
 
 #-- FIN RUTAS ADICIONALES --

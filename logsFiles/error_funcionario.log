@@ -350,3 +350,10 @@
 2026-04-29 15:05:01 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_crear_tallerista_ _bool_ object has no attribute _get_
 2026-04-30 08:46:15 | Thread-10 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_inscripciones_ funcionario_adminidtracion_inscripciones.html
 2026-04-30 08:48:47 | Thread-3 (process_request_thread) | MainProcess | ERROR | error en funcionario.funcionario_gestion_inscripciones_ funcionario_adminidtracion_inscripciones.html
+2026-05-04 10:49:56 | Thread-101 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ _str_ object has no attribute _get_
+2026-05-04 10:50:58 | Thread-112 (process_request_thread) | MainProcess | ERROR | api_taller_lista_ _str_ object has no attribute _get_
+2026-05-04 16:30:11 | Thread-7 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_inscripcion_lista_ descriptor _strftime_ for _datetime.date_ objects doesn_t apply to a _NoneType_ object
+2026-05-04 16:38:20 | Thread-9 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_inscripcion_lista_ descriptor _strftime_ for _datetime.date_ objects doesn_t apply to a _NoneType_ object
+2026-05-04 16:39:40 | Thread-15 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_inscripcion_lista_ descriptor _strftime_ for _datetime.date_ objects doesn_t apply to a _NoneType_ object
+2026-05-04 16:52:08 | Thread-22 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_inscripcion_lista_ descriptor _strftime_ for _datetime.date_ objects doesn_t apply to a _NoneType_ object
+2026-05-04 16:58:31 | Thread-8 (process_request_thread) | MainProcess | ERROR | error en funcionario.api_inscripcion_lista_ obtener_estudiantes__ got an unexpected keyword argument _id_taller_
