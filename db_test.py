@@ -265,36 +265,54 @@ def registrar_persona(rut_persona,dv_persona,nombre_persona,apellido_paterno,ape
 #         conn.close()
 
 #--FUNCIONARIO(ANTIGUAMENTE ESTUDIANTE)--
-def ver_estudiante(id_estudiante, id_taller=None): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LAS FECHAS TODAS RANCIAS
+def ver_estudiante(id_estudiante): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LAS FECHAS TODAS RANCIAS
     conn = get_connection()
     if not conn:
-        return None
+        return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        if id_taller:
-            cursor.execute(f"{{CALL VER_ESTUDIANTE_TALLER({id_estudiante}, {id_taller})}}")
-        else:
-            cursor.execute(f"{{CALL VER_ESTUDIANTE({id_estudiante})}}")
-        
-        estudiante = []
-        for row in cursor:
-            resultado_e = {
-                'id_taller': row[0],
-                'nombre_taller': row[1],
-                'id_estudiante': row[2],
-                'year_proceso': row[3],
-                'estado_integrante': row[4],
-                'fec_inscripcion': str(row[5]) if row[5] else '1900-01-01',
-                'fec_retiro': str(row[6]) if row[6] else '1900-01-01',
-                'observacion': row[7] or '-',
-                'fec_reincorporacion': str(row[8]) if row[8] else '1900-01-01',
-                'aud_usuario_ingreso': row[9] or 'sistema',
-                'aud_fec_ingreso': str(row[10]) if row[10] else '1900-01-01',
-                'aud_usuario_modifica': row[11] or 'sistema',
-                'aud_fec_modifica': str(row[12]) if row[12] else '1900-01-01'
+        cursor.execute("{CALL VER_ESTUDIANTE(?)}", (id_estudiante))
+        row = cursor.fetchone()
+        if row:
+            resultado = {
+                'id_persona': row[0],
+                'rut_persona': row[1],
+                'dv_persona': row[2],
+                'pasaporte': row[3],
+                'id_estudiante': row[4],
+                'nombre_persona': row[5],
+                'apellido_paterno': row[6],
+                'apellido_materno': row[7],
+                'fec_nacimiento': row[8].strftime('%Y-%m-%d') if row[8] else None,
+                'edad': row[9],
+                'genero': row[10],
+                'telefono': row[11],
+                'telefono_contacto': row[12],
+                'nombre_contacto': row[13],
+                'correo_contacto': row[14],
+                'tipo_usuario': row[15],
+                'observacion': row[16],
+                'correo_electronico': row[17],
+                'calle': row[18],
+                'nro_calle': row[19],
+                'nro_block': row[20],
+                'nro_dpto': row[21],
+                'villa': row[22],
+                'id_comuna': row[23],
+                'id_pais': row[24],
+                'id_taller': row[25],
+                'nombre_taller': row[26],
+                'year_proceso': row[27],
+                'pronom_estudiante': row[28],
+                'fec_inscripcion': row[29].strftime('%Y-%m-%d %H:%M:%S') if row[29] else None,
+                'fec_retiro': row[30].strftime('%Y-%m-%d %H:%M:%S') if row[30] else None,
+                'fec_reincorporacion': row[31].strftime('%Y-%m-%d %H:%M:%S') if row[31] else None,
+                'aud_usuario_ingreso': row[32],
+                'aud_fec_ingreso': row[33].strftime('%Y-%m-%d %H:%M:%S') if row[33] else None,
+                'aud_usuario_modifica': row[34],
+                'aud_fec_modifica': row[35].strftime('%Y-%m-%d %H:%M:%S') if row[35] else None,
             }
-            estudiante.append(resultado_e)
-        return estudiante
+        return resultado
     except Exception as e:
         print(f"Error en VER_ESTUDIANTE: {e}")
         return None
@@ -362,41 +380,21 @@ def ver_estudiante_con_taller(id_estudiante, id_taller):
         cursor.close()
         conn.close()
 
-def ac_estudiante(id_estudiante, id_taller, year_proceso, ind_estado_integrante,fec_inscripcion=None, fec_retiro=None, observacion='-',fec_reincorporacion=None, aud_usuario_ingreso='sistema',aud_fec_ingreso=None, aud_usuario_modifica='sistema',aud_fec_modifica=None):
+def ac_estudiante(id_estudiante=None,nombre_persona=None,apellido_paterno=None,apellido_materno=None,pronom_estudiante=None,genero=None,telefono=None,correo_electronico=None,telefono_contacto=None,nombre_contacto=None,
+                  correo_contacto=None,observacion=None,ind_estado_integrante=None,id_pais=None,id_comuna=None,villa=None,nro_dpto=None,nro_block=None,nro_calle=None,calle=None,fec_ingreso=None,fec_retiro=None,
+                  fec_reincorporacion=None,aud_usuario_modifica=None,aud_usuario_modifica_pt=None,aud_usuario_modifica_p=None):
     conn = get_connection()
     if not conn:
         return False
     cursor = conn.cursor()
     try:
-        from datetime import datetime
-        fecha_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        fec_retiro_final = fec_retiro if fec_retiro else '1900-01-01 00:00:00'
-        fec_reincorporacion_final = fec_reincorporacion if fec_reincorporacion else '1900-01-01 00:00:00'
-        query = f"""DECLARE @fec_retiro_dt DATETIME = CONVERT(DATETIME, '{fec_retiro_final}', 120)DECLARE @fec_reincorporacion_dt DATETIME = CONVERT(DATETIME, '{fec_reincorporacion_final}', 120)DECLARE @fec_inscripcion_dt DATETIME = CONVERT(DATETIME, '{fecha_actual}', 120)DECLARE @aud_fec_ingreso_dt DATETIME = CONVERT(DATETIME, '{fecha_actual}', 120)DECLARE @aud_fec_modifica_dt DATETIME = CONVERT(DATETIME, '{fecha_actual}', 120)
-        EXEC AC_ESTUDIANTE
-            @ID_TALLER = {id_taller},
-            @ID_ESTUDIANTE = {id_estudiante},
-            @YEAR_PROCESO = {year_proceso},
-            @IND_ESTADO_INTEGRANTE = {ind_estado_integrante},
-            @FEC_INSCRIPCION = @fec_inscripcion_dt,
-            @FEC_RETIRO = @fec_retiro_dt,
-            @OBSERVACION = '{observacion}',
-            @FEC_REINCORPORACION = @fec_reincorporacion_dt,
-            @AUD_USUARIO_INGRESO = '{aud_usuario_ingreso}',
-            @AUD_FEC_INGRESO = @aud_fec_ingreso_dt,
-            @AUD_USUARIO_MODIFICA = '{aud_usuario_modifica}',
-            @AUD_FEC_MODIFICA = @aud_fec_modifica_dt
-        """
-        #un tanto largo y confuso pero funciona, mejor no tocarlo
-        print(f"DEBUG - Query AC_ESTUDIANTE: {query[:500]}...") #mas cosas de debug, sirve para mostrar los 500 primeros caracteres
-        cursor.execute(query)
+        cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+            (id_estudiante,nombre_persona,apellido_paterno,apellido_materno,pronom_estudiante,genero,telefono,correo_electronico,telefono_contacto,nombre_contacto,correo_contacto,observacion,ind_estado_integrante,id_pais,
+            id_comuna,villa,nro_dpto,nro_block,nro_calle,calle,fec_ingreso,fec_retiro,fec_reincorporacion,aud_usuario_modifica,aud_usuario_modifica_pt,aud_usuario_modifica_p))
         conn.commit()
-        print(f"DEBUG_DB - AC_ESTUDIANTE ejecutado exitosamente")
         return True
     except Exception as e:
         print(f"Error en AC_ESTUDIANTE: {e}")
-        import traceback
-        print(f"Traceback completo: {traceback.format_exc()}")
         conn.rollback()
         return False
     finally:
@@ -836,10 +834,9 @@ def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno,
 #         conn.close()
 
 def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,
-                          pi_fec_nacimiento,
-                          pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,
-                        pi_calle,pi_villa,pi_id_comuna,pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,pi_correo_contacto,pi_observacion,
-                        pi_id_usuario,pi_profesion,pi_resumen_curricular):
+                          pi_fec_nacimiento,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,pi_calle,pi_villa,pi_id_comuna,
+                          pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,
+                          pi_correo_contacto,pi_observacion,pi_id_usuario,pi_profesion,pi_resumen_curricular):
     # print(f"DEBUG - : pi_rut_profesor{type(pi_rut_profesor)}, {(pi_rut_profesor)}")
     # print(f"DEBUG - : pi_nombre_profesor{type(pi_nombre_profesor)}, {(pi_nombre_profesor)}")
     # print(f"DEBUG - : pi_dv_profesor{type(pi_dv_profesor)}, {(pi_dv_profesor)}")

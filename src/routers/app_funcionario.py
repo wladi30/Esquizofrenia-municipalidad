@@ -9,6 +9,7 @@ from src.utils.loggers import Logger
 url_funcionario = Blueprint('url_funcionario', __name__, template_folder='src/templates')
 
 from db_test import (
+    ac_estudiante,
     ac_profesor,
     ac_taller,
     borrar_estudiante,
@@ -22,6 +23,7 @@ from db_test import (
     obtener_estudiantes_por_taller,
     obtener_talleres,
     suspender_tallerista,
+    ver_estudiante,
     ver_profesor,
     ver_taller
 )
@@ -623,51 +625,86 @@ def api_crear_inscripcion():
         return jsonify({"success": False, "message": str(e)}), 500
     
 # -- API INSCRIPCION C(R)UD --
-@url_funcionario.route('/api/inscripcion-get', methods=['GET'])
+@url_funcionario.route('/api/inscripcion-get/<int:id_estudiante>', methods=['GET'])
 @funcionario_required
-def api_get_inscripcion():
+def api_get_inscripcion(id_estudiante):
     if 'id_usuario' not in session:
             flash('Debe iniciar sesión para acceder', 'warning')
             return redirect(url_for('url_principal.pagina_login'))
     try:
-        data = request.json
-        id_taller_ins=data.get('id_taller')
-        id_estudiante_ins=data.get('id_estudiante')
-        year_proceso_ins=data.get('year_proceso')
-        aud_usuario_ingreso_ins=session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-        resultado = inscribir_taller_o_espera(
-            id_taller=id_taller_ins,
-            id_estudiante=id_estudiante_ins,
-            year_proceso=year_proceso_ins,
-            aud_usuario_ingreso=aud_usuario_ingreso_ins
-        )
-        return jsonify(resultado)
+        if request.method == 'GET':
+            integrante = ver_estudiante(id_estudiante)
+            if not integrante:
+                return jsonify({"success": False, "message": "integrante no encontrado"}), 404
+        return jsonify({"success": True, "data": integrante})
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_crear_inscripcion: {e}", "error_funcionario")
         return jsonify({"success": False, "message": str(e)}), 500
     
 # -- API INSCRIPCION CR(U)D --
-@url_funcionario.route('/api/inscripcion-actualizar', methods=['PUT'])
+@url_funcionario.route('/api/inscripcion-actualizar/<int:id_estudiante>', methods=['PUT'])
 @funcionario_required
-def api_actualizar_inscripcion():
+def api_actualizar_inscripcion(id_estudiante):
     if 'id_usuario' not in session:
             flash('Debe iniciar sesión para acceder', 'warning')
             return redirect(url_for('url_principal.pagina_login'))
     try:
-        data = request.json
-        id_taller_ins=data.get('id_taller')
-        id_estudiante_ins=data.get('id_estudiante')
-        year_proceso_ins=data.get('year_proceso')
-        aud_usuario_ingreso_ins=session.get('nombre_persona', session.get('id_usuario', 'SISTEMA'))
-        resultado = inscribir_taller_o_espera(
-            id_taller=id_taller_ins,
-            id_estudiante=id_estudiante_ins,
-            year_proceso=year_proceso_ins,
-            aud_usuario_ingreso=aud_usuario_ingreso_ins
+        data = request.get_json()
+        usuario_modifica = session.get('nombre_persona', 'sistema')
+        # esto tambien me lo dio la ia, con esto no se deberia romper en el caso que me pasen nulls o str
+        try:
+            genero = int(data.get('genero', 2))
+            if genero not in (0, 1, 2):
+                genero = 2
+        except (ValueError, TypeError):
+            genero = 2
+            ind_estado_integrante = int(data.get('ind_estado_integrante', 2))
+            
+            if ind_estado_integrante not in (1, 2, 3):
+                ind_estado_integrante = 2
+        except (ValueError, TypeError):
+            ind_estado_integrante = 2
+        def to_int(val, default=0):
+            try:
+                return int(val) if val is not None else default
+            except (ValueError, TypeError):
+                return default
+            # sera buena idea aplicarlo? o tal vez deberia preguntar? si esto es necesario bueno ya lo van a revisar en todo caso
+        resultado = ac_estudiante(
+            id_estudiante=id_estudiante,
+            nombre_persona=data.get('nombre_persona', ''),
+            apellido_paterno=data.get('apellido_paterno', ''),
+            apellido_materno=data.get('apellido_materno', ''),
+            pronom_estudiante=data.get('pronom_estudiante', ''),
+            genero=genero,
+            telefono=data.get('telefono', ''),
+            correo_electronico=data.get('correo_electronico', ''),
+            telefono_contacto=data.get('telefono_contacto', ''),
+            nombre_contacto=data.get('nombre_contacto', ''),
+            correo_contacto=data.get('correo_contacto', ''),
+            observacion=data.get('observacion', ''),
+            ind_estado_integrante=ind_estado_integrante,
+            id_pais=to_int(data.get('id_pais'), 1),
+            id_comuna=to_int(data.get('id_comuna'), 1),
+            villa=data.get('villa', ''),
+            nro_dpto=data.get('nro_dpto', ''),
+            nro_block=data.get('nro_block', ''),
+            nro_calle=data.get('nro_calle', ''),
+            calle=data.get('calle', ''),
+            fec_ingreso=data.get('fec_ingreso', ''),
+            fec_retiro=data.get('fec_retiro', ''),
+            fec_reincorporaction=data.get('fec_reincorporaction', ''),
+            aud_usuario_modifica=usuario_modifica,
+            aud_usuario_modifica_pt=usuario_modifica,
+            aud_usuario_modifica_p=usuario_modifica
         )
-        return jsonify(resultado)
+        if resultado:
+            logger.add_to_log("info", f"modificacion realizada en api_actualizar_tallerista. ID Afectada: {id_estudiante} , Usuario que realizo el cambio:{session}", "ac_tallerista")
+            return jsonify({"success": True, "message": "Tallerista actualizado correctamente"})
+        else:
+            return jsonify({"success": False, "message": "Error al actualizar tallerista"}), 500
     except Exception as e:
-        logger.add_to_log("error", f"error en funcionario.api_crear_inscripcion: {e}", "error_funcionario")
+        print(f"Error en api_actualizar_tallerista: {e}")
+        traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
     
 # -- API INSCRIPCION CRU(D) --

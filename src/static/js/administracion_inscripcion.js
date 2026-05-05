@@ -1,3 +1,21 @@
+const nombresGenero = {
+    0: 'Masculino',
+    1: 'Femenino',
+    2: 'No Binario',
+    3: 'Otro',
+    4: 'Prefiero no Decirlo'
+};
+
+const nombresPaises = {
+    1: 'Chile'
+
+};
+
+const nombresComunas = {
+    1: 'Quilicura'
+
+};
+
 const GestionInscripciones = {
     configuracion: {
         paginaActual: 1,
@@ -19,8 +37,27 @@ const GestionInscripciones = {
         console.log("Inicializando GestionInscripciones...");
         this.cargarLista();
         this.cargarGeneroSelect();
+        this.cargarPaisSelect();
+        this.cargarComunaSelect();
         this.bindEventos();
     },
+
+    // formatearFecha: function(fechaRaw) {
+    //     if (!fechaRaw) return 'No Registrada';
+    //     let fechaRaw = FEC_INSCRIPCION;
+    //     let fecha = new Date(fechaRaw);
+    //     let opciones = { 
+    //         weekday: 'long', 
+    //         year: 'numeric', 
+    //         month: 'long', 
+    //         day: 'numeric', 
+    //         hour: 'numeric', 
+    //         minute: 'numeric' 
+    //     };
+    //     let fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
+    //     console.log(fechaFormateada);
+    //     document.getElementById("fecha").innerText = fechaFormateada;
+    // },
 
     cargarGeneroSelect: function() {
         fetch('/api/genero')
@@ -47,26 +84,16 @@ const GestionInscripciones = {
         .catch(error => console.error('Error cargando generos:', error));
     },
 
-    cargarPaisesSelect: function() {
+    cargarPaisSelect: function() {
         fetch('/api/pais')
             .then(response => response.json())
             .then(data => {
                 this.configuracion.datos.paises = data;
-                const selectsModal = document.querySelectorAll('.select-pais');
-                selectsModal.forEach(select => {
+                const selectsPaises = document.querySelectorAll('.select-pais');
+                selectsPaises.forEach(select => {
                     select.innerHTML = '<option value="">Seleccione un Pais...</option>';
                     data.forEach(cat => {
                         const option = document.createElement('option');
-                        option.value = cat.ID_PAIS;
-                        option.textContent = cat.NOMBRE_PAIS;
-                        select.appendChild(option);
-                    });
-                });
-                const selectsFiltro = this.document.querySelectorAll('.select-pais-filtro');
-                selectsFiltro.forEach(select => {
-                    select.innerHTML = '<option value="">Todos los Paises</option>';
-                    data.forEach(cat => {
-                        const option = this.document.createElement('option');
                         option.value = cat.ID_PAIS;
                         option.textContent = cat.NOMBRE_PAIS;
                         select.appendChild(option);
@@ -84,19 +111,9 @@ const GestionInscripciones = {
             .then(response => response.json())
             .then(data => {
                 this.configuracion.datos.comunas = data;
-                const selectsModal = document.querySelectorAll('.select-comuna');
-                selectsModal.forEach(select => {
+                const selectsComunas = document.querySelectorAll('.select-comuna');
+                selectsComunas.forEach(select => {
                     select.innerHTML = '<option value="">Seleccione una Comuna...</option>';
-                    data.forEach(cat => {
-                        const option = document.createElement('option');
-                        option.value = cat.ID_COMUNA;
-                        option.textContent = cat.NOMBRE_COMUNA;
-                        select.appendChild(option);
-                    });
-                });
-                const selectsFiltro = document.querySelectorAll('.select-categoria-filtro');
-                selectsFiltro.forEach(select => {
-                    select.innerHTML = '<option value="">Todas las Comunas</option>';
                     data.forEach(cat => {
                         const option = document.createElement('option');
                         option.value = cat.ID_COMUNA;
@@ -201,7 +218,7 @@ const GestionInscripciones = {
         document.getElementById('busqueda_id_estudiante').value = '';
         document.getElementById('busqueda_nombre_completo').value = '';
         document.getElementById('busqueda_correo_electronico').value = '';
-        document.getElementById('busqueda_estado').value = '';
+        document.getElementById('busqueda_ind_estado_integrante').value = '';
         document.getElementById('busqueda_nombre_taller').value = '';
         document.getElementById('busqueda_year_proceso').value = '';
         document.getElementById('busqueda_fecha_inscripcion').value = '';
@@ -220,8 +237,8 @@ const GestionInscripciones = {
     abrirModalNuevo: function() {
         document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nueva Inscripcion';
         document.getElementById('formInsripcion').reset();
-        const rutInput = document.getElementById('rutEstudiante');
-        const dvInput = document.getElementById('dvEstudiante');
+        const rutInput = document.getElementById('rutPersona');
+        const dvInput = document.getElementById('dvPersona');
         if (rutInput) {
             rutInput.disabled = false;
             rutInput.value = '';
@@ -250,20 +267,19 @@ const GestionInscripciones = {
     },
     guardar: function() {
         const id = document.getElementById('inscripcionId').value;
-        const rutEstudiante = parseInt(document.getElementById('rutEstudiante').value);
-        const dvEstudiante = parseInt(document.getElementById('dvEstudiante').value);
-        const nombre = document.getElementById('nombreEstudiante').value.trim().toUpperCase();
+        const rutPersona = parseInt(document.getElementById('rutPersona').value);
+        const dvPersona = parseInt(document.getElementById('dvPersona').value);
+        const pasaporte = document.getElementById('pasaporte').value;
+        const nombrePersona = document.getElementById('nombrePersona').value.trim().toUpperCase();
         const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
         const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
         const genero = parseInt(document.getElementById('genero').value) || 2;
-        const telefono = document.getElementById('telefono').value.trim().toUpperCase();
-        const correo = document.getElementById('correo').value.trim().toUpperCase();
+        const pronomEstudiante = document.getElementById('pronomEstudiante').value;
+        const telefonoPersona = document.getElementById('telefonoPersona').value.trim().toUpperCase();
+        const correoPersona = document.getElementById('correoPersona').value.trim().toUpperCase();
         const telefono_contacto = document.getElementById('telefonoContacto').value.trim().toUpperCase();
         const nombre_contacto = document.getElementById('nombreContacto').value.trim().toUpperCase();
         const correo_contacto = document.getElementById('correoContacto').value.trim().toUpperCase();
-        // const profesion = document.getElementById('profesion').value.trim().toUpperCase();
-        // const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
-        // const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value) || 1;
         const observacion = document.getElementById('observacion').value.trim().toUpperCase();
         const id_pais = parseInt(document.getElementById('idPais').value) || 1;
         const id_comuna = parseInt(document.getElementById('idComuna').value) || 1;
@@ -273,25 +289,26 @@ const GestionInscripciones = {
         const nro_calle = document.getElementById('numeroCalle').value.trim().toUpperCase();
         const calle = document.getElementById('calle').value.trim().toUpperCase();
         const fechaInicio = document.getElementById('fechaNacimiento').value;
+        const fechaInscripcion = document.getElementById('').value;
+        const fechaReincorporacion = document.getElementById('').value;
 
         if (!nombre) { this.mostrarError('El nombre es obligatorio'); return; }
         if (!correo) { this.mostrarError('El correo es obligatorio'); return; }
 
         const data = {
-            rut_estudiante: rutEstudiante,
-            dv_estudiante: dvEstudiante,
-            nombre_estudiante: nombre,
+            rut_persona: rutPersona,
+            dv_persona: dvPersona,
+            nombre_persona: nombrePersona,
+            pasaporte: pasaporte,
             apellido_paterno: apellido_paterno,
             apellido_materno: apellido_materno,
+            pronom_estudiante: pronomEstudiante,
             genero: genero,
-            telefono: telefono || '-',
-            correo_electronico: correo,
+            telefono: telefonoPersona || '-',
+            correo_electronico: correoPersona,
             telefono_contacto: telefono_contacto || '-',
             nombre_contacto: nombre_contacto || '-',
             correo_contacto: correo_contacto || '-',
-            // profesion: profesion || '-',
-            // resumen_curricular: resumen_curricular || '-',
-            // ind_activo: indicador_actividad,
             observacion: observacion || '-',
             id_pais: id_pais,
             id_comuna: id_comuna,
@@ -300,8 +317,10 @@ const GestionInscripciones = {
             nro_block: nro_block || '-',
             nro_calle: nro_calle || '-',
             calle: calle || '-',
-            fec_nacimiento: fechaInicio
-
+            fec_nacimiento: fechaInicio,
+            fec_inscripcion: fechaInscripcion,
+            fec_retiro: fechaRetiro,
+            fec_reincorporacion: fechaReincorporacion
         };
 
         const url = id ? `/api/inscripcion-actualizar/${id}` : '/api/inscripcion-crear';
@@ -321,7 +340,7 @@ const GestionInscripciones = {
             .catch(error => { console.error(error); this.mostrarError('Error de conexión'); });
     },
 
-    editar: function(id) {
+    editarEstudiante: function(id) {
         // con esto cualquiera se vuelve ezquiso, me daba un problema de que no modificaba , reviso aqui y alla, veo el app funcionario, veo el procedimiento(mentira), todo bien todo correcto, 
         // pero seguia sin funcionar, despues me di cuenta que podria ser el db_test, encuentro errores y digo ya bien ahora debe funcionar, sigue sin hacerlo
         // reviso mas aun , hasta manoseo el css y nada, el problema? le puse la mierda right join en vez de left, salu2
@@ -333,38 +352,22 @@ const GestionInscripciones = {
                     console.log("Datos completos de la inscripcion:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Inscripcion';
                     let hiddenId = document.getElementById('inscripcionId');
-                    if (!hiddenId) {
-                        hiddenId = document.createElement('input');
-                        hiddenId.type = 'hidden';
-                        hiddenId.id = 'inscripcionId';
-                        document.getElementById('formInsripcion').appendChild(hiddenId);
-                    }
-                    hiddenId.value = id;
+                    if (!hiddenId) {hiddenId = document.createElement('input');hiddenId.type = 'hidden';hiddenId.id = 'inscripcionId';document.getElementById('formInsripcion').appendChild(hiddenId);}hiddenId.value = id;
                     const rutInput = document.getElementById('rutEstudiante');
                     const dvInput = document.getElementById('dvEstudiante');
-                    if (rutInput) {
-                        rutInput.value = t.rut_estudiante || '';
-                        rutInput.disabled = true;
-                    }
-                    if (dvInput) {
-                        dvInput.value = t.dv_estudiante || '';
-                        dvInput.disabled = true;
-                    }
+                    if (rutInput) {rutInput.value = t.rut_estudiante || '';rutInput.disabled = true;}
+                    if (dvInput) {dvInput.value = t.dv_estudiante || '';dvInput.disabled = true;}
                     document.getElementById('idEstudiante').value = t.id_estudiante;
-                    document.getElementById('nombreEstudiante').value = t.nombre_estudiante || '';
+                    document.getElementById('nombreEstudiante').value = t.nombre_persona || '';
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
                     document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
                     const generoSelect = document.getElementById('genero');
-                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) {
-                        generoSelect.value = t.genero;
-                    }
+                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) {generoSelect.value = t.genero;}
                     document.getElementById('telefono').value = t.telefono || '';
                     document.getElementById('correo').value = t.correo_electronico || '';
                     document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
                     document.getElementById('nombreContacto').value = t.nombre_contacto || '';
                     document.getElementById('correoContacto').value = t.correo_contacto || '';
-                    // document.getElementById('profesion').value = t.profesion || '';
-                    // document.getElementById('resumenCurricular').value = t.resumen_curricular || '';
                     document.getElementById('observacion').value = t.observacion || '';
                     document.getElementById('idPais').value = t.id_pais || 1;
                     document.getElementById('idComuna').value = t.id_comuna || 1;
@@ -378,10 +381,7 @@ const GestionInscripciones = {
                     document.getElementById('audUsuarioModifica').value = t.aud_usuario_modifica;
                     document.getElementById('audFecModifica').value = t.aud_fec_modifica;
                     const fecNaci = document.getElementById('fechaNacimiento');
-                    if (fecNaci) {
-                        fecNaci.value = t.fec_nacimiento || '';
-                        fecNaci.disabled = true;
-                    }
+                    if (fecNaci) {fecNaci.value = t.fec_nacimiento || '';fecNaci.disabled = true;}
                     new bootstrap.Modal(document.getElementById('modalInscripcion')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el inscripcion');
@@ -390,7 +390,6 @@ const GestionInscripciones = {
         .catch(error => { console.error(error); this.mostrarError('Error de conexión en editar'); });
     },
 
-    // ESTO FALTA POR MODIFICAR la idea de esto es que se puedan ver los detalles del tallerista, pero son muchos asi que tengo que preparar esto
     verDetalles: function(id) {
         fetch(`/api/inscripcion-get/${id}`)
             .then(response => response.json())
@@ -398,24 +397,38 @@ const GestionInscripciones = {
                 if (result.success) {
                     const t = result.data;
                     console.log("Datos del inscripcion:", t);
-                    // const 
                     let html = `
-                        <div class="row">
+                        <div class="row mt-3">
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion Personal</h6>
                                 <table class="table table-sm text-nowrap">
+                                    <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
                                     <tr><th>ID Estudiante:</th><td>${t.id_estudiante || 'No registrado'}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_estudiante || 'No registrado'}</td></tr>
+                                    <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
                                     <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
                                     <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
-                                    <tr><th>R.U.T:</th><td>${t.rut_estudiante || 'No registrado'}</td></tr>
-                                    <tr><th>Digito Verificador:</th><td>${t.dv_estudiante || 'No registrado'}</td></tr>
+                                    <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
+                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
+                                    <tr><th>Pasaporte:</th><td>${t.pasaporte || 'No registrado'}</td></tr>
                                     <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
                                     <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${t.genero || 'No registrado'}</td></tr>
+                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
+                                    <tr><th>Pronombre:</th><td>${t.pronom_estudiante || 'No registrado'}</td></tr>
+                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
+                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
+                                <h6 class="fw-bold">Direcciones</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
+                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
+                                    <tr><th>Villa:</th><td>${t.villa || 'No registrado'}</td></tr>
+                                    <tr><th>Calle:</th><td>${t.calle || 'No registrado'}</td></tr>
+                                    <tr><th>Numero de Calle:</th><td>${t.nro_calle || 'No registrado'}</td></tr>
+                                    <tr><th>Numero de Block:</th><td>${t.nro_block || 'No registrado'}</td></tr>
+                                    <tr><th>Numero de Departamento:</th><td>${t.nro_dpto || 'No registrado'}</td></tr>
+                                </table>
                                 <h6 class="fw-bold">Contactos</h6>
                                 <table class="table table-sm">
                                     <tr><th>Telefono de la Persona:</th><td>${t.telefono || 'No registrado'}</td></tr>
@@ -430,9 +443,16 @@ const GestionInscripciones = {
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion General</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'No registrado'}</td></tr>
                                     <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
                                     <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Informacion del Integracion</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Fecha de Inscripcion:</th><td>${t.fec_inscripcion || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha de Retiro:</th><td>${t.fec_retiro || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha de Reincorporacion:</th><td>${t.fec_reincorporacion || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
@@ -441,14 +461,12 @@ const GestionInscripciones = {
                                     <tr><th>ID del Taller:</th><td>${t.id_taller || 'No existe'}</td></tr>
                                     <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
                                     <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
-                                    <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
-                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion Adicional</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
+                                    <tr><th>Usuario que ingreso al Estudiante/Integrante:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
                                     <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</td></tr>
                                     <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
                                     <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
@@ -456,9 +474,9 @@ const GestionInscripciones = {
                             </div>
                         </div>
                     `;
-                    document.getElementById('detallesEstudianteBody').innerHTML = html;
+                    document.getElementById('detallesInscripcionBody').innerHTML = html;
                     window.estudianteDetallesId = id;
-                    new bootstrap.Modal(document.getElementById('modalDetallesEstudiante')).show();
+                    new bootstrap.Modal(document.getElementById('modalDetallesInscripcion')).show();
                 } 
                 else {
                     this.mostrarError('No se pudieron cargar los detalles.');
@@ -472,10 +490,18 @@ const GestionInscripciones = {
 
     // debo usar small para poner mas cosas en pantalla
     generarFila: function(t) {
-    const nombreCompleto = `${t.NOMBRE_ESTUDIANTE || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
-    const idTallerAsignado = t.ID_TALLER || '...';
-    const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Integrante';
-    const correoElectronico = t.CORREO_ELECTRONICO || 'No tiene o no esta Registrado';
+        const nombreCompleto = `${t.NOMBRE_ESTUDIANTE || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
+        const idTallerAsignado = t.ID_TALLER || ' ...';
+        const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Integrante';
+        const correoElectronico = t.CORREO_ELECTRONICO || 'No tiene o no esta Registrado';
+        let estadoBadge = '';
+        switch(t.IND_ESTADO_INTEGRANTE) {
+            case 1: estadoBadge = '<span class="badge bg-success" style="font-size: 0.8rem;">INSCRITO</span>'; break;
+            case 2: estadoBadge = '<span class="badge bg-info" style="font-size: 0.8rem;">RETIRADO</span>'; break;
+            case 3: estadoBadge = '<span class="badge bg-secondary" style="font-size: 0.8rem;">LISTA DE ESPERA</span>'; break;
+            default: estadoBadge = '<span class="badge bg-danger" style="font-size: 0.8rem;">NO REGISTRADO</span>'; break;
+        }
+        // <td>${this.formatearFecha(t.FEC_INSCRIPCION)}</td>
         return `
             <tr>
                 <td class="ps-4 fw-semibold">${t.ID_ESTUDIANTE}</td>
@@ -484,14 +510,15 @@ const GestionInscripciones = {
                     <small>${tallerAsignado}</small><br>
                     <small class="text-muted">ID Taller: ${idTallerAsignado}</small>
                 </td>
-                <td>${t.YEAR_PROCESO}</td>
-                <td>${t.AUD_FEC_INGRESO}</td>
+                <td>${estadoBadge}</td>
+                <td>${t.YEAR_PROCESO || 'No Registrado'}</td>
+                <td>${t.FEC_INSCRIPCION || 'No se encuentra'}</td>
                 <td>${correoElectronico}</td>
                 <td class="text-end pe-4">
-                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionInscripciones.verDetalles(${t.id_estudiante})" title="Ver detalles">
+                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionInscripciones.verDetalles(${t.ID_ESTUDIANTE})" title="Ver detalles">
                         <i class="bi bi-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionInscripciones.editar(${t.id_estudiante})" title="Editar">
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionInscripciones.editarEstudiante(${t.ID_ESTUDIANTE})" title="Editar">
                         <i class="bi bi-pencil"></i>
                     </button>
                 </td>

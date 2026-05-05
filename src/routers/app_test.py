@@ -8,6 +8,17 @@ def index_chamuco():
     return render_template("index.html")
 
 # IMPORTANTE
+# segun la base de datos puedo ver que esta al momento de meter un estudiante este puede entrar a muchos talleres al mismo tiempo , la fecha de los talleres que vi comprobando al estudiante
+# (id 1)muestran que este se metio a multiples talleres al mismo tiempo(8) y sin embargo en los registro muestra que los talleres despues tienen distintos cambios de fechas
+# esto quiere decir que una persona puede meterse a multiples talleres en los cuales tal vez no siga despues o el taller muera , eso podria explicar por que las fechas de los talleres
+# son distintas, revisando vi que la persona esta registrada 8 veces , la tabla estudiante parece no ser alterada en ningun momento, por lo cual no se por que tiene aud modifica,
+# esto quiere decir que la tabla estudiante es mas un conector entre integrante y persona, asi que aqui solo se tiene que registrar cuando se crea un estudiante
+# integrante es algo mas complicada , aqui se registran los estudiantes con los talleres, un detalle de esto , la fecha de inscripcion es igual la fecha de aud ingreso en integrante taller
+
+# JM me confirmo, tabla estudiante se asigna al momento de crear la persona que a su vez se pone como estudiante, la tabla estudiante no se modifica en ningun momento y queda asi
+# para siempre
+
+# IMPORTANTE
 # el nombre de los paises, comunas y tambien las categorias de los talleres, estan todos puestos en el backend, esto no debe ser asi
 # los paises y comunas no van a cambiar pero las categorias si asi que tengo que adaptarlo ya que pueden añadir nuevas categorias o tal evz sacar algunas , asi que deberia tomarlas de la
 # base y con eso actualizarse , tambien seria buena idea que hiciera lo mismo con los paises y comunas, genero por otro lado es puro frontend, en la base solo es un int, pero en el frontend

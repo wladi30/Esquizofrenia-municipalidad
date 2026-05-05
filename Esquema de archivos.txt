@@ -92,3 +92,11 @@ Administracion de talleres
 6.- Masivo Talleres
 7.- Lista de espera funcional
 8.- Gestion de cupos
+
+algo que hacer tengo que crear una tabla de persona en donde se pueda editar tanto al profe como est, aqui se le tiene que poner el tema de los pronombres , podria usar el tema de las
+pagnas ya creadas que tengo para un mayor filtro, no siempre se querra editar a las personas sigo muchas veces ver sus datos, asi que esta bien tener 2 paginas creo y con la capacidad
+de poder editarlos, la capacidad de editarlos debe ser similar , ambos son personas por lo cual la tabla persona debe actuar siempre y cuando ocurra algun registo
+usar case when para poder editar acorde segun lo que se este cambiando, suponiendo que en profe son 3 tablas , la tabla profe si se usa , tiene profesion y resumen por lo cual debe poder
+ser editada en caso de que solo se cambie resumen y profesion, tabla persona se debe cambiar cuando ocurra algun cambio en algo relacionado a esta, LOS PRONOMBRES NO VAN AQUI, un detalle
+a tomar en cuenta , suponiendo que los pronombres los tienen en integrante taller no deben de querer que los pronombres esten en la tabla persona original, por lo cual donde podria poner
+el pronombre del profesor ? crear una nueva tabla , asumiendo que ellos van a utilizar los pronombres int por que son mas que la mierda brodel son 23 perros pronombres que wea

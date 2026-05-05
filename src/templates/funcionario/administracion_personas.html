@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Administración de Inscripciones - Municipalidad de Quilicura{% endblock %}
+{% block title %}Administración de Personas - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_Inscripcion.css') }}">
@@ -9,12 +9,12 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('url_funcionario.funcionario_dashboard') }}"><i class="bi bi-house-door"></i> Inicio</a></li>
-            <li class="breadcrumb-item active">Gestión de Inscripciones</li>
+            <li class="breadcrumb-item active">Gestión de Personas</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="ms-4">
-            <h2 class="h4 text-primary mb-1"><i class="bi bi-person-badge me-2"></i>Gestión de Inscripciones</h2>
+            <h2 class="h4 text-primary mb-1"><i class="bi bi-person-badge me-2"></i>Gestión de Personas</h2>
             <p class="text-muted small mb-0">Administra las inscripciones, cupos y lista de espera</p>
         </div>
         <div class="d-grid gap-2 me-3">
