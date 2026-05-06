@@ -16,6 +16,13 @@ const nombresComunas = {
 
 };
 
+const nombresEstadoTaller = {
+    1: '<span class="badge bg-info">INGRESADO</span>',
+    2: '<span class="badge bg-success">CALENDARIZADO</span>',
+    3: '<span class="badge bg-secondary">CERRADO</span>',
+    4: '<span class="badge bg-danger">DE BAJA</span>'
+};
+
 const GestionTalleristas = {
     configuracion: {
         paginaActual: 1,
@@ -394,7 +401,168 @@ const GestionTalleristas = {
         .catch(error => { console.error(error); this.mostrarError('Error de conexión en editar'); });
     },
 
+    // verDetalles: function(id) {
+    //     fetch(`/api/tallerista-get/${id}`)
+    //         .then(response => response.json())
+    //         .then(result => {
+    //             if (result.success) {
+    //                 const t = result.data;
+    //                 console.log("Datos del tallerista:", t);
+    //                 let talleresHtml = '';
+    //                 const talleresLista = t.talleres || [];
+    //                 const totalTalleres = talleresLista.length;
+    //                 if (totalTalleres > 0) {
+    //                     const mostrarInicial = 3;
+    //                     const tieneMas = totalTalleres > mostrarInicial;
+    //                     const talleresMostrar = tieneMas ? talleresLista.slice(0, mostrarInicial) : talleresLista;
+    //                     talleresMostrar.forEach(taller => {
+    //                         const nombreTaller = `${taller.nombre_taller}`.trim();
+    //                         talleresHtml += `
+    //                             <tr>
+    //                                 <td>${taller.id_taller}</td>
+    //                                 <td>${nombreTaller || 'Sin nombre'}</td>
+    //                                 <td>${taller.categoria || '-'}</td>
+    //                             </tr>
+    //                         `;
+    //                     });
+    //                     if (tieneMas) {
+    //                         talleresHtml += `
+    //                             <tr>
+    //                                 <td colspan="4" class="text-center">
+    //                                     <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleres.mostrarTodosProfesores()">
+    //                                         Ver los ${totalTalleres} Talleristas completos
+    //                                     </button>
+    //                                 </td>
+    //                             </tr>
+    //                         `;
+    //                     }
+    //                 } else {talleresHtml = `<tr><td colspan="4" class="text-center text-muted">No hay profesores asignados</td></tr>`;}
+    //                 let html = `
+    //                     <div class="row">
+    //                         <div class="col-md-6">
+    //                             <h6 class="fw-bold">Informacion Personal</h6>
+    //                             <table class="table table-sm text-nowrap">
+    //                                 <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
+    //                                 <tr><th>ID Profesor:</th><td>${t.id_profesor || 'No registrado'}</td></tr>
+    //                                 <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
+    //                                 <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
+    //                                 <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
+    //                                 <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
+    //                                 <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
+    //                                 <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
+    //                                 <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
+    //                                 <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
+    //                                 <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
+    //                                 <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
+    //                             </table>
+    //                         </div>
+    //                         <div class="col-md-6">
+    //                             <h6 class="fw-bold">Contactos</h6>
+    //                             <table class="table table-sm">
+    //                                 <tr><th>Telefono del Profesor:</th><td>${t.telefono || 'No registrado'}</td></tr>
+    //                                 <tr><th>Correo del Profesor:</th><td>${t.correo_electronico || 'No registrado'}</td></tr>
+    //                                 <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || 'No registrado'}</td></tr>
+    //                                 <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
+    //                                 <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || 'No registrado'}</td></tr>
+    //                             </table>    
+    //                         </div>
+    //                     </div>
+    //                     <div class="row mt-3">
+    //                         <div class="col-md-6">
+    //                             <h6 class="fw-bold">Informacion General</h6>
+    //                             <table class="table table-sm">
+    //                                 <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'No registrado'}</td></tr>
+    //                                 <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
+    //                                 <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
+    //                             </table>
+    //                         </div>
+    //                         <div class="col-md-6">
+    //                             <h6 class="fw-bold">Resumen Profesional</h6>
+    //                             <table class="table table-sm">
+    //                                 <tr><th>Profesion:</th><td>${t.profesion || 'No registrado'}</td></tr>
+    //                                 <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
+    //                                 <tr><th>ID del Taller:</th><td>${t.id_taller || 'No existe'}</td></tr>
+    //                                 <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
+    //                                 <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
+    //                             </table>
+    //                         </div>
+    //                         <div class="col-md-6">
+    //                             <h6 class="fw-bold">Talleres (${totalTalleres})</h6>
+    //                             <div class="table-responsive">
+    //                                 <table class="table table-sm table-bordered">
+    //                                     <thead class="table-light">
+    //                                         <tr><th>ID</th><th>Nombre completo</th><th>Profesión</th></tr>
+    //                                     </thead>
+    //                                     <tbody>
+    //                                         ${talleresHtml}
+    //                                     </tbody>
+    //                                 </table>
+    //                             </div>
+    //                         </div>
+    //                         <div class="col-md-6">
+    //                             <h6 class="fw-bold">Informacion Adicional</h6>
+    //                             <table class="table table-sm">
+    //                                 <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
+    //                                 <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</td></tr>
+    //                                 <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
+    //                                 <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
+    //                             </table>
+    //                         </div>
+    //                     </div>
+    //                 `;
+    //                 document.getElementById('detallesTalleristaBody').innerHTML = html;
+    //                 window.talleristaDetallesId = id;
+    //                 new bootstrap.Modal(document.getElementById('modalDetallesTallerista')).show();
+    //             } 
+    //             else {
+    //                 this.mostrarError('No se pudieron cargar los detalles.');
+    //             }
+    //         })
+    //     .catch(error => {
+    //         console.error('Error en fetch verDetalles:', error);
+    //         this.mostrarError('Error de conexion al cargar detalles.');
+    //     });
+    // },
+
+    mostrarTodosTalleresOverlay: function() {
+        const tallerista = window.talleristaActual;
+        if (!tallerista || !tallerista.talleres || tallerista.talleres.length === 0) return;
+        const overlay = document.getElementById('overlayTalleres');
+        const bodyContainer = document.getElementById('overlayTalleresBody');
+        let html = `
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID Taller</th>
+                            <th>Nombre del Taller</th>
+                            <th>Año Proceso</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        tallerista.talleres.forEach(taller => {
+            html += `
+                <tr>
+                    <td>${taller.id_taller}</td>
+                    <td>${taller.nombre_taller || 'Sin nombre'}</td>
+                    <td>${taller.year_proceso || '-'}</td>
+                    <td>${nombresEstadoTaller[taller.id_estado_taller] || '-'}</td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table></div>`;
+        bodyContainer.innerHTML = html;
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        const closeBtn = document.getElementById('closeOverlayTalleres');
+        const closeOverlay = () => {overlay.style.display = 'none';document.body.style.overflow = '';};
+        closeBtn.onclick = closeOverlay;
+        overlay.onclick = (e) => {if (e.target === overlay) closeOverlay();};
+    },
+
     // ESTO FALTA POR MODIFICAR la idea de esto es que se puedan ver los detalles del tallerista, pero son muchos asi que tengo que preparar esto
+
     verDetalles: function(id) {
         fetch(`/api/tallerista-get/${id}`)
             .then(response => response.json())
@@ -402,11 +570,41 @@ const GestionTalleristas = {
                 if (result.success) {
                     const t = result.data;
                     console.log("Datos del tallerista:", t);
-                    // const 
+                    window.talleristaActual = t;
+                    const talleresLista = t.talleres || [];
+                    const totalTalleres = talleresLista.length;
+                    let talleresHtml = '';
+                    if (totalTalleres > 0) {
+                        const generarFilaTaller = (taller) => {
+                            return `
+                                <tr>
+                                    <td>${taller.id_taller}</td>
+                                    <td>${taller.nombre_taller || 'Sin nombre'}</td>
+                                    <td>${nombresEstadoTaller[taller.id_estado_taller] || '-'}</td>
+                                    <td>${taller.year_proceso || '-'}</td>
+                                </tr>
+                            `;
+                        };
+                        const mostrarInicial = 3;
+                        const tieneMas = totalTalleres > mostrarInicial;
+                        const talleresMostrar = tieneMas ? talleresLista.slice(0, mostrarInicial) : talleresLista;
+                        talleresMostrar.forEach(taller => {talleresHtml += generarFilaTaller(taller);});
+                        if (tieneMas) {
+                            talleresHtml += `
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleristas.mostrarTodosTalleresOverlay()">
+                                            Ver los ${totalTalleres} talleres completos
+                                        </button>
+                                    </td>
+                                </table>
+                            `;
+                        }
+                    } else {talleresHtml = `<tr><td colspan="4" class="text-center text-muted">No tiene talleres asignados</td></tr>`;}
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion Personal</h6>
+                                <h6 class="fw-bold">Información Personal</h6>
                                 <table class="table table-sm text-nowrap">
                                     <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
                                     <tr><th>ID Profesor:</th><td>${t.id_profesor || 'No registrado'}</td></tr>
@@ -417,63 +615,77 @@ const GestionTalleristas = {
                                     <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
                                     <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
                                     <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
-                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
-                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
+                                    <tr><th>Género:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
+                                    <tr><th>País:</th><td>${nombresPaises[t.id_pais] || t.id_pais || 'No registrado'}</td></tr>
+                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || t.id_comuna || 'No registrado'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Contactos</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Telefono del Profesor:</th><td>${t.telefono || 'No registrado'}</td></tr>
+                                    <tr><th>Teléfono del Profesor:</th><td>${t.telefono || 'No registrado'}</td></tr>
                                     <tr><th>Correo del Profesor:</th><td>${t.correo_electronico || 'No registrado'}</td></tr>
                                     <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || 'No registrado'}</td></tr>
-                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
+                                    <tr><th>Teléfono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
                                     <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || 'No registrado'}</td></tr>
                                 </table>    
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Información General</h6>
+                                    <table class="table table-sm">
+                                        <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
+                                        <tr><th>Observación:</th><td>${t.observacion || 'No registrado'}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Resumen Profesional</h6>
+                                    <table class="table table-sm">
+                                        <tr><th>Profesión:</th><td>${t.profesion || 'No registrado'}</td></tr>
+                                        <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Información Adicional</h6>
+                                    <table class="table table-sm">
+                                        <tr><th>Usuario que ingresó al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
+                                        <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</tr></tr>
+                                        <tr><th>Usuario última modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
+                                        <tr><th>Fecha última modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion General</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'No registrado'}</td></tr>
-                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
-                                    <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Resumen Profesional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Profesion:</th><td>${t.profesion || 'No registrado'}</td></tr>
-                                    <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
-                                    <tr><th>ID del Taller:</th><td>${t.id_taller || 'No existe'}</td></tr>
-                                    <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
-                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion Adicional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</td></tr>
-                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
-                                </table>
+                            <div class="col-md-12">
+                                <h6 class="fw-bold">Talleres Asignados (${totalTalleres})</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr><th>ID</th><th>Nombre del Taller</th><th>Año Proceso</th><th>Estado</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            ${talleresHtml}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     `;
                     document.getElementById('detallesTalleristaBody').innerHTML = html;
                     window.talleristaDetallesId = id;
                     new bootstrap.Modal(document.getElementById('modalDetallesTallerista')).show();
-                } 
-                else {
+                } else {
                     this.mostrarError('No se pudieron cargar los detalles.');
                 }
             })
         .catch(error => {
             console.error('Error en fetch verDetalles:', error);
-            this.mostrarError('Error de conexion al cargar detalles.');
+            this.mostrarError('Error de conexión al cargar detalles.');
         });
     },
 

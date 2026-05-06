@@ -314,6 +314,35 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalTodosTalleres" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lista completa de los Talleres</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalTodosTalleresBody">
+                <div class="text-center">Cargando...</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="overlayTalleres" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; overflow-y: auto;">
+    <div style="background: rgb(255, 255, 255); border-radius: 12px; width: 90%; max-width: 900px; margin: 40px auto; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; margin-bottom: 15px; padding-bottom: 10px;">
+            <h4 class="m-0">Lista completa de los Talleres</h4>
+            <button type="button" id="closeOverlayTalleres" class="btn-close" aria-label="Cerrar"></button>
+        </div>
+        <div id="overlayTalleresBody" style="max-height: 70vh; overflow-y: auto;">
+            Cargando...
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

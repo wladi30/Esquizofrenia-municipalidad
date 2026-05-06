@@ -315,11 +315,8 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Tipo de Taller <span class="text-danger">*</span></label>
                             <select class="form-select" id="tipoTaller">
-                                <option value="1">Desconocido (1)</option>
-                                <option value="2">Desconocido (2)</option>
-                                <option value="3">Desconocido (3)</option>
-                                <option value="8">Desconocido (8)</option>
-                                <option value="9">Desconocido (9)</option>
+                                <option value="1">Interno</option>
+                                <option value="2">Externo</option>
                             </select>
                         </div>
                     </div>
@@ -379,6 +376,33 @@
                     <i class="bi bi-pencil me-1"></i> Editar
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalTodosProfesores" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lista completa de talleristas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalTodosProfesoresBody">
+                <div class="text-center">Cargando...</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="overlayProfesores" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; overflow-y: auto;">
+    <div style="background: rgb(255, 255, 255); border-radius: 12px; width: 90%; max-width: 900px; margin: 40px auto; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; margin-bottom: 15px; padding-bottom: 10px;">
+            <h4 class="m-0">Lista completa de talleristas</h4>
+            <button type="button" id="closeOverlayProfesores" class="btn-close" aria-label="Cerrar"></button>
+        </div>
+        <div id="overlayProfesoresBody" style="max-height: 70vh; overflow-y: auto;">
+            Cargando...
         </div>
     </div>
 </div>

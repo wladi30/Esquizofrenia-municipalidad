@@ -490,36 +490,101 @@ const GestionTalleres = {
         });
     },
 
-    // AQUI VA LO DEL VER DETALLES , ESTO DEBERIA MOSTRAR TODO LO NECESARIO TANTO FECHA DE CREACION, TALLERISTA, NRO DE ALUMNOS, ETC
+    mostrarTodosProfesores: function(idTaller) {
+        const taller = window.tallerActual;
+        if (!taller || !taller.profesores) return;
+        const overlay = document.getElementById('overlayProfesores');
+        const bodyContainer = document.getElementById('overlayProfesoresBody');
+        let html = `
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th><th>Nombre completo</th><th>Profesión</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        taller.profesores.forEach(prof => {
+            const nombreCompleto = `${prof.nombre_persona || ''} ${prof.apellido_paterno || ''} ${prof.apellido_materno || ''}`.trim();
+            html += `
+                <tr>
+                    <td>${prof.id_profesor || 'S.A'}</td>
+                    <td>${nombreCompleto || '-'}</td>
+                    <td>${prof.profesion || '-'}</td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table></div>`;
+        bodyContainer.innerHTML = html;
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        const closeBtn = document.getElementById('closeOverlayProfesores');
+        const closeOverlay = () => {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        };
+        closeBtn.onclick = closeOverlay;
+        overlay.onclick = (e) => {
+            if (e.target === overlay) closeOverlay();
+        };
+    },
+
     verDetalles: function(id) {
         fetch(`/api/taller-get/${id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
                     const t = result.data;
+                    window.tallerActual = t;
                     const inscritos = t.personas_inscritas;
                     const maximo = t.maximo_estudiante;
                     const disponibles = maximo - inscritos;
-                    // SE DETERMINA EL BADGE DEL ESTADO DEL TALLER, DIFERENTE AL DE ARRIBA POR QUE ESTO ES LO QUE TIENE QUE VER EL USUARIO, LO DE ARRIBA SON LAS IDS
                     let estadoBadge = '';
                     switch(t.id_estado_taller) {
                         case 1: estadoBadge = '<span class="badge bg-info">INGRESADO</span>'; break;
-                        case 2: estadoBadge = '<span class="badge bg-success">CANDALERIZADO</span>'; break;
+                        case 2: estadoBadge = '<span class="badge bg-success">CALENDARIZADO</span>'; break;
                         case 3: estadoBadge = '<span class="badge bg-secondary">CERRADO</span>'; break;
                         case 4: estadoBadge = '<span class="badge bg-danger">DE BAJA</span>'; break;
                         default: estadoBadge = '<span class="badge bg-light text-dark">DESCONOCIDO</span>';
                     }
-                    // TAMADRE QUE ME COSTO ESTA PARTE, TENGO QUE ADMITIR QUE LA MAYORIA DE LO DE AQUI ABAJO LO HIZO CHAT GTP, NO VEIA LA FORMA (no me acordaba del ${} que existia) 
-                    // CABDE DEDCIR QUE CUANDO ME AYUDO CON LO DEL HTML Y JS JUNTO A USA SOLA SCRIPT LO COPIE Y LE PEGUE ARRIBA TAMBIEN ASIQUE SI ME AHORRO COMO 20 MIN DE VIDEO GPT CHAT
+                    let profesoresHtml = '';
+                    const profesoresLista = t.profesores || [];
+                    const totalProfes = profesoresLista.length;
+                    if (totalProfes > 0) {
+                        const mostrarInicial = 3;
+                        const tieneMas = totalProfes > mostrarInicial;
+                        const profesMostrar = tieneMas ? profesoresLista.slice(0, mostrarInicial) : profesoresLista;
+                        profesMostrar.forEach(prof => {
+                            const nombreCompleto = `${prof.nombre_persona || ''} ${prof.apellido_paterno || ''} ${prof.apellido_materno || ''}`.trim();
+                            profesoresHtml += `
+                                <tr>
+                                    <td>${prof.id_profesor || 'S.A'}</td>
+                                    <td>${nombreCompleto || '-'}</td>
+                                    <td>${prof.profesion || '-'}</td>
+                                </tr>
+                            `;
+                        });
+                        if (tieneMas) {
+                            profesoresHtml += `
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleres.mostrarTodosProfesores()">
+                                            Ver los ${totalProfes} Talleristas completos
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    } else {profesoresHtml = `<tr><td colspan="4" class="text-center text-muted">No hay profesores asignados</td></tr>`;}
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion General</h6>
+                                <h6 class="fw-bold">Información General</h6>
                                 <table class="table table-sm">
                                     <tr><th>ID:</th><td>${t.id_taller}</td></tr>
                                     <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
                                     <tr><th>Año del Proceso:</th><td>${t.year_proceso}</td></tr>
-                                    <tr><th>Categoria:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
+                                    <tr><th>Categoría:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
                                     <tr><th>Lugar:</th><td>${t.lugar}</td></tr>
                                     <tr><th>Estado:</th><td>${estadoBadge}</td></tr>
                                 </table>
@@ -528,7 +593,7 @@ const GestionTalleres = {
                                 <h6 class="fw-bold">Fechas y Horarios</h6>
                                 <table class="table table-sm">
                                     <tr><th>Inicio:</th><td>${t.fec_inicio}</td></tr>
-                                    <tr><th>TErmino:</th><td>${t.fec_termino}</td></tr>
+                                    <tr><th>Término:</th><td>${t.fec_termino}</td></tr>
                                     <tr><th>N° Clases:</th><td>${t.nro_clases_anual}</td></tr>
                                     <tr><th>Minutos/clase:</th><td>${t.nro_minutos}</td></tr>
                                     <tr><th>Horas Totales:</th><td>${t.horas_totales}</td></tr>
@@ -540,61 +605,61 @@ const GestionTalleres = {
                                 <h6 class="fw-bold">Cupos</h6>
                                 <table class="table table-sm">
                                     <tr><th>Inscritos:</th><td>${inscritos}</td></tr>
-                                    <tr><th>Maximo:</th><td>${maximo}</td></tr>
+                                    <tr><th>Máximo:</th><td>${maximo}</td></tr>
                                     <tr><th>Disponibles:</th><td class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</td></tr>
-                                    <tr><th>Minimo:</th><td>${t.minimo_estudiante}</td></tr>
+                                    <tr><th>Mínimo:</th><td>${t.minimo_estudiante}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Requisitos de Edad</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Edad Minima:</th><td>${t.edad_minima} años</td></tr>
-                                    <tr><th>Edad Maxima:</th><td>${t.edad_maxima} años</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion Adicional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID del Departamento:</th><td>${t.id_departamento} (no se que quieren decir los numeros)</td></tr>
-                                    <tr><th>Tipo de taller:</th><td>${t.ind_tipo_taller} (no se que quieren decir los numeros)</td></tr>
-                                    <tr><th>Usuario que ingreso el taller:</th><td>${t.aud_usuario_ingreso}</td></tr>
-                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
-                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación en el estado de taller:</th><td>${t.fec_estado_taller}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion del Tallerista</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID del Tallerista:</th><td>${t.id_profesor || 'Sin Profesor'}</td></tr>
-                                    <tr><th>Nombre Tallerista:</th><td>${t.nombre_persona || 'Sin Nombre'}</td></tr>
-                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'Sin Apellido Paterno'}</td></tr>
-                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'Sin Apellido Materno'}</td></tr>
-                                    <tr><th>Edad:</th><td>${t.edad || 'No Registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No Regristrado'}</td></tr>
-                                    <tr><th>Profesion:</th><td>${t.profesion || 'No existe'}</td></tr>
-                                    <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'Sin Datos'}</td></tr>
+                                    <tr><th>Edad Mínima:</th><td>${t.edad_minima} años</td></tr>
+                                    <tr><th>Edad Máxima:</th><td>${t.edad_maxima} años</td></tr>
                                 </table>
                             </div>
                         </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Información Adicional</h6>
+                                <table class="table table-sm">
+                                    <tr><th>ID Departamento:</th><td>${t.id_departamento}</td></tr>
+                                    <tr><th>Tipo taller:</th><td>${t.ind_tipo_taller}</td></tr>
+                                    <tr><th>Usuario ingreso:</th><td>${t.aud_usuario_ingreso}</td></tr>
+                                    <tr><th>Fecha ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
+                                    <tr><th>Usuario modifica:</th><td>${t.aud_usuario_modifica}</td></tr>
+                                    <tr><th>Fecha modifica:</th><td>${t.aud_fec_modifica}</td></tr>
+                                    <tr><th>Fecha cambio estado:</th><td>${t.fec_estado_taller}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Talleristas (${totalProfes})</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr><th>ID</th><th>Nombre completo</th><th>Profesión</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            ${profesoresHtml}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     `;
-                    if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="fw-bold">Observacion:</h6><p>${t.observacion}</p></div>`;
+                    if (t.observacion) html += `<div class="mt-3"><h6 class="fw-bold">Observación:</h6><p>${t.observacion}</p></div>`;
                     if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="fw-bold">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
                     if (t.material) html += `<div class="mt-2"><h6 class="fw-bold">Materiales:</h6><p>${t.material}</p></div>`;
                     if (t.requisito) html += `<div class="mt-2"><h6 class="fw-bold">Requisitos:</h6><p>${t.requisito}</p></div>`;
                     document.getElementById('detallesTallerBody').innerHTML = html;
-                    window.tallerDetallesId = id; // GUARDA EL BOTON EDITAR PARA VER LOS DETALLES, PERO QUE FUNCIONE SIPO MI CHANCHO
+                    window.tallerDetallesId = id;
                     new bootstrap.Modal(document.getElementById('modalDetallesTaller')).show();
-                } 
-                else {
-                    this.mostrarError('No se pudieron cargar los detalles.');
                 }
+                else {this.mostrarError('No se pudieron cargar los detalles.');}
             })
-            .catch(error => {
-                console.error('Error en fetch verDetalles:', error);
-                this.mostrarError('Error de conexion al cargar detalles.');
-            });
+        .catch(error => {
+            console.error('Error en fetch verDetalles:', error);
+            this.mostrarError('Error de conexión al cargar detalles.');
+        });
     },
 
     // debo dejar de utilizr la mayuscula jaja

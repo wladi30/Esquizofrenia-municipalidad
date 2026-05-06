@@ -490,6 +490,63 @@ def borrar_estudiante(id_estudiante, id_taller=None):
         conn.close()
 
 #--TALLER--
+# def ver_taller(id_taller):
+#     conn = get_connection()
+#     if not conn:
+#         return {"success": False, "message": "Error de conexión"}
+#     cursor = conn.cursor()
+#     try:
+#         cursor.execute("{CALL VER_TALLERES(?)}", (id_taller))
+#         row = cursor.fetchone()
+        
+#         if row:
+#             resultado = {
+#                 'id_taller': row[0],
+#                 'year_proceso': row[1],
+#                 'id_categoria': row[2],
+#                 'nombre_taller': row[3],
+#                 'id_departamento': row[4],
+#                 'objetivo_taller': row[5],
+#                 'fec_inicio': row[6].strftime('%Y-%m-%d') if row[6] else None,
+#                 'fec_termino': row[7].strftime('%Y-%m-%d') if row[7] else None,
+#                 'nro_minutos': row[8],
+#                 'nro_clases_anual': row[9],
+#                 'horas_totales': row[10],
+#                 'id_estado_taller': row[11],
+#                 'fec_estado_taller': row[12].strftime('%Y-%m-%d') if row[12] else None,
+#                 'observacion': row[13],
+#                 'lugar': row[14],
+#                 'minimo_estudiante': row[15],
+#                 'maximo_estudiante': row[16],
+#                 'personas_inscritas': row[17],
+#                 'requisito': row[18] if len(row) > 18 else '',
+#                 'edad_minima': row[19] if len(row) > 19 else 0,
+#                 'edad_maxima': row[20] if len(row) > 20 else 0,
+#                 'material': row[21] if len(row) > 21 else '',
+#                 'ind_tipo_taller': row[22],
+#                 'id_profesor': row[23],
+#                 'nombre_persona': row[24],
+#                 'apellido_paterno': row[25],
+#                 'apellido_materno': row[26],
+#                 'edad': row[27],
+#                 'genero': row[28],
+#                 'profesion': row[29],
+#                 'ind_activo': row[30],
+#                 'aud_usuario_ingreso': row[31],
+#                 'aud_fec_ingreso': row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
+#                 'aud_usuario_modifica': row[33],
+#                 'aud_fec_modifica': row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None
+#             }
+#             return resultado
+#         else:
+#             return None
+#     except Exception as e:
+#         print(f"Error en ver_taller: {e}")
+#         return None
+#     finally:
+#         cursor.close()
+#         conn.close()
+
 def ver_taller(id_taller):
     conn = get_connection()
     if not conn:
@@ -497,33 +554,43 @@ def ver_taller(id_taller):
     cursor = conn.cursor()
     try:
         cursor.execute("{CALL VER_TALLERES(?)}", (id_taller))
-        row = cursor.fetchone()
-        
-        if row:
-            resultado = {
-                'id_taller': row[0],
-                'year_proceso': row[1],
-                'id_categoria': row[2],
-                'nombre_taller': row[3],
-                'id_departamento': row[4],
-                'objetivo_taller': row[5],
-                'fec_inicio': row[6].strftime('%Y-%m-%d') if row[6] else None,
-                'fec_termino': row[7].strftime('%Y-%m-%d') if row[7] else None,
-                'nro_minutos': row[8],
-                'nro_clases_anual': row[9],
-                'horas_totales': row[10],
-                'id_estado_taller': row[11],
-                'fec_estado_taller': row[12].strftime('%Y-%m-%d') if row[12] else None,
-                'observacion': row[13],
-                'lugar': row[14],
-                'minimo_estudiante': row[15],
-                'maximo_estudiante': row[16],
-                'personas_inscritas': row[17],
-                'requisito': row[18] if len(row) > 18 else '',
-                'edad_minima': row[19] if len(row) > 19 else 0,
-                'edad_maxima': row[20] if len(row) > 20 else 0,
-                'material': row[21] if len(row) > 21 else '',
-                'ind_tipo_taller': row[22],
+        rows = cursor.fetchall()
+        if not rows:
+            return None
+        first = rows[0]
+        taller = {
+            'id_taller': first[0],
+            'year_proceso': first[1],
+            'id_categoria': first[2],
+            'nombre_taller': first[3],
+            'id_departamento': first[4],
+            'objetivo_taller': first[5],
+            'fec_inicio': first[6].strftime('%Y-%m-%d') if first[6] else None,
+            'fec_termino': first[7].strftime('%Y-%m-%d') if first[7] else None,
+            'nro_minutos': first[8],
+            'nro_clases_anual': first[9],
+            'horas_totales': first[10],
+            'id_estado_taller': first[11],
+            'fec_estado_taller': first[12].strftime('%Y-%m-%d') if first[12] else None,
+            'observacion': first[13],
+            'lugar': first[14],
+            'minimo_estudiante': first[15],
+            'maximo_estudiante': first[16],
+            'personas_inscritas': first[17],
+            'requisito': first[18] if len(first) > 18 else '',
+            'edad_minima': first[19] if len(first) > 19 else 0,
+            'edad_maxima': first[20] if len(first) > 20 else 0,
+            'material': first[21] if len(first) > 21 else '',
+            'ind_tipo_taller': first[22],
+            'aud_usuario_ingreso': first[31],
+            'aud_fec_ingreso': first[32].strftime('%Y-%m-%d %H:%M:%S') if first[32] else None,
+            'aud_usuario_modifica': first[33],
+            'aud_fec_modifica': first[34].strftime('%Y-%m-%d %H:%M:%S') if first[34] else None,
+            'fec_estado_taller': first[12].strftime('%Y-%m-%d') if first[12] else None,
+        }
+        profesores = []
+        for row in rows:
+            profesor = {
                 'id_profesor': row[23],
                 'nombre_persona': row[24],
                 'apellido_paterno': row[25],
@@ -531,15 +598,12 @@ def ver_taller(id_taller):
                 'edad': row[27],
                 'genero': row[28],
                 'profesion': row[29],
-                'ind_activo': row[30],
-                'aud_usuario_ingreso': row[31],
-                'aud_fec_ingreso': row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
-                'aud_usuario_modifica': row[33],
-                'aud_fec_modifica': row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None
+                'ind_activo': row[30]
             }
-            return resultado
-        else:
-            return None
+            if not any(p['id_profesor'] == profesor['id_profesor'] for p in profesores):
+                profesores.append(profesor)
+        taller['profesores'] = profesores
+        return taller
     except Exception as e:
         print(f"Error en ver_taller: {e}")
         return None
@@ -722,49 +786,55 @@ def ver_profesor(id_profesor):
     cursor = conn.cursor()
     try: 
         cursor.execute("{CALL VER_PROFESOR(?)}", (id_profesor))
-        row = cursor.fetchone()
-
-        if row:
-            profesor = {
-                'id_persona' : row[0],
-                'rut_persona' : row[1],
-                'dv_persona' : row[2],
-                'id_profesor' : row[3],
-                'nombre_persona' : row[4],
-                'apellido_paterno' : row[5],
-                'apellido_materno' : row[6],
-                'fec_nacimiento' : row[7].strftime('%Y-%m-%d') if row[7] else None,
-                'edad' : row[8],
-                'genero' : row[9],
-                'telefono' : row[10],
-                'telefono_contacto' : row[11],
-                'nombre_contacto' : row[12],
-                'correo_contacto' : row[13],
-                'ind_activo' : row[14],
-                'tipo_usuario' : row[15],
-                'observacion' : row[16],
-                'correo_electronico' : row[17],
-                'calle' : row[18],
-                'nro_calle' : row[19],
-                'nro_block' : row[20],
-                'nro_dpto' : row[21],
-                'villa' : row[22],
-                'id_comuna' : row[23],
-                'id_pais' : row[24],
-                'profesion' : row[25],
-                'resumen_curricular' : row[26],
+        rows = cursor.fetchall()
+        if not rows:
+            return None
+        first = rows[0]
+        profesor = {
+            'id_persona' : first[0],
+            'rut_persona' : first[1],
+            'dv_persona' : first[2],
+            'id_profesor' : first[3],
+            'nombre_persona' : first[4],
+            'apellido_paterno' : first[5],
+            'apellido_materno' : first[6],
+            'fec_nacimiento' : first[7].strftime('%Y-%m-%d') if first[7] else None,
+            'edad' : first[8],
+            'genero' : first[9],
+            'telefono' : first[10],
+            'telefono_contacto' : first[11],
+            'nombre_contacto' : first[12],
+            'correo_contacto' : first[13],
+            'ind_activo' : first[14],
+            'tipo_usuario' : first[15],
+            'observacion' : first[16],
+            'correo_electronico' : first[17],
+            'calle' : first[18],
+            'nro_calle' : first[19],
+            'nro_block' : first[20],
+            'nro_dpto' : first[21],
+            'villa' : first[22],
+            'id_comuna' : first[23],
+            'id_pais' : first[24],
+            'profesion' : first[25],
+            'resumen_curricular' : first[26],
+            'aud_usuario_ingreso' : first[31],
+            'aud_fec_ingreso':first[32].strftime('%Y-%m-%d %H:%M:%S') if first[32] else None,
+            'aud_usuario_modifica' : first[33],
+            'aud_fec_modifica':first[34].strftime('%Y-%m-%d %H:%M:%S') if first[34] else None
+        }
+        talleres = []
+        for row in rows:
+            taller = {
                 'id_taller' : row[27],
                 'nombre_taller' : row[28],
                 'year_proceso' : row[29],
-                'aud_usuario_ingreso' : row[30],
-                'aud_fec_ingreso':row[31].strftime('%Y-%m-%d %H:%M:%S') if row[31] else None,
-                'aud_usuario_modifica' : row[32],
-                'aud_fec_modifica':row[33].strftime('%Y-%m-%d %H:%M:%S') if row[33] else None
+                'id_estado_taller' : row[30]
             }
-            return profesor
-        else:
-            print(f"DEBUG - No se encontro el profesor ID {id_profesor} o no existe en las 3 tablas")
-            return None
+            if not any(p['id_taller'] == taller['id_taller'] for p in talleres):
+                talleres.append(taller)
+        profesor['talleres'] = talleres
+        return profesor
     except Exception as e:
         print(f"Error en ver_profesor: {e}")
         return None

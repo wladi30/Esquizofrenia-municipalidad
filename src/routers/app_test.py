@@ -14,9 +14,15 @@ def index_chamuco():
 # son distintas, revisando vi que la persona esta registrada 8 veces , la tabla estudiante parece no ser alterada en ningun momento, por lo cual no se por que tiene aud modifica,
 # esto quiere decir que la tabla estudiante es mas un conector entre integrante y persona, asi que aqui solo se tiene que registrar cuando se crea un estudiante
 # integrante es algo mas complicada , aqui se registran los estudiantes con los talleres, un detalle de esto , la fecha de inscripcion es igual la fecha de aud ingreso en integrante taller
+# para hacerlo mas claro, el taller puede tener un boton dentro del mismo verdetalles(tambien fuera para mayor facilidad) en este boton nuevo muestra los talelristas, y aqui
+# te permite ver cuantos talleristas tienes con sus nombres , etc. Tambien deberia ser que aqui mismo te permita ingresar al tema de poder ver los talleristas y editarlo
+# seria un gran QoL eso.
 
 # JM me confirmo, tabla estudiante se asigna al momento de crear la persona que a su vez se pone como estudiante, la tabla estudiante no se modifica en ningun momento y queda asi
 # para siempre
+
+# viendo la base de datos note que puede tener mas de un profesor los talleres, la id 640 tiene 3 profesores, ids 52,53,54 relacionados con deporte y distintos roles, tendria que 
+# colocar el tema de que un taller pueda tener mas de un profesor y mostrar cuantos profesores tiene
 
 # IMPORTANTE
 # el nombre de los paises, comunas y tambien las categorias de los talleres, estan todos puestos en el backend, esto no debe ser asi
