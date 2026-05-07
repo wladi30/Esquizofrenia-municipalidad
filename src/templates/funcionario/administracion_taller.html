@@ -206,9 +206,13 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Tallerista <span class="text-danger">*</span></label>
-                            <select class="form-select" id="tallerista" >
-                                <option value="">Seleccione tallerista...</option>
-                            </select>
+                            <!-- <span class="input-group-text bg-white">
+                                <i class="bi bi-search"></i>
+                            </span> -->
+                            <input type="text" id="buscarTallerista" class="form-control form-control-sm mb-2" placeholder="Buscar por nombre o ID...">
+                            <div id="tallerista" class="border rounded p-2" style="height: 150px; overflow-y: auto; background-color: #fff;">
+                                <span class="text-muted small">Cargando talleristas...</span>
+                            </div>
                         </div>
 
                         <div class="col-md-6 mb-3">

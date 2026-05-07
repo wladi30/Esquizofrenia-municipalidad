@@ -1,0 +1,91 @@
+editarEstudiante: function(id) {
+    fetch(`/api/inscripcion-get/${id}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const t = result.data;
+                console.log("Datos completos de la inscripción:", t);
+
+                // Cambiar título del modal
+                document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Inscripción';
+
+                // Campo oculto para el ID
+                let hiddenId = document.getElementById('inscripcionId');
+                if (!hiddenId) {
+                    hiddenId = document.createElement('input');
+                    hiddenId.type = 'hidden';
+                    hiddenId.id = 'inscripcionId';
+                    document.getElementById('formInscripcion').appendChild(hiddenId);
+                }
+                hiddenId.value = id;
+
+                // RUT y DV (coinciden con guardar)
+                const rutInput = document.getElementById('rutPersona');
+                const dvInput = document.getElementById('dvPersona');
+                if (rutInput) {
+                    rutInput.value = t.rut_persona || '';
+                    rutInput.disabled = true;
+                }
+                if (dvInput) {
+                    dvInput.value = t.dv_persona || '';
+                    dvInput.disabled = true;
+                }
+
+                // Pasaporte (opcional)
+                const pasaporteInput = document.getElementById('pasaporte');
+                if (pasaporteInput) pasaporteInput.value = t.pasaporte || '';
+
+                // Datos personales
+                document.getElementById('nombrePersona').value = t.nombre_persona || '';
+                document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
+                document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
+
+                // Género
+                const generoSelect = document.getElementById('genero');
+                if (generoSelect && t.genero !== undefined && t.genero !== null) {
+                    generoSelect.value = t.genero;
+                }
+
+                // Pronombre
+                const pronomInput = document.getElementById('pronomEstudiante');
+                if (pronomInput) pronomInput.value = t.pronom_estudiante || '';
+
+                // Contacto de la persona
+                document.getElementById('telefonoPersona').value = t.telefono || '';
+                document.getElementById('correoPersona').value = t.correo_electronico || '';
+
+                // Contacto de emergencia
+                document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
+                document.getElementById('nombreContacto').value = t.nombre_contacto || '';
+                document.getElementById('correoContacto').value = t.correo_contacto || '';
+
+                // Observación
+                document.getElementById('observacion').value = t.observacion || '';
+
+                // Dirección
+                document.getElementById('idPais').value = t.id_pais || 1;
+                document.getElementById('idComuna').value = t.id_comuna || 1;
+                document.getElementById('villa').value = t.villa || '';
+                document.getElementById('numeroDepartamento').value = t.nro_dpto || '';
+                document.getElementById('numeroBlock').value = t.nro_block || '';
+                document.getElementById('numeroCalle').value = t.nro_calle || '';
+                document.getElementById('calle').value = t.calle || '';
+
+                // Fecha de nacimiento (solo lectura)
+                const fecNaci = document.getElementById('fechaNacimiento');
+                if (fecNaci) {
+                    fecNaci.value = t.fec_nacimiento || '';
+                    fecNaci.disabled = true;
+                }
+
+                // Mostrar modal
+                new bootstrap.Modal(document.getElementById('modalInscripcion')).show();
+            } else {
+                this.mostrarError(result.message || 'No se pudo cargar la inscripción');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            this.mostrarError('Error de conexión en editar');
+        });
+}

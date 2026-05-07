@@ -3,7 +3,7 @@
 --asi que con esto ademas de tabla deberia funcionar todo bien, gracias a esta madr se deberia crear tanto estudiantes como profesor para despues darles usos a sus nombres , rut , etc
 
 IF OBJECT_ID('REGISTRAR_PERSONA', 'P') IS NOT NULL --util
-    DROP PROCEDURE REGISTRAR_PERSONA;
+    DROP PROCEDURE REGISTRAR_PERSONA; -- Esto ya no lo uso la verdad pero puedo sacar mucho codigo de aqui asi que lo dejo
 GO
 
 CREATE PROCEDURE REGISTRAR_PERSONA

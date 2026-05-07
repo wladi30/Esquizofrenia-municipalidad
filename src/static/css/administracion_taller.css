@@ -114,9 +114,8 @@
     padding: 1rem 1.5rem;
 }
 
-/* --- Estilos para botones (mas consistentes) --- */
 .btn {
-    border-radius: 0; /* Botones cuadrados */
+    border-radius: 0;
     font-weight: 500;
 }
 .btn-primary {
@@ -137,7 +136,6 @@
     color: white;
 }
 
-/* --- Estilos para la paginación (mas compacta) --- */
 .pagination .page-link {
     border-radius: 0;
     color: #0B3B5C;

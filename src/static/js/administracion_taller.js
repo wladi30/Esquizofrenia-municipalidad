@@ -103,35 +103,53 @@ const GestionTalleres = {
         });
     },
 
-    // aqui va la parte d elos talleristas
-    cargarTalleristasSelect: function(){
-        // contruire primero las urls despues seguimos con los filtros
+    cargarTalleristasSelect: function() {
         fetch('/api/tallerista-lista')
-        .then(response => response.json())
-        .then(result => {
-            if (result.success){
-                this.configuracion.datos.talleristas = result.data;
-                const selectTallerista = document.getElementById('tallerista');
-                // option value, la idea que esto muestre un valor default
-                selectTallerista.innerHTML = '<option value="" disabled selected>--Seleccione un tallerista--</option>'
-                result.data.forEach(t => {
-                    const option = document.createElement('option');
-                    option.value = t.ID_PROFESOR;
-                    // option.textContent = `${t.nombre_completo || 'Sin nombre'}`.trim();
-                    option.textContent = `ID: ${t.ID_PROFESOR}, ${t.NOMBRE_COMPLETO || 'Sin nombre'}`.trim();
-                    selectTallerista.appendChild(option);
-                });
-            }
-            // solucion simple , no deberia romper la carga de talleres
-            else {
-                this.mostrarError('Error al cargar a los talleristas: ' + result.message);
-            }
-        })
-        .catch(error =>{
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    this.configuracion.datos.talleristas = result.data;
+                    const contenedor = document.getElementById('tallerista');
+                    contenedor.innerHTML = '';
+                    result.data.forEach(t => {
+                        const div = document.createElement('div');
+                        div.className = 'form-check mb-1';
+                        div.innerHTML = `
+                            <input class="form-check-input check-tallerista" type="checkbox" 
+                                value="${t.ID_PROFESOR}" id="t_check_${t.ID_PROFESOR}">
+                            <label class="form-check-label small" for="t_check_${t.ID_PROFESOR}" style="cursor:pointer">
+                                ID: ${t.ID_PROFESOR}, ${t.NOMBRE_COMPLETO || 'Sin nombre'}
+                            </label>`;
+                        contenedor.appendChild(div);
+                    });
+                    const buscador = document.getElementById('buscarTallerista');
+                    if (buscador) {
+                        buscador.addEventListener('input', function(e) {
+                            const filtro = e.target.value.toLowerCase();
+                            const items = contenedor.querySelectorAll('.form-check');
+                            items.forEach(item => {
+                                const checkbox = item.querySelector('.check-tallerista');
+                                const texto = item.textContent.toLowerCase();
+                                if (texto.includes(filtro) || checkbox.checked) {
+                                    item.style.display = 'block';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            });
+                        });
+                    }
+                } 
+                else {
+                    this.mostrarError('Error al cargar a los talleristas: ' + result.message);
+                }
+            })
+        .catch(error => {
             console.error('Error al cargar a los talleristas: ', error);
             this.mostrarError('Error al cargar a los talleristas');
-        })
+        });
     },
+
+
 
     limpiarFiltros: function() {
         document.getElementById('filtroAnio').value = '';
@@ -342,10 +360,7 @@ const GestionTalleres = {
         document.getElementById('tallerId').value = '';
         
         const selectCategoriaModal = document.querySelector('.select-categoria');
-        if (selectCategoriaModal) {
-            selectCategoriaModal.value = '';
-        }
-        
+        if (selectCategoriaModal) {selectCategoriaModal.value = '';}
         const currentYear = new Date().getFullYear();
         document.getElementById('yearProceso').value = currentYear;
         document.getElementById('minEstudiantes').value;
@@ -361,17 +376,18 @@ const GestionTalleres = {
 
     guardarTaller: function() {
         const id = document.getElementById('tallerId').value;
-        // const idProfesor = document.getElementById('id_profesor').value;
         const selectCategoriaModal = document.querySelector('.select-categoria');
-        const selectTallerista = document.getElementById('tallerista');
-        console.log('Select tallerista:', selectTallerista);
-        console.log('Valor seleccionado:', selectTallerista ? selectTallerista.value : 'null');
-        const idProfesor = selectTallerista ? parseInt(selectTallerista.value) : null;
-        console.log('idProfesor después de parseInt:', idProfesor);
-        if (!idProfesor || isNaN(idProfesor)) {
-            this.mostrarError('Debe seleccionar un tallerista obligatoriamente.');
-            return;
-        }
+        // const selectTallerista = document.getElementById('tallerista');
+        // console.log('Select tallerista:', selectTallerista);
+        // console.log('Valor seleccionado:', selectTallerista ? selectTallerista.value : 'null');
+        // const idProfesor = selectTallerista ? parseInt(selectTallerista.value) : null;
+        // console.log('idProfesor después de parseInt:', idProfesor);
+        // if (!idProfesor || isNaN(idProfesor)) {this.mostrarError('Debe seleccionar un tallerista obligatoriamente.');return;}
+        const checks = document.querySelectorAll('#tallerista .check-tallerista:checked');
+        const idsArray = Array.from(checks).map(cb => cb.value);
+        const idsString = idsArray.join(',');
+        console.log('IDs para enviar:', idsString);
+        if (idsArray.length ===0) {this.mostrarError('Debe seleccionar un tallerista obligatoriamente');}
         const nameTaller = document.getElementById('nombreTaller').value.trim().toUpperCase();
         const yearProceso = parseInt(document.getElementById('yearProceso').value);
         const objTaller = document.getElementById('objetivo').value.trim().toUpperCase();
@@ -390,11 +406,9 @@ const GestionTalleres = {
         const edadMaximaTaller = parseInt(document.getElementById('edadMaxima').value);
         const materialTaller = document.getElementById('material').value.trim().toUpperCase();
         const idTipoTaller = parseInt(document.getElementById('tipoTaller').value);
-
-    // validacion nametaller
     
     const data = {
-        id_profesor: idProfesor && !isNaN(idProfesor) ? idProfesor : 133,
+        id_profesor: idsString,
         year_proceso: yearProceso || new Date().getFullYear(),
         id_categoria: selectCategoriaModal ? parseInt(selectCategoriaModal.value) : 0,
         nombre_taller: nameTaller,
@@ -451,9 +465,7 @@ const GestionTalleres = {
                     const selectCategoriaModal = document.querySelector('.select-categoria');
                     if (selectCategoriaModal) {selectCategoriaModal.value = t.id_categoria;}
                     document.getElementById('nombreTaller').value = t.nombre_taller;
-                    // se viene un cambio muchachos
                     document.getElementById('objetivo').value = t.objetivo_taller;
-                    // cambio de codigo aqui, se van a mejorar las fechas o mas bien se van a cambiar
                     document.getElementById('fecInicio').value = t.fec_inicio;
                     document.getElementById('fecTermino').value = t.fec_termino;
                     document.getElementById('nroMinutos').value = t.nro_minutos;
@@ -470,19 +482,17 @@ const GestionTalleres = {
                     document.getElementById('edadMaxima').value = t.edad_maxima;
                     document.getElementById('material').value = t.material;
                     document.getElementById('tipoTaller').value = t.ind_tipo_taller;
-                    const selectTallerista = document.getElementById('tallerista');
-                    if (selectTallerista && t.id_profesor) {
-                        selectTallerista.value = t.id_profesor;
-                    }
+                    // const selectTallerista = document.getElementById('tallerista');
+                    // if (selectTallerista && t.id_profesor) {selectTallerista.value = t.id_profesor;}
+                    if (t.id_profesor) {const idsParaMarcar = t.id_profesor.toString().split(',');idsParaMarcar.forEach(id => {const checkbox = document.querySelector(`#t_check_${id.trim()}`);
+                        if (checkbox) checkbox.checked = true;});}
                     document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
                     document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
                     document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
                     document.getElementById('fecModifica').value = t.aud_fec_modifica;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
-                else {
-                    this.mostrarError('No se pudo cargar el taller para editar.');
-                }
+                else {this.mostrarError('No se pudo cargar el taller para editar.');}
             })
         .catch(error => {
             console.error('Error en fetch editarTaller:', error);
@@ -541,11 +551,11 @@ const GestionTalleres = {
                     const disponibles = maximo - inscritos;
                     let estadoBadge = '';
                     switch(t.id_estado_taller) {
-                        case 1: estadoBadge = '<span class="badge bg-info">INGRESADO</span>'; break;
-                        case 2: estadoBadge = '<span class="badge bg-success">CALENDARIZADO</span>'; break;
-                        case 3: estadoBadge = '<span class="badge bg-secondary">CERRADO</span>'; break;
-                        case 4: estadoBadge = '<span class="badge bg-danger">DE BAJA</span>'; break;
-                        default: estadoBadge = '<span class="badge bg-light text-dark">DESCONOCIDO</span>';
+                        case 1: estadoBadge = '<span class="badge bg-info" style="font-size: 0.8rem;">INGRESADO</span>'; break;
+                        case 2: estadoBadge = '<span class="badge bg-success" style="font-size: 0.8rem;">CALENDARIZADO</span>'; break;
+                        case 3: estadoBadge = '<span class="badge bg-secondary" style="font-size: 0.8rem;">CERRADO</span>'; break;
+                        case 4: estadoBadge = '<span class="badge bg-danger" style="font-size: 0.8rem;">DE BAJA</span>'; break;
+                        default: estadoBadge = '<span class="badge bg-light text-dark" style="font-size: 0.8rem;">DESCONOCIDO</span>';
                     }
                     let profesoresHtml = '';
                     const profesoresLista = t.profesores || [];
@@ -724,25 +734,30 @@ const GestionTalleres = {
         });
     },
 
+    debounce: function(func, delay) {
+        let timer;
+        return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    },
+
     // EL BIND EVENTOS QUE CREE HACE RATO, ESTO ES CASI LO ULTIMO
     bindEventos: function() {
+        const filtroTiempoReal = this.debounce(() => {
+            this.aplicarFiltros();
+        }, 200);
         // ahora esto esta definido en la parte de arriba tambien pero aqui los pongo como botones que activan dicha funcion, aun no lo pruebo ni se si esta del todo bien pero vendre aqui
         // si algo sale mal asi que pondre mi codigo "GUTS"
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => { this.aplicarFiltros(); });
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => { this.limpiarFiltros(); });
-        document.getElementById('busqueda_nombre')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_id')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_lugar')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('formTaller')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.guardarTaller();
-        });
+        document.getElementById('busqueda_nombre')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_id')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_lugar')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('formTaller')?.addEventListener('submit', (e) => {e.preventDefault();this.guardarTaller();});
+        document.getElementById('filtroAnio')?.addEventListener('change', filtroTiempoReal);
+        document.getElementById('filtroEstado')?.addEventListener('change', filtroTiempoReal);
+        document.querySelector('.select-categoria-filtro')?.addEventListener('change', filtroTiempoReal);
         // boton de confirmacion de eliminacion
         document.getElementById('btnConfirmar')?.addEventListener('click', () => { this.ejecutarEliminacion(); });
         // boton nuevo taller

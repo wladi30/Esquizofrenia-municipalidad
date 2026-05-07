@@ -72,109 +72,6 @@ def admin_required(f):
     return decorated_function
 
 #--AUTENTIFICACION--
-# def autenticar(rut_numerico, dv, password):
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexion a la base de datos"}
-#     cursor = conn.cursor()
-#     try:
-#         # import hashlib
-#         # contrasena_hash = hashlib.sha256(password.encode()).hexdigest()
-#         query = """
-#         SELECT TOP 1
-#             P.ID_PERSONA,
-#             P.NOMBRE_PERSONA,
-#             P.APELLIDO_PATERNO,
-#             P.APELLIDO_MATERNO,
-#             P.CORREO_ELECTRONICO,
-#             P.TIPO_USUARIO,
-#             P.RUT_PERSONA,
-#             P.DV_PERSONA
-#         FROM SGT_PERSONA_TALLER P
-#         WHERE P.RUT_PERSONA = ?
-#             AND LOWER(P.DV_PERSONA) = LOWER(?)
-#             AND P.CONTRASENA_HASH = ?
-#             AND P.IND_ACTIVO = 1
-#         """
-#         print(f"DEBUG BD - Bsucando la persona: rut={rut_numerico}, dv={dv}") #probando si llega hasta aqui
-#         cursor.execute(query, (rut_numerico,dv,password))
-#         row = cursor.fetchone()
-#         if row:
-#             nombre_completo = f"{row[1]} {row[2]} {row[3]}".strip()
-#             return {
-#                 "success": True,
-#                 "message": "Autenticacion exitosa",
-#                 "datos":{
-#                     "ID_PERSONA": row[0],
-#                     "NOMBRE_COMPLETO": nombre_completo,
-#                     "CORREO_ELECTRONICO": row[4],
-#                     "TIPO_USUARIO": row[5],
-#                     "RUT_PERSONA": row[6],
-#                     "DV_PERSONA": row[7]
-#                 }
-#             }
-#         else:
-#             print("DEBUG - hola esto es para probar si tenemos un problema con las cosas del usuario, usuario no encontrado")
-#             check_query = "SELECT COUNT (*) FROM SGT_PERSONA_TALLER WHERE RUT_PERSONA = ? AND LOWER(DV_PERSONA) = LOWER(?)"
-#             cursor.execute(check_query, (rut_numerico, dv))
-#             count = cursor.fetchone()[0]
-#             if count > 0:
-#                 print("DEBUG BD - El usuario existe pero la contraseña es incorrecta")
-#             else:
-#                 print("DEBUG BD - El usuario no existe en la BD")
-#             return {"success": False, "message": "RUT o contraseña incorrectos"}
-#     except Exception as e:
-#         print(f"error en autenticacion: {e}")
-#         import traceback
-#         traceback.print_exc()
-#         return {"success": False, "message": "error in the servidor causas"}
-#     finally:
-#         cursor.close()
-#         conn.close()
-
-# def autenticar_usuario(identificador, password):
-#     conn = get_connection()
-#     cursor = conn.cursor()
-#     cursor.execute("EXEC autenticar ?, ?", (identificador, password))
-#     resultado = cursor.fetchone()
-#     if resultado and resultado[0] == 1:
-#         cursor.execute("""
-#             SELECT ID_PERSONA, NOMBRE_PERSONA, APELLIDO_PATERNO, 
-#                    CORREO_ELECTRONICO, TIPO_USUARIO
-#             FROM SGT_PERSONA_TALLER 
-#             WHERE RUT_PERSONA = ?
-#         """)
-#         user = cursor.fetchone()
-#         cursor.close()
-#         conn.close()
-#         if user:
-#             id_rol = None
-#             if user[4] == 'FUNCIONARIO':
-#                 cur2 = conn.cursor()
-#                 cur2.execute("SELECT ID_PERSONA FROM SGT_PERSONA_TALLER WHERE ID_PERSONA = ?", (user[0],))
-#                 rol = cur2.fetchone()
-#                 id_rol = rol[0] if rol else None
-#                 cur2.close()
-#             elif user[4] == 'ADMIN':
-#                 cur2 = conn.cursor()
-#                 cur2.execute("SELECT ID_PERSONA FROM SGT_PERSONA_TALLER WHERE ID_PERSONA = ?", (user[0],))
-#                 rol = cur2.fetchone()
-#                 id_rol = rol[0] if rol else None
-#                 cur2.close()
-#             return {
-#                 'success': True,
-#                 'id_persona': user[0],
-#                 'nombre': user[1],
-#                 'apellido': user[2],
-#                 'nombre_completo': f"{user[1]} {user[2] or ''}".strip(),
-#                 'email': user[3],
-#                 'tipo_usuario': user[4],
-#                 'id_rol': id_rol
-#             }
-#     cursor.close()
-#     conn.close()
-#     return {"success": False, "message": "Credenciales incorrectas"}
-
 def autenticar_simple(rut, dv, contrasena):
     conn = get_connection()
     if not conn:
@@ -235,35 +132,6 @@ def registrar_persona(rut_persona,dv_persona,nombre_persona,apellido_paterno,ape
         cursor.close()
         conn.close()
 
-# def crear_persona(rut,dv,nombre_persona,apellido_paterno,apellido_materno,correo,telefono,contrasena,tipo_usuario):
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexion"}
-#     cursor = conn.cursor()
-#     try:
-#         import hashlib
-#         contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
-#         query = f"""
-#         INSERT INTO SGT_PERSONA_TALLER (RUT_PERSONA, DV_PERSONA, NOMBRE_PERSONA, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, TELEFONO, CONTRASENA_HASH,TIPO_USUARIO, IND_ACTIVO, AUD_USUARIO_INGRESO, AUD_FEC_INGRESO) 
-#         VALUES ({rut}, '{dv}', '{nombre_persona}', '{apellido_paterno}', '{apellido_materno}', '{correo}', '{telefono}', '{contrasena_hash}', '{tipo_usuario}', 1, 'sistema', GETDATE())
-#         SELECT SCOPE_IDENTITY() AS ID_PERSONA
-#         """
-#         cursor.execute(query)
-#         id_persona = cursor.fetchone()[0]
-#         conn.commit()
-#         return {
-#             "success": True,
-#             "message": "Persona creada exitosamente",
-#             "id_persona": id_persona
-#         }
-#     except Exception as e:
-#         conn.rollback()
-#         print(f"Error creando persona: {e}")
-#         return {"success": False, "message": str(e)}
-#     finally:
-#         cursor.close()
-#         conn.close()
-
 #--FUNCIONARIO(ANTIGUAMENTE ESTUDIANTE)--
 def ver_estudiante(id_estudiante): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LAS FECHAS TODAS RANCIAS
     conn = get_connection()
@@ -290,27 +158,26 @@ def ver_estudiante(id_estudiante): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LA
                 'telefono_contacto': row[12],
                 'nombre_contacto': row[13],
                 'correo_contacto': row[14],
-                'tipo_usuario': row[15],
-                'observacion': row[16],
-                'correo_electronico': row[17],
-                'calle': row[18],
-                'nro_calle': row[19],
-                'nro_block': row[20],
-                'nro_dpto': row[21],
-                'villa': row[22],
-                'id_comuna': row[23],
-                'id_pais': row[24],
-                'id_taller': row[25],
-                'nombre_taller': row[26],
-                'year_proceso': row[27],
-                'pronom_estudiante': row[28],
-                'fec_inscripcion': row[29].strftime('%Y-%m-%d %H:%M:%S') if row[29] else None,
-                'fec_retiro': row[30].strftime('%Y-%m-%d %H:%M:%S') if row[30] else None,
-                'fec_reincorporacion': row[31].strftime('%Y-%m-%d %H:%M:%S') if row[31] else None,
-                'aud_usuario_ingreso': row[32],
-                'aud_fec_ingreso': row[33].strftime('%Y-%m-%d %H:%M:%S') if row[33] else None,
-                'aud_usuario_modifica': row[34],
-                'aud_fec_modifica': row[35].strftime('%Y-%m-%d %H:%M:%S') if row[35] else None,
+                'observacion': row[15],
+                'correo_electronico': row[16],
+                'calle': row[17],
+                'nro_calle': row[18],
+                'nro_block': row[19],
+                'nro_dpto': row[20],
+                'villa': row[21],
+                'id_comuna': row[22],
+                'id_pais': row[23],
+                'id_taller': row[24],
+                'nombre_taller': row[25],
+                'year_proceso': row[26],
+                'pronom_estudiante': row[27],
+                'fec_inscripcion': row[28].strftime('%Y-%m-%d %H:%M:%S') if row[28] else None,
+                'fec_retiro': row[29].strftime('%Y-%m-%d %H:%M:%S') if row[29] else None,
+                'fec_reincorporacion': row[30].strftime('%Y-%m-%d %H:%M:%S') if row[30] else None,
+                'aud_usuario_ingreso': row[31],
+                'aud_fec_ingreso': row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
+                'aud_usuario_modifica': row[33],
+                'aud_fec_modifica': row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None,
             }
         return resultado
     except Exception as e:
@@ -319,14 +186,6 @@ def ver_estudiante(id_estudiante): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LA
     finally:
         cursor.close()
         conn.close()
-
-# CREATE PROCEDURE LISTAR_ESTUDIANTES
-#     @ID_ESTUDIANTE INT,
-#     @ID_TALLER INT,
-#     @NOMBRE_TALLER VARCHAR(80),
-#     @YEAR_PROCESO INT,
-#     @NOMBRE_COMPLETO VARCHAR(153),
-#     @CORREO_ELECTRONICO VARCHAR(100)
 
 def obtener_estudiantes(id_estudiante=None, nombre_taller=None, year_proceso=None, nombre_completo=None, correo_electronico=None, ind_estado_integrante=None): 
     # lo mismo de arriba pero ahora son estudiants , profesores podran ver a su clase con esto
@@ -490,63 +349,6 @@ def borrar_estudiante(id_estudiante, id_taller=None):
         conn.close()
 
 #--TALLER--
-# def ver_taller(id_taller):
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexión"}
-#     cursor = conn.cursor()
-#     try:
-#         cursor.execute("{CALL VER_TALLERES(?)}", (id_taller))
-#         row = cursor.fetchone()
-        
-#         if row:
-#             resultado = {
-#                 'id_taller': row[0],
-#                 'year_proceso': row[1],
-#                 'id_categoria': row[2],
-#                 'nombre_taller': row[3],
-#                 'id_departamento': row[4],
-#                 'objetivo_taller': row[5],
-#                 'fec_inicio': row[6].strftime('%Y-%m-%d') if row[6] else None,
-#                 'fec_termino': row[7].strftime('%Y-%m-%d') if row[7] else None,
-#                 'nro_minutos': row[8],
-#                 'nro_clases_anual': row[9],
-#                 'horas_totales': row[10],
-#                 'id_estado_taller': row[11],
-#                 'fec_estado_taller': row[12].strftime('%Y-%m-%d') if row[12] else None,
-#                 'observacion': row[13],
-#                 'lugar': row[14],
-#                 'minimo_estudiante': row[15],
-#                 'maximo_estudiante': row[16],
-#                 'personas_inscritas': row[17],
-#                 'requisito': row[18] if len(row) > 18 else '',
-#                 'edad_minima': row[19] if len(row) > 19 else 0,
-#                 'edad_maxima': row[20] if len(row) > 20 else 0,
-#                 'material': row[21] if len(row) > 21 else '',
-#                 'ind_tipo_taller': row[22],
-#                 'id_profesor': row[23],
-#                 'nombre_persona': row[24],
-#                 'apellido_paterno': row[25],
-#                 'apellido_materno': row[26],
-#                 'edad': row[27],
-#                 'genero': row[28],
-#                 'profesion': row[29],
-#                 'ind_activo': row[30],
-#                 'aud_usuario_ingreso': row[31],
-#                 'aud_fec_ingreso': row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
-#                 'aud_usuario_modifica': row[33],
-#                 'aud_fec_modifica': row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None
-#             }
-#             return resultado
-#         else:
-#             return None
-#     except Exception as e:
-#         print(f"Error en ver_taller: {e}")
-#         return None
-#     finally:
-#         cursor.close()
-#         conn.close()
-
 def ver_taller(id_taller):
     conn = get_connection()
     if not conn:
@@ -582,11 +384,10 @@ def ver_taller(id_taller):
             'edad_maxima': first[20] if len(first) > 20 else 0,
             'material': first[21] if len(first) > 21 else '',
             'ind_tipo_taller': first[22],
-            'aud_usuario_ingreso': first[31],
-            'aud_fec_ingreso': first[32].strftime('%Y-%m-%d %H:%M:%S') if first[32] else None,
-            'aud_usuario_modifica': first[33],
-            'aud_fec_modifica': first[34].strftime('%Y-%m-%d %H:%M:%S') if first[34] else None,
-            'fec_estado_taller': first[12].strftime('%Y-%m-%d') if first[12] else None,
+            'aud_usuario_ingreso': first[30],
+            'aud_fec_ingreso': first[31].strftime('%Y-%m-%d %H:%M:%S') if first[31] else None,
+            'aud_usuario_modifica': first[32],
+            'aud_fec_modifica': first[33].strftime('%Y-%m-%d %H:%M:%S') if first[33] else None,
         }
         profesores = []
         for row in rows:
@@ -598,7 +399,6 @@ def ver_taller(id_taller):
                 'edad': row[27],
                 'genero': row[28],
                 'profesion': row[29],
-                'ind_activo': row[30]
             }
             if not any(p['id_profesor'] == profesor['id_profesor'] for p in profesores):
                 profesores.append(profesor)
@@ -612,12 +412,6 @@ def ver_taller(id_taller):
         conn.close()
 
 def obtener_talleres(year_proceso=None, id_categoria=None, id_estado_taller=None, id_taller=None, lugar=None, nombre_taller=None):
-    # print(f"DEBUG - : year_proceso{type(year_proceso)}, {(year_proceso)}")
-    # print(f"DEBUG - : id_estado_taller{type(id_estado_taller)}, {(id_estado_taller)}")
-    # print(f"DEBUG - : id_categoria{type(id_categoria)}, {(id_categoria)}")
-    # print(f"DEBUG - : id_taller{type(id_taller)}, {(id_taller)}")
-    # print(f"DEBUG - : lugar{type(lugar)}, {(lugar)}")
-    # print(f"DEBUG - : nombre_taller{type(nombre_taller)}, {(nombre_taller)}")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}
@@ -790,6 +584,9 @@ def ver_profesor(id_profesor):
         if not rows:
             return None
         first = rows[0]
+
+        # for i, value in enumerate(first):
+        #     print(i, value)
         profesor = {
             'id_persona' : first[0],
             'rut_persona' : first[1],
@@ -805,31 +602,29 @@ def ver_profesor(id_profesor):
             'telefono_contacto' : first[11],
             'nombre_contacto' : first[12],
             'correo_contacto' : first[13],
-            'ind_activo' : first[14],
-            'tipo_usuario' : first[15],
-            'observacion' : first[16],
-            'correo_electronico' : first[17],
-            'calle' : first[18],
-            'nro_calle' : first[19],
-            'nro_block' : first[20],
-            'nro_dpto' : first[21],
-            'villa' : first[22],
-            'id_comuna' : first[23],
-            'id_pais' : first[24],
-            'profesion' : first[25],
-            'resumen_curricular' : first[26],
-            'aud_usuario_ingreso' : first[31],
-            'aud_fec_ingreso':first[32].strftime('%Y-%m-%d %H:%M:%S') if first[32] else None,
-            'aud_usuario_modifica' : first[33],
-            'aud_fec_modifica':first[34].strftime('%Y-%m-%d %H:%M:%S') if first[34] else None
+            'observacion' : first[14],
+            'correo_electronico' : first[15],
+            'calle' : first[16],
+            'nro_calle' : first[17],
+            'nro_block' : first[18],
+            'nro_dpto' : first[19],
+            'villa' : first[20],
+            'id_comuna' : first[21],
+            'id_pais' : first[22],
+            'profesion' : first[23],
+            'resumen_curricular' : first[24],
+            'aud_usuario_ingreso' : first[29],
+            'aud_fec_ingreso':first[30].strftime('%Y-%m-%d %H:%M:%S') if first[30] else None,
+            'aud_usuario_modifica' : first[31],
+            'aud_fec_modifica':first[32].strftime('%Y-%m-%d %H:%M:%S') if first[32] else None
         }
         talleres = []
         for row in rows:
             taller = {
-                'id_taller' : row[27],
-                'nombre_taller' : row[28],
-                'year_proceso' : row[29],
-                'id_estado_taller' : row[30]
+                'id_taller' : row[25],
+                'nombre_taller' : row[26],
+                'year_proceso' : row[27],
+                'id_estado_taller' : row[28]
             }
             if not any(p['id_taller'] == taller['id_taller'] for p in talleres):
                 talleres.append(taller)
@@ -860,7 +655,7 @@ def obtener_profesores(id_profesor=None, nombre_completo=None, id_taller=None, n
 
 def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno, genero,
                 telefono, correo_electronico, telefono_contacto, nombre_contacto, correo_contacto,
-                profesion, resumen_curricular, ind_activo, observacion, id_pais, id_comuna,
+                profesion, resumen_curricular, observacion, id_pais, id_comuna,
                 villa, nro_dpto, nro_block, nro_calle, calle,
                 aud_usuario_modifica_pt, aud_usuario_modifica_p):
     conn = get_connection()
@@ -868,10 +663,10 @@ def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno,
         return False
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+        cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
                     (id_profesor, nombre_persona, apellido_paterno, apellido_materno, genero,
                     telefono, correo_electronico, telefono_contacto, nombre_contacto, correo_contacto,
-                    profesion, resumen_curricular, ind_activo, observacion, id_pais, id_comuna,
+                    profesion, resumen_curricular, observacion, id_pais, id_comuna,
                     villa, nro_dpto, nro_block, nro_calle, calle,
                     aud_usuario_modifica_pt, aud_usuario_modifica_p))
         conn.commit()
@@ -884,36 +679,10 @@ def ac_profesor(id_profesor, nombre_persona, apellido_paterno, apellido_materno,
         cursor.close()
         conn.close()
 
-# def inscribir_profesores(id_persona, profesion, resumen_curricular, aud_usuario_ingreso):
-#     conn = get_connection()
-#     if not conn:
-#         return {"success": False, "message": "Error de conexión"}
-#     cursor = conn.cursor()
-#     try:
-#         cursor.execute("{CALL INSCRIBIR_TALLERISTAS(?, ?, ?, ?)}",
-#             (id_persona, profesion, resumen_curricular, aud_usuario_ingreso)
-#         )
-#         conn.commit()
-#         return True
-#     except Exception as e:
-#         print(f"Error en INSCRIBIR_TALLERISTAS: {e}")
-#         conn.rollback()
-#         return {"success": False, "message": str(e)}
-#     finally:
-#         cursor.close()
-#         conn.close()
-
 def inscribir_talleristas(pi_rut_profesor,pi_dv_profesor,pi_nombre_profesor,pi_apellido_paterno,pi_apellido_materno,
                           pi_fec_nacimiento,pi_genero,pi_nro_calle,pi_nro_block,pi_nro_dpto,pi_calle,pi_villa,pi_id_comuna,
                           pi_id_pais,pi_telefono,pi_correo_electronico,pi_nombre_contacto,pi_telefono_contacto,
                           pi_correo_contacto,pi_observacion,pi_id_usuario,pi_profesion,pi_resumen_curricular):
-    # print(f"DEBUG - : pi_rut_profesor{type(pi_rut_profesor)}, {(pi_rut_profesor)}")
-    # print(f"DEBUG - : pi_nombre_profesor{type(pi_nombre_profesor)}, {(pi_nombre_profesor)}")
-    # print(f"DEBUG - : pi_dv_profesor{type(pi_dv_profesor)}, {(pi_dv_profesor)}")
-    # print(f"DEBUG - : pi_apellido_paterno{type(pi_apellido_paterno)}, {(pi_apellido_paterno)}")
-    # print(f"DEBUG - : pi_apellido_materno{type(pi_apellido_materno)}, {(pi_apellido_materno)}")
-    # print(f"DEBUG - : pi_genero{type(pi_genero)}, {(pi_genero)}")
-    # print(f"DEBUG - : pi_fec_nacimiento{type(pi_fec_nacimiento)}, {(pi_fec_nacimiento)}")
     conn = get_connection()
     if not conn:
         return {"success": False, "message": "Error de conexión"}

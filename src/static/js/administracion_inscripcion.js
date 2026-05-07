@@ -23,7 +23,6 @@ const GestionInscripciones = {
         datos: [],
         filtros: { 
             id_estudiante: '', 
-            // id_taller: '',
             nombre_completo: '',
             correo_electronico: '',
             estado: '',
@@ -236,7 +235,7 @@ const GestionInscripciones = {
 
     abrirModalNuevo: function() {
         document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nueva Inscripcion';
-        document.getElementById('formInsripcion').reset();
+        document.getElementById('formInscripcion').reset();
         const rutInput = document.getElementById('rutPersona');
         const dvInput = document.getElementById('dvPersona');
         if (rutInput) {
@@ -252,7 +251,7 @@ const GestionInscripciones = {
             hiddenId = document.createElement('input');
             hiddenId.type = 'hidden';
             hiddenId.id = 'inscripcionId';
-            document.getElementById('formInsripcion').appendChild(hiddenId);
+            document.getElementById('formInscripcion').appendChild(hiddenId);
         }
         hiddenId.value = '';
         const fecNaci = document.getElementById('fechaNacimiento');
@@ -265,6 +264,7 @@ const GestionInscripciones = {
         document.getElementById('idComuna').value = '1';
         new bootstrap.Modal(document.getElementById('modalInscripcion')).show();
     },
+
     guardar: function() {
         const id = document.getElementById('inscripcionId').value;
         const rutPersona = parseInt(document.getElementById('rutPersona').value);
@@ -337,13 +337,10 @@ const GestionInscripciones = {
                     this.mostrarError(result.message || 'Error al guardar');
                 }
             })
-            .catch(error => { console.error(error); this.mostrarError('Error de conexión'); });
+        .catch(error => { console.error(error); this.mostrarError('Error de conexión'); });
     },
 
     editarEstudiante: function(id) {
-        // con esto cualquiera se vuelve ezquiso, me daba un problema de que no modificaba , reviso aqui y alla, veo el app funcionario, veo el procedimiento(mentira), todo bien todo correcto, 
-        // pero seguia sin funcionar, despues me di cuenta que podria ser el db_test, encuentro errores y digo ya bien ahora debe funcionar, sigue sin hacerlo
-        // reviso mas aun , hasta manoseo el css y nada, el problema? le puse la mierda right join en vez de left, salu2
         fetch(`/api/inscripcion-get/${id}`)
             .then(response => response.json())
             .then(result => {
@@ -352,13 +349,13 @@ const GestionInscripciones = {
                     console.log("Datos completos de la inscripcion:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Inscripcion';
                     let hiddenId = document.getElementById('inscripcionId');
-                    if (!hiddenId) {hiddenId = document.createElement('input');hiddenId.type = 'hidden';hiddenId.id = 'inscripcionId';document.getElementById('formInsripcion').appendChild(hiddenId);}hiddenId.value = id;
-                    const rutInput = document.getElementById('rutEstudiante');
-                    const dvInput = document.getElementById('dvEstudiante');
-                    if (rutInput) {rutInput.value = t.rut_estudiante || '';rutInput.disabled = true;}
-                    if (dvInput) {dvInput.value = t.dv_estudiante || '';dvInput.disabled = true;}
-                    document.getElementById('idEstudiante').value = t.id_estudiante;
-                    document.getElementById('nombreEstudiante').value = t.nombre_persona || '';
+                    if (!hiddenId) {hiddenId = document.createElement('input');hiddenId.type = 'hidden';hiddenId.id = 'inscripcionId';document.getElementById('formInscripcion').appendChild(hiddenId);}hiddenId.value = id;
+                    const rutInput = document.getElementById('rutPersona');
+                    const dvInput = document.getElementById('dvPersona');
+                    if (rutInput) {rutInput.value = t.rut_persona || '';rutInput.disabled = true;}
+                    if (dvInput) {dvInput.value = t.dv_persona || '';dvInput.disabled = true;}
+                    // document.getElementById('idEstudiante').value = t.id_estudiante;
+                    document.getElementById('nombrePersona').value = t.nombre_persona || '';
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
                     document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
                     const generoSelect = document.getElementById('genero');
@@ -525,9 +522,6 @@ const GestionInscripciones = {
             </tr>
         `;
     },
-    // <button class="btn btn-sm btn-outline-danger" onclick="GestionInscripciones.confirmarEliminar(${t.ID_PROFESOR}, '${nombreCompleto.replace(/'/g, "\\'")}')" title="Suspender">
-    //     <i class="bi bi-trash"></i>
-    // </button>
 
     confirmarEliminar: function(id, nombre) {
         Swal.fire({
@@ -544,23 +538,6 @@ const GestionInscripciones = {
         });
     },
 
-    // ejecutarEliminacion: function(id) {
-    //     fetch(`/api/tallerista-suspender/${id}`, { method: 'PUT' })
-    //         .then(response => response.json())
-    //         .then(result => {
-    //             if (result.success) {
-    //                 this.mostrarExito(result.message || 'Tallerista suspendido correctamente');
-    //                 this.cargarLista();
-    //             } else {
-    //                 this.mostrarError(result.message || 'Error al suspender');
-    //             }
-    //         })
-    //     .catch(error => {
-    //         console.error(error);
-    //         this.mostrarError('Error de conexión');
-    //     });
-    // },
-
     mostrarExito: function(mensaje) {
         Swal.fire({ icon: 'success', title: 'exito', text: mensaje, timer: 2000, showConfirmButton: false });
     },
@@ -568,34 +545,29 @@ const GestionInscripciones = {
         Swal.fire({ icon: 'error', title: 'Error', text: mensaje });
     },
 
+    debounce: function(func, delay) {
+        let timer;
+        return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    },
+
     bindEventos: function() {
+        const filtroTiempoReal = this.debounce(() => {
+            this.aplicarFiltros();
+        }, 200);
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => this.aplicarFiltros());
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => this.limpiarFiltros());
-        document.getElementById('busqueda_id_estudiante')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_id_taller')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_nombre_completo')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_correo_electronico')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_ind_estado_integrante')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_nombre_taller')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); } 
-        });
-        document.getElementById('busqueda_year_proceso')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_fecha_inscripcion')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('formInsripcion')?.addEventListener('submit', (e) => { 
+        document.getElementById('busqueda_id_estudiante')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_id_taller')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_nombre_completo')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_correo_electronico')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_ind_estado_integrante')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_nombre_taller')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_year_proceso')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_fecha_inscripcion')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('formInscripcion')?.addEventListener('submit', (e) => { 
             e.preventDefault(); 
             this.guardar(); 
         });

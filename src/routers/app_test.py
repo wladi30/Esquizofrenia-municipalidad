@@ -18,6 +18,23 @@ def index_chamuco():
 # te permite ver cuantos talleristas tienes con sus nombres , etc. Tambien deberia ser que aqui mismo te permita ingresar al tema de poder ver los talleristas y editarlo
 # seria un gran QoL eso.
 
+# al final y creo que la tabla de funcionario tenre que asignarle el tema de poder tener admin y super admin(cringe) para poder mostrar bien lo que tengo
+# el admin deberia ser para ellos y que pueda ver el tema de las acciones que ocurren en los talleres y personas, tengo planeado que sea algo parecido a lo que me mostro
+# el victor, usando el log guardar cada vez que alguien hace alguna modificacion o elimina algun taller(estado 4) , tambien cuando crea algo , etc, ese tipos de acciones guardarlas
+# por lo demas escuche de la wea del super admin, que es ? se supone que sera algo que use yo?, ni idea y me da paja preguntar pero si lo hago debe ser a jm el benja no me responde del todo
+# o al victor
+
+# Revisar el db_test, quedan partes que aun les falta tener un procedimiento, tambien ya tengo que empezar a quitar los comentarios del frontend al menos, tambien no deberia ser un problema
+# jm y b debe estar viendo la pantalla constantemente asi que saben como funciona, creo, tambien puede ser inlegible lo que estoy haciendo asi que deberia preguntar si se entiende algo
+
+# lo siguiente ultimamente estoy abusando de la ia, se lo que hace y toda la mierda que me pasa pero aun no me gusta tener que usarla siente que se va a mandar una cagada.
+
+# tambien deberia revisar el funcionario y las otras roots que tengo ya que aun quedan partes que no se usan o su funcionalidad paso a otro lado
+
+# para hacer el calculo de edad tendria que ver cual puede ser la mejor forma, si lo hago con un trigger podria funcionar pero son 13 mil datos o mas , tal vez cada vez que se ve a un alumno
+# o profesor podria hacer que se calcule en el momento?, podria funcionar pero cuanto consumiria eso? , si alguien trolea y se pone a ver un monton de alumnos que pasaria? , se podria 
+# pitiar todo con eso?, tendria que ver cual es la mejor forma.
+
 # JM me confirmo, tabla estudiante se asigna al momento de crear la persona que a su vez se pone como estudiante, la tabla estudiante no se modifica en ningun momento y queda asi
 # para siempre
 

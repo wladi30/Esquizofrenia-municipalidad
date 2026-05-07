@@ -538,7 +538,7 @@ def api_actualizar_tallerista(id_profesor):
             correo_contacto=data.get('correo_contacto', ''),
             profesion=data.get('profesion', ''),
             resumen_curricular=data.get('resumen_curricular', ''),
-            ind_activo=to_int(data.get('ind_activo'), 1),
+            # ind_activo=to_int(data.get('ind_activo'), 1),
             observacion=data.get('observacion', ''),
             id_pais=to_int(data.get('id_pais'), 1),
             id_comuna=to_int(data.get('id_comuna'), 1),

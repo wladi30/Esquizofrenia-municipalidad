@@ -44,7 +44,6 @@ BEGIN
         O.EDAD AS 'Edad',
         O.GENERO AS 'Genero',
         I.PROFESION AS 'Profesion',
-        O.IND_ACTIVO AS 'Indicador de Actividad',
         A.AUD_USUARIO_INGRESO AS 'Usuario que ingreso el taller',
         A.AUD_FEC_INGRESO AS 'Fecha del ingreso',
         A.AUD_USUARIO_MODIFICA AS 'Usuario que hizo la ultima modificación',

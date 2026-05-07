@@ -31,11 +31,14 @@
 }
 body {
     font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #ffe1e1 0%, #d4d4d4 100%);
+    background: linear-gradient(135deg, #0a0a0a 0%, #0a0a0a 100%);
     /* puta madre se ve asqueroso si le pongo color al fondo */
     background-size: cover;
     background-attachment: fixed;
     min-height: 100vh;
+}
+.card {
+    background-color: linear-gradient(135deg, #0a0a0a 0%, #0a0a0a 100%);
 }
 .login-wrapper {
     min-height: 100vh;

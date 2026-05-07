@@ -46,6 +46,11 @@ const GestionTalleristas = {
         this.bindEventos();
     },
 
+    formatearRut: function (rut) {
+        if (!rut) return '';
+        return rut.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
+
     cargarGeneroSelect: function() {
         fetch('/api/genero')
             .then(response => response.json())
@@ -252,10 +257,6 @@ const GestionTalleristas = {
         if (comunaSelect) {
             comunaSelect.value = '';
         }
-        // const comunaSelect = document.getElementById('idComuna');
-        // if (comunaSelect) comunaSelect.value = '1';
-        // document.getElementById('idPais').value = '1';
-        // document.getElementById('idComuna').value = '1';
         new bootstrap.Modal(document.getElementById('modalTallerista')).show();
     },
 
@@ -274,7 +275,6 @@ const GestionTalleristas = {
         const correo_contacto = document.getElementById('correoContacto').value.trim().toUpperCase();
         const profesion = document.getElementById('profesion').value.trim().toUpperCase();
         const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
-        // const indicador_actividad = parseInt(document.getElementById('indicadorActividad').value) || 1;
         const observacion = document.getElementById('observacion').value.trim().toUpperCase();
         const paisSelect = document.querySelector('.select-pais');
         const comunaSelect = document.querySelector('.select-comuna');
@@ -302,7 +302,6 @@ const GestionTalleristas = {
             correo_contacto: correo_contacto || '-',
             profesion: profesion || '-',
             resumen_curricular: resumen_curricular || '-',
-            // ind_activo: indicador_actividad,
             observacion: observacion || '-',
             id_pais: paisSelect ? parseInt(paisSelect.value): 1,
             id_comuna: comunaSelect ? parseInt(comunaSelect.value): 1,
@@ -312,12 +311,9 @@ const GestionTalleristas = {
             nro_calle: nro_calle || '-',
             calle: calle || '-',
             fec_nacimiento: fechaInicio
-
         };
-
         const url = id ? `/api/tallerista-actualizar/${id}` : '/api/tallerista-crear';
         const method = id ? 'PUT' : 'POST';
-
         fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
             .then(response => response.json())
             .then(result => {
@@ -377,7 +373,7 @@ const GestionTalleristas = {
                     document.getElementById('observacion').value = t.observacion || '';
                     const paisSelect = document.querySelector('.select-pais');
                     if (paisSelect && t.id_pais) {paisSelect.value = t.id_pais;}
-                    const comunaSelect = document.getElementById('.select-comuna');
+                    const comunaSelect = document.querySelector('.select-comuna');
                     if (comunaSelect && t.id_comuna) {comunaSelect.value = t.id_comuna;}
                     document.getElementById('villa').value = t.villa || '';
                     document.getElementById('numeroDepartamento').value = t.nro_dpto || '';
@@ -400,129 +396,6 @@ const GestionTalleristas = {
             })
         .catch(error => { console.error(error); this.mostrarError('Error de conexión en editar'); });
     },
-
-    // verDetalles: function(id) {
-    //     fetch(`/api/tallerista-get/${id}`)
-    //         .then(response => response.json())
-    //         .then(result => {
-    //             if (result.success) {
-    //                 const t = result.data;
-    //                 console.log("Datos del tallerista:", t);
-    //                 let talleresHtml = '';
-    //                 const talleresLista = t.talleres || [];
-    //                 const totalTalleres = talleresLista.length;
-    //                 if (totalTalleres > 0) {
-    //                     const mostrarInicial = 3;
-    //                     const tieneMas = totalTalleres > mostrarInicial;
-    //                     const talleresMostrar = tieneMas ? talleresLista.slice(0, mostrarInicial) : talleresLista;
-    //                     talleresMostrar.forEach(taller => {
-    //                         const nombreTaller = `${taller.nombre_taller}`.trim();
-    //                         talleresHtml += `
-    //                             <tr>
-    //                                 <td>${taller.id_taller}</td>
-    //                                 <td>${nombreTaller || 'Sin nombre'}</td>
-    //                                 <td>${taller.categoria || '-'}</td>
-    //                             </tr>
-    //                         `;
-    //                     });
-    //                     if (tieneMas) {
-    //                         talleresHtml += `
-    //                             <tr>
-    //                                 <td colspan="4" class="text-center">
-    //                                     <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleres.mostrarTodosProfesores()">
-    //                                         Ver los ${totalTalleres} Talleristas completos
-    //                                     </button>
-    //                                 </td>
-    //                             </tr>
-    //                         `;
-    //                     }
-    //                 } else {talleresHtml = `<tr><td colspan="4" class="text-center text-muted">No hay profesores asignados</td></tr>`;}
-    //                 let html = `
-    //                     <div class="row">
-    //                         <div class="col-md-6">
-    //                             <h6 class="fw-bold">Informacion Personal</h6>
-    //                             <table class="table table-sm text-nowrap">
-    //                                 <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
-    //                                 <tr><th>ID Profesor:</th><td>${t.id_profesor || 'No registrado'}</td></tr>
-    //                                 <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
-    //                                 <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
-    //                                 <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
-    //                                 <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
-    //                                 <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
-    //                                 <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
-    //                                 <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-    //                                 <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
-    //                                 <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
-    //                                 <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
-    //                             </table>
-    //                         </div>
-    //                         <div class="col-md-6">
-    //                             <h6 class="fw-bold">Contactos</h6>
-    //                             <table class="table table-sm">
-    //                                 <tr><th>Telefono del Profesor:</th><td>${t.telefono || 'No registrado'}</td></tr>
-    //                                 <tr><th>Correo del Profesor:</th><td>${t.correo_electronico || 'No registrado'}</td></tr>
-    //                                 <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || 'No registrado'}</td></tr>
-    //                                 <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
-    //                                 <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || 'No registrado'}</td></tr>
-    //                             </table>    
-    //                         </div>
-    //                     </div>
-    //                     <div class="row mt-3">
-    //                         <div class="col-md-6">
-    //                             <h6 class="fw-bold">Informacion General</h6>
-    //                             <table class="table table-sm">
-    //                                 <tr><th>Indicador de Actividad:</th><td>${t.ind_activo || 'No registrado'}</td></tr>
-    //                                 <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
-    //                                 <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
-    //                             </table>
-    //                         </div>
-    //                         <div class="col-md-6">
-    //                             <h6 class="fw-bold">Resumen Profesional</h6>
-    //                             <table class="table table-sm">
-    //                                 <tr><th>Profesion:</th><td>${t.profesion || 'No registrado'}</td></tr>
-    //                                 <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
-    //                                 <tr><th>ID del Taller:</th><td>${t.id_taller || 'No existe'}</td></tr>
-    //                                 <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
-    //                                 <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
-    //                             </table>
-    //                         </div>
-    //                         <div class="col-md-6">
-    //                             <h6 class="fw-bold">Talleres (${totalTalleres})</h6>
-    //                             <div class="table-responsive">
-    //                                 <table class="table table-sm table-bordered">
-    //                                     <thead class="table-light">
-    //                                         <tr><th>ID</th><th>Nombre completo</th><th>Profesión</th></tr>
-    //                                     </thead>
-    //                                     <tbody>
-    //                                         ${talleresHtml}
-    //                                     </tbody>
-    //                                 </table>
-    //                             </div>
-    //                         </div>
-    //                         <div class="col-md-6">
-    //                             <h6 class="fw-bold">Informacion Adicional</h6>
-    //                             <table class="table table-sm">
-    //                                 <tr><th>Usuario que ingreso al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
-    //                                 <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</td></tr>
-    //                                 <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
-    //                                 <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
-    //                             </table>
-    //                         </div>
-    //                     </div>
-    //                 `;
-    //                 document.getElementById('detallesTalleristaBody').innerHTML = html;
-    //                 window.talleristaDetallesId = id;
-    //                 new bootstrap.Modal(document.getElementById('modalDetallesTallerista')).show();
-    //             } 
-    //             else {
-    //                 this.mostrarError('No se pudieron cargar los detalles.');
-    //             }
-    //         })
-    //     .catch(error => {
-    //         console.error('Error en fetch verDetalles:', error);
-    //         this.mostrarError('Error de conexion al cargar detalles.');
-    //     });
-    // },
 
     mostrarTodosTalleresOverlay: function() {
         const tallerista = window.talleristaActual;
@@ -594,7 +467,7 @@ const GestionTalleristas = {
                                 <tr>
                                     <td colspan="4" class="text-center">
                                         <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleristas.mostrarTodosTalleresOverlay()">
-                                            Ver los ${totalTalleres} talleres completos
+                                            Ver los ${totalTalleres} Talleres completos
                                         </button>
                                     </td>
                                 </table>
@@ -755,27 +628,26 @@ const GestionTalleristas = {
         Swal.fire({ icon: 'error', title: 'Error', text: mensaje });
     },
 
+    debounce: function(func, delay) {
+        let timer;
+        return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    },
+
     bindEventos: function() {
+        const filtroTiempoReal = this.debounce(() => {
+            this.aplicarFiltros();
+        }, 200);
         document.getElementById('aplicarFiltrosBtn')?.addEventListener('click', () => this.aplicarFiltros());
         document.getElementById('limpiarFiltrosBtn')?.addEventListener('click', () => this.limpiarFiltros());
-        document.getElementById('busqueda_id_profesor')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_id_taller')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_nombre_taller')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); } 
-        });
-        document.getElementById('busqueda_profesion')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_nombre_completo')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
-        document.getElementById('busqueda_correo_electronico')?.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') { this.aplicarFiltros(); }
-        });
+        document.getElementById('busqueda_id_profesor')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_id_taller')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_nombre_taller')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_profesion')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_nombre_completo')?.addEventListener('input', filtroTiempoReal);
+        document.getElementById('busqueda_correo_electronico')?.addEventListener('input', filtroTiempoReal);
         document.getElementById('formTallerista')?.addEventListener('submit', (e) => { 
             e.preventDefault(); 
             this.guardar(); 
