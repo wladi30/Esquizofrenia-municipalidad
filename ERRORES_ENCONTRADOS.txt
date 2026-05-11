@@ -27,3 +27,8 @@ DEBUG BD - Bsucando la persona: rut=10000000, dv=8
 127.0.0.1 - - [27/Apr/2026 16:58:17] "GET /static/js/login.js HTTP/1.1" 200 -
 - Voy a probar cambiar el PROCEDIMIENTO en sql
 - Error Solucionado
+
+11/05 16:39 - "Error en AC_TALLERISTAS: ('25000', '[25000] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]
+El recuento de transacciones después de EXECUTE indica un número no coincidente de instrucciones BEGIN y COMMIT. Recuento anterior = 1, recuento actual = 0. (266) (SQLExecDirectW)')"
+127.0.0.1 - - [11/May/2026 16:38:52] "PUT /api/tallerista-actualizar/157 HTTP/1.1" 500 -
+- Es un error del procedimiento, si no lo soluciono ahora tendra que ser en la casa.

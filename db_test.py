@@ -1,6 +1,5 @@
 from ast import Param
-import datetime
-import functools,pyodbc
+import functools,pyodbc,datetime,traceback
 from flask import flash, redirect, request, session, url_for
 
 from configuracion import DB_DRIVER, DB_NAME, DB_PWD, DB_SERVER, DB_UID
@@ -139,49 +138,59 @@ def ver_estudiante(id_estudiante): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LA
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL VER_ESTUDIANTE(?)}", (id_estudiante))
+        cursor.execute("{CALL VER_ESTUDIANTE(?)}", (id_estudiante,))
         row = cursor.fetchone()
-        if row:
-            resultado = {
-                'id_persona': row[0],
-                'rut_persona': row[1],
-                'dv_persona': row[2],
-                'pasaporte': row[3],
-                'id_estudiante': row[4],
-                'nombre_persona': row[5],
-                'apellido_paterno': row[6],
-                'apellido_materno': row[7],
-                'fec_nacimiento': row[8].strftime('%Y-%m-%d') if row[8] else None,
-                'edad': row[9],
-                'genero': row[10],
-                'telefono': row[11],
-                'telefono_contacto': row[12],
-                'nombre_contacto': row[13],
-                'correo_contacto': row[14],
-                'observacion': row[15],
-                'correo_electronico': row[16],
-                'calle': row[17],
-                'nro_calle': row[18],
-                'nro_block': row[19],
-                'nro_dpto': row[20],
-                'villa': row[21],
-                'id_comuna': row[22],
-                'id_pais': row[23],
-                'id_taller': row[24],
-                'nombre_taller': row[25],
-                'year_proceso': row[26],
-                'pronom_estudiante': row[27],
-                'fec_inscripcion': row[28].strftime('%Y-%m-%d %H:%M:%S') if row[28] else None,
-                'fec_retiro': row[29].strftime('%Y-%m-%d %H:%M:%S') if row[29] else None,
-                'fec_reincorporacion': row[30].strftime('%Y-%m-%d %H:%M:%S') if row[30] else None,
-                'aud_usuario_ingreso': row[31],
-                'aud_fec_ingreso': row[32].strftime('%Y-%m-%d %H:%M:%S') if row[32] else None,
-                'aud_usuario_modifica': row[33],
-                'aud_fec_modifica': row[34].strftime('%Y-%m-%d %H:%M:%S') if row[34] else None,
-            }
+        if not row:
+            return None
+        for i, value in enumerate(row):
+            print(i, value, type(value))
+        resultado = {
+            'id_persona': row[0],
+            'rut_persona': row[1],
+            'dv_persona': row[2],
+            'pasaporte': row[3],
+            'id_estudiante': row[4],
+            'nombre_persona': row[5],
+            'apellido_paterno': row[6],
+            'apellido_materno': row[7],
+            'fec_nacimiento': row[8].strftime('%Y-%m-%d') if row[8] else None,
+            'edad': row[9],
+            'genero': row[10],
+            'telefono': row[11],
+            'telefono_contacto': row[12],
+            'nombre_contacto': row[13],
+            'correo_contacto': row[14],
+            'observacion': row[15],
+            'correo_electronico': row[16],
+            'calle': row[17],
+            'nro_calle': row[18],
+            'nro_block': row[19],
+            'nro_dpto': row[20],
+            'villa': row[21],
+            'id_comuna': row[22],
+            'id_pais': row[23],
+            'id_taller': row[24],
+            'nombre_taller': row[25],
+            'year_proceso': row[26],
+            'pronom_estudiante': row[27],
+            'fec_inscripcion': row[28].strftime('%Y-%m-%d %H:%M:%S') if row[28] else None,
+            'fec_retiro': row[29].strftime('%Y-%m-%d %H:%M:%S') if row[29] else None,
+            'fec_reincorporacion': row[30].strftime('%Y-%m-%d %H:%M:%S') if row[30] else None,
+            'aud_usuario_ingreso_estudiante': row[31] if len(row) > 31 else None,
+            'aud_fec_ingreso_estudiante': row[32].strftime('%Y-%m-%d %H:%M:%S') if len(row) > 32 and row[32] else None,
+            'aud_usuario_ingreso_persona': row[33] if len(row) > 33 else None,
+            'aud_fec_ingreso_persona': row[34].strftime('%Y-%m-%d %H:%M:%S') if len(row) > 34 and row[34] else None,
+            'aud_usuario_modifica_persona': row[35] if len(row) > 35 else None,
+            'aud_fec_modifica_persona': row[36].strftime('%Y-%m-%d %H:%M:%S') if len(row) > 36 and row[36] else None,
+            'aud_usuario_ingreso_integrante_estudiante': row[37] if len(row) > 37 else None,
+            'aud_fec_ingreso_integrante_estudiante': row[38].strftime('%Y-%m-%d %H:%M:%S') if len(row) > 38 and row[38] else None,
+            'aud_usuario_modifica_integrante_estudiante': row[39] if len(row) > 39 else None,
+            'aud_fec_modifica_integrante_estudiante': row[40].strftime('%Y-%m-%d %H:%M:%S') if len(row) > 40 and row[40] else None
+        }
         return resultado
     except Exception as e:
         print(f"Error en VER_ESTUDIANTE: {e}")
+        traceback.print_exc()
         return None
     finally:
         cursor.close()
@@ -251,6 +260,8 @@ def ac_estudiante(id_estudiante=None,nombre_persona=None,apellido_paterno=None,a
             (id_estudiante,nombre_persona,apellido_paterno,apellido_materno,pronom_estudiante,genero,telefono,correo_electronico,telefono_contacto,nombre_contacto,correo_contacto,observacion,ind_estado_integrante,id_pais,
             id_comuna,villa,nro_dpto,nro_block,nro_calle,calle,fec_ingreso,fec_retiro,fec_reincorporacion,aud_usuario_modifica,aud_usuario_modifica_pt,aud_usuario_modifica_p))
         conn.commit()
+        # for i, value in enumerate(cursor):
+        #     print(i, value, type(value))
         return True
     except Exception as e:
         print(f"Error en AC_ESTUDIANTE: {e}")
@@ -359,7 +370,11 @@ def ver_taller(id_taller):
         rows = cursor.fetchall()
         if not rows:
             return None
+        # for i, value in enumerate(rows):
+        #     print(i, value, type(value))
         first = rows[0]
+        for i, value in enumerate(first):
+            print(i, value, type(value))
         taller = {
             'id_taller': first[0],
             'year_proceso': first[1],
@@ -384,10 +399,12 @@ def ver_taller(id_taller):
             'edad_maxima': first[20] if len(first) > 20 else 0,
             'material': first[21] if len(first) > 21 else '',
             'ind_tipo_taller': first[22],
-            'aud_usuario_ingreso': first[30],
-            'aud_fec_ingreso': first[31].strftime('%Y-%m-%d %H:%M:%S') if first[31] else None,
-            'aud_usuario_modifica': first[32],
-            'aud_fec_modifica': first[33].strftime('%Y-%m-%d %H:%M:%S') if first[33] else None,
+            'aud_usuario_ingreso_taller': first[30],
+            'aud_fec_ingreso_taller': first[31].strftime('%Y-%m-%d %H:%M:%S') if first[31] else None,
+            'aud_usuario_modifica_taller': first[32],
+            'aud_fec_modifica_taller': first[33].strftime('%Y-%m-%d %H:%M:%S') if first[33] else None,
+            'aud_usuario_ingreso_gestion': first[34],
+            'aud_fec_ingreso_gestion': first[35].strftime('%Y-%m-%d %H:%M:%S') if first[35] else None,
         }
         profesores = []
         for row in rows:
@@ -548,6 +565,7 @@ def inscribir_el_taller(id_profesor,year_proceso,id_categoria,nombre_taller,obje
     except Exception as e:
         print(f"Error en INSCRIBIR_EL_TALLER: {e}")
         conn.rollback()
+        traceback.print_exc()
         return {"success": False, "message": str(e)}
     finally:
         cursor.close()
@@ -567,6 +585,7 @@ def cambiar_estado_taller_de_baja(id_taller, aud_usuario_modifica):
     except Exception as e:
         print(f"Error en DE_BAJA_ESTADO_TALLER: {e}")
         conn.rollback()
+        traceback.print_exc()
         return False
     finally:
         cursor.close()
@@ -584,7 +603,6 @@ def ver_profesor(id_profesor):
         if not rows:
             return None
         first = rows[0]
-
         # for i, value in enumerate(first):
         #     print(i, value)
         profesor = {
@@ -613,10 +631,16 @@ def ver_profesor(id_profesor):
             'id_pais' : first[22],
             'profesion' : first[23],
             'resumen_curricular' : first[24],
-            'aud_usuario_ingreso' : first[29],
-            'aud_fec_ingreso':first[30].strftime('%Y-%m-%d %H:%M:%S') if first[30] else None,
-            'aud_usuario_modifica' : first[31],
-            'aud_fec_modifica':first[32].strftime('%Y-%m-%d %H:%M:%S') if first[32] else None
+            'aud_usuario_ingreso_profesor' : first[29] if len(first) > 29 else None,
+            'aud_fec_ingreso_profesor': first[30].strftime('%Y-%m-%d %H:%M:%S') if len(first) > 30 and first[30] else None,
+            'aud_usuario_modifica_profesor' : first[31] if len(first) > 31 else None,
+            'aud_fec_modifica_profesor': first[32].strftime('%Y-%m-%d %H:%M:%S') if len(first) > 32 and first[32] else None,
+            'aud_usuario_ingreso_persona' : first[33] if len(first) > 33 else None,
+            'aud_fec_ingreso_persona': first[34].strftime('%Y-%m-%d %H:%M:%S') if len(first) > 34 and first[34] else None,
+            'aud_usuario_modifica_persona' : first[35] if len(first) > 35 else None,
+            'aud_fec_modifica_persona': first[36].strftime('%Y-%m-%d %H:%M:%S') if len(first) > 36 and first[36] else None,
+            'aud_usuario_ingreso_gestion_profesor' : first[37] if len(first) > 37 else None,
+            'aud_fec_ingreso_gestion_profesor': first[38].strftime('%Y-%m-%d %H:%M:%S') if len(first) > 38 and first[38] else None
         }
         talleres = []
         for row in rows:
@@ -632,6 +656,7 @@ def ver_profesor(id_profesor):
         return profesor
     except Exception as e:
         print(f"Error en ver_profesor: {e}")
+        traceback.print_exc()
         return None
     finally:
         cursor.close()

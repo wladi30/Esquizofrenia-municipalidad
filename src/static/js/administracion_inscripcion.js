@@ -399,57 +399,48 @@ const GestionInscripciones = {
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion Personal</h6>
                                 <table class="table table-sm text-nowrap">
-                                    <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
-                                    <tr><th>ID Estudiante:</th><td>${t.id_estudiante || 'No registrado'}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
-                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
-                                    <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Pasaporte:</th><td>${t.pasaporte || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
-                                    <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
-                                    <tr><th>Pronombre:</th><td>${t.pronom_estudiante || 'No registrado'}</td></tr>
-                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
-                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
+                                    <tr><th>ID Persona:</th><td>${t.id_persona || '-'}</td></tr>
+                                    <tr><th>ID Estudiante:</th><td>${t.id_estudiante || '-'}</td></tr>
+                                    <tr><th>Nombre:</th><td>${t.nombre_persona || '-'}</td></tr>
+                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || '-'}</td></tr>
+                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || '-'}</td></tr>
+                                    <tr><th>R.U.T:</th><td>${t.rut_persona || '-'}</td></tr>
+                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || '-'}</td></tr>
+                                    <tr><th>Pasaporte:</th><td>${t.pasaporte || '-'}</td></tr>
+                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || '-'}</td></tr>
+                                    <tr><th>Edad:</th><td>${t.edad || '-'}</td></tr>
+                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || '-'}</td></tr>
+                                    <tr><th>Pronombre:</th><td>${t.pronom_estudiante || '-'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Direcciones</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || 'No registrado'}</td></tr>
-                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || 'No registrado'}</td></tr>
-                                    <tr><th>Villa:</th><td>${t.villa || 'No registrado'}</td></tr>
-                                    <tr><th>Calle:</th><td>${t.calle || 'No registrado'}</td></tr>
-                                    <tr><th>Numero de Calle:</th><td>${t.nro_calle || 'No registrado'}</td></tr>
-                                    <tr><th>Numero de Block:</th><td>${t.nro_block || 'No registrado'}</td></tr>
-                                    <tr><th>Numero de Departamento:</th><td>${t.nro_dpto || 'No registrado'}</td></tr>
+                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || '-'}</td></tr>
+                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || '-'}</td></tr>
+                                    <tr><th>Villa:</th><td>${t.villa || '-'}</td></tr>
+                                    <tr><th>Calle:</th><td>${t.calle || '-'}</td></tr>
+                                    <tr><th>Numero de Calle:</th><td>${t.nro_calle || '-'}</td></tr>
+                                    <tr><th>Numero de Block:</th><td>${t.nro_block || '-'}</td></tr>
+                                    <tr><th>Numero de Departamento:</th><td>${t.nro_dpto || '-'}</td></tr>
                                 </table>
                                 <h6 class="fw-bold">Contactos</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Telefono de la Persona:</th><td>${t.telefono || 'No registrado'}</td></tr>
-                                    <tr><th>Correo de la Persona:</th><td>${t.correo_electronico || 'No registrado'}</td></tr>
-                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || 'No registrado'}</td></tr>
-                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
-                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || 'No registrado'}</td></tr>
+                                    <tr><th>Telefono de la Persona:</th><td>${t.telefono || '-'}</td></tr>
+                                    <tr><th>Correo de la Persona:</th><td>${t.correo_electronico || '-'}</td></tr>
+                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || '-'}</td></tr>
+                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || '-'}</td></tr>
+                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || '-'}</td></tr>
                                 </table>    
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion General</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
-                                    <tr><th>Observacion:</th><td>${t.observacion || 'No registrado'}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion del Integracion</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Fecha de Inscripcion:</th><td>${t.fec_inscripcion || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de Retiro:</th><td>${t.fec_retiro || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de Reincorporacion:</th><td>${t.fec_reincorporacion || 'No registrado'}</td></tr>
+                                    <tr><th>Fecha de Inscripcion:</th><td>${t.fec_inscripcion || '-'}</td></tr>
+                                    <tr><th>Fecha de Retiro:</th><td>${t.fec_retiro || '-'}</td></tr>
+                                    <tr><th>Fecha de Reincorporacion:</th><td>${t.fec_reincorporacion || '-'}</td></tr>
                                 </table>
                             </div>
                             <div class="col-md-6">
@@ -463,14 +454,15 @@ const GestionInscripciones = {
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Informacion Adicional</h6>
                                 <table class="table table-sm">
-                                    <tr><th>Usuario que ingreso al Estudiante/Integrante:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</td></tr>
-                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
+                                    <tr><th>Usuario que ingreso al Estudiante/Integrante:</th><td>${t.aud_usuario_ingreso}</td></tr>
+                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
+                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
+                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
                                 </table>
                             </div>
                         </div>
                     `;
+                    if (t.observacion) html += `<div class="mt-3"><h6 class="fw-bold">Observación:</h6><p>${t.observacion}</p></div>`;
                     document.getElementById('detallesInscripcionBody').innerHTML = html;
                     window.estudianteDetallesId = id;
                     new bootstrap.Modal(document.getElementById('modalDetallesInscripcion')).show();

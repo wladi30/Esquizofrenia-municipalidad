@@ -66,6 +66,7 @@ const GestionTalleres = {
         // this.CargarDepartamentos();
         this.cargarTalleristasSelect();
     },
+
     cargarCategorias: function() {
         fetch('/api/categoria')
             .then(response => response.json())
@@ -149,7 +150,63 @@ const GestionTalleres = {
         });
     },
 
-
+    verTodasAuditorias: function(idTaller, nombreTaller) {
+        const overlay = document.getElementById('overlayAuditoria');
+        const bodyContainer = document.getElementById('overlayAuditoriaBody');
+        const tituloContainer = document.getElementById('overlayAuditoriaTitulo');
+        if (!overlay) {console.error('No se encontró el elemento overlayAuditoria');return;}
+        const scrollY = window.scrollY;
+        const nombreSanitizado = (nombreTaller || '').replace(/['"\\]/g, '');
+        tituloContainer.innerHTML = `<i class="bi bi-clock-history me-2"></i>Auditoría Completa - Taller: ${nombreSanitizado || idTaller}`;
+        bodyContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando auditorías...</p></div>';
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        fetch(`/api/taller-get/${idTaller}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const t = result.data;
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-dark">
+                                    <tr><th>Origen</th><th>Tipo</th><th>Usuario</th><th>Fecha</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS TALLER</td></tr>
+                                    <tr><td>Taller</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_taller || '-'}</td><td>${t.aud_fec_ingreso_taller || '-'}</td></tr>
+                                    <tr><td>Taller</td><td><span class="badge bg-warning text-dark" style="font-size: 0.8rem;">MODIFICACION</span></td><td>${t.aud_usuario_modifica_taller || '-'}</td><td>${t.aud_fec_modifica_taller || '-'}</td></tr>
+                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS GESTION</td></tr>
+                                    <tr><td>Gestion</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_gestion || '-'}</td><td>${t.aud_fec_ingreso_gestion || '-'}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>`;
+                    bodyContainer.innerHTML = html;
+                } else {
+                    bodyContainer.innerHTML = `<div class="alert alert-danger">Error al cargar las auditorías</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                bodyContainer.innerHTML = `<div class="alert alert-danger">Error de conexión al cargar las auditorías</div>`;
+            });
+        const closeBtn = document.getElementById('closeOverlayAuditoria');
+        const closeBtn2 = document.getElementById('btnCerrarAuditoria');
+        const closeOverlay = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            window.scrollTo(0, scrollY);
+        };
+        if (closeBtn) closeBtn.onclick = closeOverlay;
+        if (closeBtn2) closeBtn2.onclick = closeOverlay;
+        overlay.onclick = (e) => {
+            if (e.target === overlay) closeOverlay(e);
+        };
+    },
 
     limpiarFiltros: function() {
         document.getElementById('filtroAnio').value = '';
@@ -482,14 +539,12 @@ const GestionTalleres = {
                     document.getElementById('edadMaxima').value = t.edad_maxima;
                     document.getElementById('material').value = t.material;
                     document.getElementById('tipoTaller').value = t.ind_tipo_taller;
-                    // const selectTallerista = document.getElementById('tallerista');
-                    // if (selectTallerista && t.id_profesor) {selectTallerista.value = t.id_profesor;}
                     if (t.id_profesor) {const idsParaMarcar = t.id_profesor.toString().split(',');idsParaMarcar.forEach(id => {const checkbox = document.querySelector(`#t_check_${id.trim()}`);
                         if (checkbox) checkbox.checked = true;});}
-                    document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso;
-                    document.getElementById('fecIngreso').value = t.aud_fec_ingreso;
-                    document.getElementById('usuarioModifica').value = t.aud_usuario_modifica;
-                    document.getElementById('fecModifica').value = t.aud_fec_modifica;
+                    document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso_taller;
+                    document.getElementById('fecIngreso').value = t.aud_fec_ingreso_taller;
+                    document.getElementById('usuarioModifica').value = t.aud_usuario_modifica_taller;
+                    document.getElementById('fecModifica').value = t.aud_fec_modifica_taller;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
                 else {this.mostrarError('No se pudo cargar el taller para editar.');}
@@ -634,10 +689,6 @@ const GestionTalleres = {
                                 <table class="table table-sm">
                                     <tr><th>ID Departamento:</th><td>${t.id_departamento}</td></tr>
                                     <tr><th>Tipo taller:</th><td>${t.ind_tipo_taller}</td></tr>
-                                    <tr><th>Usuario ingreso:</th><td>${t.aud_usuario_ingreso}</td></tr>
-                                    <tr><th>Fecha ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
-                                    <tr><th>Usuario modifica:</th><td>${t.aud_usuario_modifica}</td></tr>
-                                    <tr><th>Fecha modifica:</th><td>${t.aud_fec_modifica}</td></tr>
                                     <tr><th>Fecha cambio estado:</th><td>${t.fec_estado_taller}</td></tr>
                                 </table>
                             </div>
@@ -655,12 +706,30 @@ const GestionTalleres = {
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-info btn-ver-todas-auditorias" 
+                                            data-id="${t.id_taller}"
+                                            data-nombre="${(t.nombre_taller || '-')}">
+                                        <i class="bi bi-file-earmark-person-fill"></i>Ver las auditorías
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     `;
                     if (t.observacion) html += `<div class="mt-3"><h6 class="fw-bold">Observación:</h6><p>${t.observacion}</p></div>`;
                     if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="fw-bold">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
                     if (t.material) html += `<div class="mt-2"><h6 class="fw-bold">Materiales:</h6><p>${t.material}</p></div>`;
                     if (t.requisito) html += `<div class="mt-2"><h6 class="fw-bold">Requisitos:</h6><p>${t.requisito}</p></div>`;
                     document.getElementById('detallesTallerBody').innerHTML = html;
+                    const auditButton = document.querySelector('#detallesTallerBody .btn-ver-todas-auditorias');
+                    if (auditButton) {auditButton.addEventListener('click', (e) => {
+                            const id = auditButton.getAttribute('data-id');
+                            const nombre = auditButton.getAttribute('data-nombre');
+                            this.verTodasAuditorias(id,nombre);
+                        });
+                    }
                     window.tallerDetallesId = id;
                     new bootstrap.Modal(document.getElementById('modalDetallesTaller')).show();
                 }

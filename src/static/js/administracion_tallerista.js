@@ -17,10 +17,10 @@ const nombresComunas = {
 };
 
 const nombresEstadoTaller = {
-    1: '<span class="badge bg-info">INGRESADO</span>',
-    2: '<span class="badge bg-success">CALENDARIZADO</span>',
-    3: '<span class="badge bg-secondary">CERRADO</span>',
-    4: '<span class="badge bg-danger">DE BAJA</span>'
+    1: '<span class="badge bg-info" style="font-size: 0.8rem;">INGRESADO</span>',
+    2: '<span class="badge bg-success" style="font-size: 0.8rem;">CALENDARIZADO</span>',
+    3: '<span class="badge bg-secondary" style="font-size: 0.8rem;">CERRADO</span>',
+    4: '<span class="badge bg-danger" style="font-size: 0.8rem;">DE BAJA</span>'
 };
 
 const GestionTalleristas = {
@@ -49,6 +49,67 @@ const GestionTalleristas = {
     formatearRut: function (rut) {
         if (!rut) return '';
         return rut.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
+
+    verTodasAuditorias: function(idTallerista, nombreTallerista) {
+        const overlay = document.getElementById('overlayAuditoria');
+        const bodyContainer = document.getElementById('overlayAuditoriaBody');
+        const tituloContainer = document.getElementById('overlayAuditoriaTitulo');
+        if (!overlay) {console.error('No se encontró el elemento overlayAuditoria');return;}
+        const scrollY = window.scrollY;
+        const nombreSanitizado = (nombreTallerista || '').replace(/['"\\]/g, '');
+        tituloContainer.innerHTML = `<i class="bi bi-file-earmark-person-fill"></i>Todas las auditorías de la persona: ${nombreSanitizado || idTallerista}`;
+        bodyContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando auditorías...</p></div>';
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        fetch(`/api/tallerista-get/${idTallerista}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const t = result.data;
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-dark">
+                                    <tr><th>Origen</th><th>Tipo</th><th>Usuario</th><th>Fecha</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS PERSONA</td></tr>
+                                    <tr><td>Persona</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_persona || '-'}</td><td>${t.aud_fec_ingreso_persona || '-'}</td></tr>
+                                    <tr><td>Persona</td><td><span class="badge bg-warning text-dark" style="font-size: 0.8rem;">MODIFICACION</span></td><td>${t.aud_usuario_modifica_persona || '-'}</td><td>${t.aud_fec_modifica_persona || '-'}</td></tr>
+                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS PROFESOR</td></tr>
+                                    <tr><td>Profesor</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_profesor || '-'}</td><td>${t.aud_fec_ingreso_profesor || '-'}</td></tr>
+                                    <tr><td>Profesor</td><td><span class="badge bg-warning text-dark" style="font-size: 0.8rem;">MODIFICACION</span></td><td>${t.aud_usuario_modifica_profesor || '-'}</td><td>${t.aud_fec_modifica_profesor || '-'}</td></tr>
+                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS GESTION</td></tr>
+                                    <tr><td>Gestion</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_gestion_profesor || '-'}</td><td>${t.aud_fec_ingreso_gestion_profesor || '-'}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>`;
+                    bodyContainer.innerHTML = html;
+                } else {
+                    bodyContainer.innerHTML = `<div class="alert alert-danger">Error al cargar las auditorías</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                bodyContainer.innerHTML = `<div class="alert alert-danger">Error de conexión al cargar las auditorías</div>`;
+            });
+        const closeBtn = document.getElementById('closeOverlayAuditoria');
+        const closeBtn2 = document.getElementById('btnCerrarAuditoria');
+        const closeOverlay = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            window.scrollTo(0, scrollY);
+        };
+        if (closeBtn) closeBtn.onclick = closeOverlay;
+        if (closeBtn2) closeBtn2.onclick = closeOverlay;
+        overlay.onclick = (e) => {
+            if (e.target === overlay) closeOverlay(e);
+        };
     },
 
     cargarGeneroSelect: function() {
@@ -337,7 +398,7 @@ const GestionTalleristas = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    console.log("Datos completos del tallerista:", t);
+                    // console.log("Datos completos del tallerista:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
                     let hiddenId = document.getElementById('talleristaId');
                     if (!hiddenId) {
@@ -380,10 +441,14 @@ const GestionTalleristas = {
                     document.getElementById('numeroBlock').value = t.nro_block || '';
                     document.getElementById('numeroCalle').value = t.nro_calle || '';
                     document.getElementById('calle').value = t.calle || '';
-                    document.getElementById('audUsuarioIngreso').value = t.aud_usuario_ingreso;
-                    document.getElementById('audFecIngreso').value = t.aud_fec_ingreso;
-                    document.getElementById('audUsuarioModifica').value = t.aud_usuario_modifica;
-                    document.getElementById('audFecModifica').value = t.aud_fec_modifica;
+                    document.getElementById('audUsuarioIngresoP').value = t.aud_usuario_ingreso_persona;
+                    document.getElementById('audFecIngresoP').value = t.aud_fec_ingreso_persona;
+                    document.getElementById('audUsuarioModificaP').value = t.aud_usuario_modifica_persona;
+                    document.getElementById('audFecModificaP').value = t.aud_fec_modifica_persona;
+                    document.getElementById('audUsuarioIngresoT').value = t.aud_usuario_ingreso_profesor;
+                    document.getElementById('audFecIngresoT').value = t.aud_fec_ingreso_profesor;
+                    document.getElementById('audUsuarioModificaT').value = t.aud_usuario_modifica_profesor;
+                    document.getElementById('audFecModificaT').value = t.aud_fec_modifica_profesor;
                     const fecNaci = document.getElementById('fechaNacimiento');
                     if (fecNaci) {
                         fecNaci.value = t.fec_nacimiento || '';
@@ -402,6 +467,7 @@ const GestionTalleristas = {
         if (!tallerista || !tallerista.talleres || tallerista.talleres.length === 0) return;
         const overlay = document.getElementById('overlayTalleres');
         const bodyContainer = document.getElementById('overlayTalleresBody');
+        const scrollY = window.scrollY;
         let html = `
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
@@ -429,20 +495,21 @@ const GestionTalleristas = {
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         const closeBtn = document.getElementById('closeOverlayTalleres');
-        const closeOverlay = () => {overlay.style.display = 'none';document.body.style.overflow = '';};
-        closeBtn.onclick = closeOverlay;
-        overlay.onclick = (e) => {if (e.target === overlay) closeOverlay();};
+        const closeOverlay = (e) => {if (e) {e.preventDefault();e.stopPropagation();}
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+        window.scrollTo(0, scrollY);};if (closeBtn) closeBtn.onclick = closeOverlay;
+        overlay.onclick = (e) => {if (e.target === overlay) closeOverlay(e);};
     },
 
     // ESTO FALTA POR MODIFICAR la idea de esto es que se puedan ver los detalles del tallerista, pero son muchos asi que tengo que preparar esto
-
     verDetalles: function(id) {
         fetch(`/api/tallerista-get/${id}`)
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    console.log("Datos del tallerista:", t);
+                    // console.log("Datos completos del tallerista:", t);
                     window.talleristaActual = t;
                     const talleresLista = t.talleres || [];
                     const totalTalleres = talleresLista.length;
@@ -461,19 +528,21 @@ const GestionTalleristas = {
                         const mostrarInicial = 3;
                         const tieneMas = totalTalleres > mostrarInicial;
                         const talleresMostrar = tieneMas ? talleresLista.slice(0, mostrarInicial) : talleresLista;
-                        talleresMostrar.forEach(taller => {talleresHtml += generarFilaTaller(taller);});
+                        talleresMostrar.forEach(taller => { talleresHtml += generarFilaTaller(taller); });
                         if (tieneMas) {
                             talleresHtml += `
                                 <tr>
                                     <td colspan="4" class="text-center">
                                         <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleristas.mostrarTodosTalleresOverlay()">
-                                            Ver los ${totalTalleres} Talleres completos
+                                            Ver los ${totalTalleres} talleres completos
                                         </button>
                                     </td>
-                                </table>
+                                </tr>
                             `;
                         }
-                    } else {talleresHtml = `<tr><td colspan="4" class="text-center text-muted">No tiene talleres asignados</td></tr>`;}
+                    } else {
+                        talleresHtml = `<tr><td colspan="4" class="text-center text-muted">No tiene talleres asignados</td></tr>`;
+                    }
                     let html = `
                         <div class="row">
                             <div class="col-md-6">
@@ -504,32 +573,30 @@ const GestionTalleristas = {
                                 </table>    
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold">Información General</h6>
-                                    <table class="table table-sm">
-                                        <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
-                                        <tr><th>Observación:</th><td>${t.observacion || 'No registrado'}</td></tr>
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold">Resumen Profesional</h6>
-                                    <table class="table table-sm">
-                                        <tr><th>Profesión:</th><td>${t.profesion || 'No registrado'}</td></tr>
-                                        <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
-                                    </table>
-                                </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Información General</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
+                                    <tr><th>Observación:</th><td>${t.observacion || 'No registrado'}</td></tr>
+                                </table>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold">Información Adicional</h6>
-                                    <table class="table table-sm">
-                                        <tr><th>Usuario que ingresó al profesor:</th><td>${t.aud_usuario_ingreso || 'No registrado'}</td></tr>
-                                        <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso || 'No registrado'}</tr></tr>
-                                        <tr><th>Usuario última modificación:</th><td>${t.aud_usuario_modifica || 'No registrado'}</td></tr>
-                                        <tr><th>Fecha última modificación:</th><td>${t.aud_fec_modifica || 'No registrado'}</td></tr>
-                                    </table>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Resumen Profesional</h6>
+                                <table class="table table-sm">
+                                    <tr><th>Profesión:</th><td>${t.profesion || 'No registrado'}</td></tr>
+                                    <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-info btn-ver-todas-auditorias" 
+                                            data-id="${t.id_profesor}"
+                                            data-nombre="${(t.nombre_persona || '') + ' ' + (t.apellido_paterno || '')}">
+                                        <i class="bi bi-file-earmark-person-fill"></i>Ver las auditorías
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -539,7 +606,7 @@ const GestionTalleristas = {
                                 <div class="table-responsive">
                                     <table class="table table-sm table-bordered">
                                         <thead class="table-light">
-                                            <tr><th>ID</th><th>Nombre del Taller</th><th>Año Proceso</th><th>Estado</th></tr>
+                                            <tr><th>ID</th><th>Nombre del Taller</th><th>Estado</th><th>Año Proceso</th></tr>
                                         </thead>
                                         <tbody>
                                             ${talleresHtml}
@@ -549,7 +616,16 @@ const GestionTalleristas = {
                             </div>
                         </div>
                     `;
+                    
                     document.getElementById('detallesTalleristaBody').innerHTML = html;
+                    const auditButton = document.querySelector('#detallesTalleristaBody .btn-ver-todas-auditorias');
+                    if (auditButton) {
+                        auditButton.addEventListener('click', (e) => {
+                            const id = auditButton.getAttribute('data-id');
+                            const nombre = auditButton.getAttribute('data-nombre');
+                            this.verTodasAuditorias(id, nombre);
+                        });
+                    }
                     window.talleristaDetallesId = id;
                     new bootstrap.Modal(document.getElementById('modalDetallesTallerista')).show();
                 } else {

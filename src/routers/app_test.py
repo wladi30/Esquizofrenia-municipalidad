@@ -21,8 +21,6 @@ def index_chamuco():
 # al final y creo que la tabla de funcionario tenre que asignarle el tema de poder tener admin y super admin(cringe) para poder mostrar bien lo que tengo
 # el admin deberia ser para ellos y que pueda ver el tema de las acciones que ocurren en los talleres y personas, tengo planeado que sea algo parecido a lo que me mostro
 # el victor, usando el log guardar cada vez que alguien hace alguna modificacion o elimina algun taller(estado 4) , tambien cuando crea algo , etc, ese tipos de acciones guardarlas
-# por lo demas escuche de la wea del super admin, que es ? se supone que sera algo que use yo?, ni idea y me da paja preguntar pero si lo hago debe ser a jm el benja no me responde del todo
-# o al victor
 
 # Revisar el db_test, quedan partes que aun les falta tener un procedimiento, tambien ya tengo que empezar a quitar los comentarios del frontend al menos, tambien no deberia ser un problema
 # jm y b debe estar viendo la pantalla constantemente asi que saben como funciona, creo, tambien puede ser inlegible lo que estoy haciendo asi que deberia preguntar si se entiende algo
