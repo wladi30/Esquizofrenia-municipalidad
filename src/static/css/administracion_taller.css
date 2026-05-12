@@ -59,77 +59,90 @@
     width: 100%;
     height: 6px;
     background-color: #e2e8f0;
-    border-radius: 0;
+    border-radius: 18px;
     margin-top: 5px;
 }
+
 .cupos-fill {
     height: 100%;
     background-color: #2563eb;
-    border-radius: 0;
+    border-radius: 18px;
 }
 
 .filtros-card {
     border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
+
 .filtros-card .form-label {
     font-weight: 500;
     color: #334155;
     margin-bottom: 0.25rem;
 }
+
 .filtros-card .form-control,
 .filtros-card .form-select {
-    border-radius: 0; /* Inputs cuadrados */
+    border-radius: 18px;
     border: 1px solid #cbd5e1;
 }
+
 .filtros-card .form-control:focus,
 .filtros-card .form-select:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
 }
 
-/* --- Estilos para modales (mas serios) --- */
-.modal-content {
-    border-radius: 0; /* Modal cuadrado */
-    border: 1px solid #cbd5e1;
+.modal-content{
+    border-radius: 18px;
+    overflow: hidden;
 }
+
 .modal-header {
-    background-color: #0B3B5C; /* Color primario mas oscuro y serio */
-    color: white;
-    border-radius: 0;
-    padding: 1rem 1.5rem;
+    background: linear-gradient(
+        90deg,
+        var(--color-primario),
+        var(--color-secundario)
+    );
 }
+
 .modal-header .btn-close {
     filter: brightness(0) invert(1);
 }
+
 .modal-title {
     font-weight: 500;
     font-size: 1.1rem;
 }
+
 .modal-body {
     padding: 1.5rem;
 }
+
 .modal-footer {
     border-top: 1px solid #e2e8f0;
     padding: 1rem 1.5rem;
 }
 
 .btn {
-    border-radius: 0;
+    border-radius: 18px;
     font-weight: 500;
 }
+
 .btn-primary {
-    background-color: #0B3B5C;
-    border-color: #0B3B5C;
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
 }
+
 .btn-primary:hover {
-    background-color: #062435;
-    border-color: #062435;
+    background-color: var(--color-primario-hover);
+    border-color: var(--color-primario-hover);
 }
+
 .btn-outline-primary {
     color: #0B3B5C;
     border-color: #0B3B5C;
 }
+
 .btn-outline-primary:hover {
     background-color: #0B3B5C;
     border-color: #0B3B5C;
@@ -137,15 +150,17 @@
 }
 
 .pagination .page-link {
-    border-radius: 0;
+    border-radius: 4px;
     color: #0B3B5C;
     border: 1px solid #d1d5db;
 }
+
 .pagination .page-item.active .page-link {
     background-color: #0B3B5C;
     border-color: #0B3B5C;
     color: white;
 }
+
 .pagination .page-link:focus {
     box-shadow: none;
 }

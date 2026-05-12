@@ -18,6 +18,11 @@ def index_chamuco():
 # te permite ver cuantos talleristas tienes con sus nombres , etc. Tambien deberia ser que aqui mismo te permita ingresar al tema de poder ver los talleristas y editarlo
 # seria un gran QoL eso.
 
+# CSS
+# mejorando todo el css y como se ve , por ahora los colores no tengo idea cual seria el mejor pero sin duda se ve mejor que antes, paso de verse como un excel mal hecho ahora a algo
+# mas suave?, ni idea pero lo que si se es que se ve entero gey la verdad ,  los pronombres y los colores lo hacen solo peor, ademas despues le voy a poner el tema de lenguaje
+# neutral, sera comprensible? ni perra idea pero si ellos lo entienden entonces esta bien
+
 # al final y creo que la tabla de funcionario tenre que asignarle el tema de poder tener admin y super admin(cringe) para poder mostrar bien lo que tengo
 # el admin deberia ser para ellos y que pueda ver el tema de las acciones que ocurren en los talleres y personas, tengo planeado que sea algo parecido a lo que me mostro
 # el victor, usando el log guardar cada vez que alguien hace alguna modificacion o elimina algun taller(estado 4) , tambien cuando crea algo , etc, ese tipos de acciones guardarlas

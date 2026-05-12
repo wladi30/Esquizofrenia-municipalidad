@@ -167,20 +167,74 @@ const GestionTalleres = {
                 if (result.success) {
                     const t = result.data;
                     let html = `
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <thead class="table-dark">
-                                    <tr><th>Origen</th><th>Tipo</th><th>Usuario</th><th>Fecha</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS TALLER</td></tr>
-                                    <tr><td>Taller</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_taller || '-'}</td><td>${t.aud_fec_ingreso_taller || '-'}</td></tr>
-                                    <tr><td>Taller</td><td><span class="badge bg-warning text-dark" style="font-size: 0.8rem;">MODIFICACION</span></td><td>${t.aud_usuario_modifica_taller || '-'}</td><td>${t.aud_fec_modifica_taller || '-'}</td></tr>
-                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS GESTION</td></tr>
-                                    <tr><td>Gestion</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_gestion || '-'}</td><td>${t.aud_fec_ingreso_gestion || '-'}</td></tr>
-                                </tbody>
-                            </table>
-                        </div>`;
+                    <div class="detalle-grid-auditoria">
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-journal-text"></i>
+                                Datos Taller
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación de Taller
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_taller || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_taller || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-modificacion">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Modificación de Taller
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_modifica_taller || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_modifica_taller || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-diagram-3"></i>
+                                Datos Gestión
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación de Gestión
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_gestion || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_gestion || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
                     bodyContainer.innerHTML = html;
                 } else {
                     bodyContainer.innerHTML = `<div class="alert alert-danger">Error al cargar las auditorías</div>`;
@@ -312,15 +366,17 @@ const GestionTalleres = {
                 </td>
                 <td><span>${t.YEAR_PROCESO}</span></td>
                 <td class="text-end pe-4">
-                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleres.editarTaller(${t.ID_TALLER})" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="GestionTalleres.confirmarEliminar(${t.ID_TALLER}, '${t.NOMBRE_TALLER?.replace(/'/g, "\\'") || ''}')" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                    <div class="acciones-tabla">
+                        <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleres.editarTaller(${t.ID_TALLER})" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="GestionTalleres.confirmarEliminar(${t.ID_TALLER}, '${t.NOMBRE_TALLER?.replace(/'/g, "\\'") || ''}')" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -616,112 +672,208 @@ const GestionTalleres = {
                     const profesoresLista = t.profesores || [];
                     const totalProfes = profesoresLista.length;
                     if (totalProfes > 0) {
-                        const mostrarInicial = 3;
+                        const mostrarInicial = 2;
                         const tieneMas = totalProfes > mostrarInicial;
                         const profesMostrar = tieneMas ? profesoresLista.slice(0, mostrarInicial) : profesoresLista;
                         profesMostrar.forEach(prof => {
                             const nombreCompleto = `${prof.nombre_persona || ''} ${prof.apellido_paterno || ''} ${prof.apellido_materno || ''}`.trim();
                             profesoresHtml += `
-                                <tr>
-                                    <td>${prof.id_profesor || 'S.A'}</td>
-                                    <td>${nombreCompleto || '-'}</td>
-                                    <td>${prof.profesion || '-'}</td>
-                                </tr>
-                            `;
+                            <div class="profesor-item">
+                                <div class="profesor-top">
+                                    <div class="profesor-nombre">
+                                        ${nombreCompleto || '-'}
+                                    </div>
+                                    <span class="profesor-id">
+                                        ID: ${prof.id_profesor || 'S.A'}
+                                    </span>
+                                </div>
+                                <div class="profesor-profesion">
+                                    ${prof.profesion || '-'}
+                                </div>
+                            </div>`;
                         });
                         if (tieneMas) {
                             profesoresHtml += `
-                                <tr>
-                                    <td colspan="4" class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleres.mostrarTodosProfesores()">
-                                            Ver los ${totalProfes} Talleristas completos
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
+                            <div class="text-center mt-3">
+                                <button
+                                    class="btn btn-outline-primary"
+                                    onclick="GestionTalleres.mostrarTodosProfesores()">
+                                    Ver los ${totalProfes} Talleristas completos
+                                </button>
+                            </div>
+                        `;
                         }
-                    } else {profesoresHtml = `<tr><td colspan="4" class="text-center text-muted">No hay profesores asignados</td></tr>`;}
+                    } else {profesoresHtml = `<div class="sin-profesores"><i class="bi bi-person-x"></i><span>No hay profesores asignados</span></div>`;}
                     let html = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Información General</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID:</th><td>${t.id_taller}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_taller}</td></tr>
-                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso}</td></tr>
-                                    <tr><th>Categoría:</th><td>${this.obtenerNombreCategoria(t.id_categoria) || t.id_categoria}</td></tr>
-                                    <tr><th>Lugar:</th><td>${t.lugar}</td></tr>
-                                    <tr><th>Estado:</th><td>${estadoBadge}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Fechas y Horarios</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Inicio:</th><td>${t.fec_inicio}</td></tr>
-                                    <tr><th>Término:</th><td>${t.fec_termino}</td></tr>
-                                    <tr><th>N° Clases:</th><td>${t.nro_clases_anual}</td></tr>
-                                    <tr><th>Minutos/clase:</th><td>${t.nro_minutos}</td></tr>
-                                    <tr><th>Horas Totales:</th><td>${t.horas_totales}</td></tr>
-                                </table>    
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Cupos</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Inscritos:</th><td>${inscritos}</td></tr>
-                                    <tr><th>Máximo:</th><td>${maximo}</td></tr>
-                                    <tr><th>Disponibles:</th><td class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</td></tr>
-                                    <tr><th>Mínimo:</th><td>${t.minimo_estudiante}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Requisitos de Edad</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Edad Mínima:</th><td>${t.edad_minima} años</td></tr>
-                                    <tr><th>Edad Máxima:</th><td>${t.edad_maxima} años</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Información Adicional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID Departamento:</th><td>${t.id_departamento}</td></tr>
-                                    <tr><th>Tipo taller:</th><td>${t.ind_tipo_taller}</td></tr>
-                                    <tr><th>Fecha cambio estado:</th><td>${t.fec_estado_taller}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Talleristas (${totalProfes})</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-bordered">
-                                        <thead class="table-light">
-                                            <tr><th>ID</th><th>Nombre completo</th><th>Profesión</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            ${profesoresHtml}
-                                        </tbody>
-                                    </table>
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div class="detalle-card">
+                                <div class="detalle-header">
+                                    <i class="bi bi-info-circle"></i>
+                                    Información General
+                                </div>
+                                <div class="detalle-grid">
+                                    <div class="detalle-item">
+                                        <span>ID</span>
+                                        <strong>${t.id_taller}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Estado</span>
+                                        ${estadoBadge}
+                                    </div>
+                                    <div class="detalle-item detalle-full">
+                                        <span>Nombre</span>
+                                        <strong>${t.nombre_taller}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Categoría</span>
+                                        <strong>${this.obtenerNombreCategoria(t.id_categoria)}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Lugar</span>
+                                        <strong>${t.lugar}</strong>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-outline-info btn-ver-todas-auditorias" 
-                                            data-id="${t.id_taller}"
-                                            data-nombre="${(t.nombre_taller || '-')}">
-                                        <i class="bi bi-file-earmark-person-fill"></i>Ver las auditorías
-                                    </button>
+                        <div class="col-lg-6">
+                            <div class="detalle-card">
+                                <div class="detalle-header">
+                                    <i class="bi bi-info-circle"></i>
+                                    Fechas y Horarios
+                                </div>
+                                <div class="detalle-grid">
+                                    <div class="detalle-item">
+                                        <span>Inicio</span>
+                                        <strong>${t.fec_inicio}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Termino</span>
+                                        <strong>${t.fec_termino}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>N° Clases</span>
+                                        <strong>${t.nro_clases_anual}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Minutos/clase</span>
+                                        <strong>${t.nro_minutos}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Horas Totales</span>
+                                        <strong>${t.horas_totales}</strong>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    `;
-                    if (t.observacion) html += `<div class="mt-3"><h6 class="fw-bold">Observación:</h6><p>${t.observacion}</p></div>`;
-                    if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="fw-bold">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
-                    if (t.material) html += `<div class="mt-2"><h6 class="fw-bold">Materiales:</h6><p>${t.material}</p></div>`;
-                    if (t.requisito) html += `<div class="mt-2"><h6 class="fw-bold">Requisitos:</h6><p>${t.requisito}</p></div>`;
+                        <div class="col-lg-6">
+                            <div class="detalle-card">
+                                <div class="detalle-header">
+                                    <i class="bi bi-info-circle"></i>
+                                    Cupos
+                                </div>
+                                <div class="detalle-grid">
+                                    <div class="detalle-item">
+                                        <span>Inscritos</span>
+                                        <strong>${inscritos}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Máximo</span>
+                                        <strong>${maximo}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Disponibles</span>
+                                        <strong class="${disponibles > 0 ? 'text-success' : 'text-danger'} fw-bold">${disponibles}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Mínimo</span>
+                                        <strong>${t.minimo_estudiante}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="detalle-card">
+                                <div class="detalle-header">
+                                    <i class="bi bi-info-circle"></i>
+                                    Requisitos de Edad
+                                </div>
+                                <div class="detalle-grid">
+                                    <div class="detalle-item">
+                                        <span>Edad Mínima</span>
+                                        <strong>${t.edad_minima} años</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Edad Máxima</span>
+                                        <strong>${t.edad_maxima} años</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="detalle-card">
+                                <div class="detalle-header">
+                                    <i class="bi bi-info-circle"></i>
+                                    Información Adicional
+                                </div>
+                                <div class="detalle-grid">
+                                    <div class="detalle-item">
+                                        <span>ID Departamento</span>
+                                        <strong>${t.id_departamento}</strong>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <span>Tipo taller</span>
+                                        <strong>${t.ind_tipo_taller}</strong>
+                                    </div>
+                                    <div class="detalle-item detalle-full">
+                                        <span>Fecha del ultimo cambio de estado del Taller</span>
+                                        <strong>${t.fec_estado_taller}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="detalle-card">
+                                <div class="detalle-header">
+                                    <i class="bi bi-person-workspace"></i>
+                                    Talleristas (${totalProfes})
+                                </div>
+                                <div class="detalle-grid-profesores">
+                                    ${profesoresHtml}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="acciones-detalle-card">
+                                <div class="acciones-detalle-info">
+                                    <div class="acciones-detalle-icono">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <div>
+                                        <div class="acciones-detalle-titulo">
+                                            Auditoría del Taller
+                                        </div>
+                                        <div class="acciones-detalle-texto">
+                                            Revisa el historial completo de creación y modificaciones del taller.
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="btn btn-auditoria btn-ver-todas-auditorias"
+                                    data-id="${t.id_taller}"
+                                    data-nombre="${(t.nombre_taller || '-')}">
+                                    <i class="bi bi-file-earmark-person-fill"></i>
+                                    Ver las auditorías
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                    if (t.observacion) html += `<div class="mt-3"><h6 class="titulo-detalle">Observación:</h6><p>${t.observacion}</p></div>`;
+                    if (t.objetivo_taller) html += `<div class="mt-3"><h6 class="titulo-detalle">Objetivo:</h6><p>${t.objetivo_taller}</p></div>`;
+                    if (t.material) html += `<div class="mt-2"><h6 class="titulo-detalle">Materiales:</h6><p>${t.material}</p></div>`;
+                    if (t.requisito) html += `<div class="mt-2"><h6 class="titulo-detalle">Requisitos:</h6><p>${t.requisito}</p></div>`;
                     document.getElementById('detallesTallerBody').innerHTML = html;
                     const auditButton = document.querySelector('#detallesTallerBody .btn-ver-todas-auditorias');
                     if (auditButton) {auditButton.addEventListener('click', (e) => {

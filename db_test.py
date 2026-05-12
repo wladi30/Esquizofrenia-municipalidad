@@ -142,8 +142,8 @@ def ver_estudiante(id_estudiante): #ESTO DEBERIA SOLUCIONAR LOS PROBLEMAS CON LA
         row = cursor.fetchone()
         if not row:
             return None
-        for i, value in enumerate(row):
-            print(i, value, type(value))
+        # for i, value in enumerate(row):
+        #     print(i, value, type(value))
         resultado = {
             'id_persona': row[0],
             'rut_persona': row[1],
@@ -250,18 +250,16 @@ def ver_estudiante_con_taller(id_estudiante, id_taller):
 
 def ac_estudiante(id_estudiante=None,nombre_persona=None,apellido_paterno=None,apellido_materno=None,pronom_estudiante=None,genero=None,telefono=None,correo_electronico=None,telefono_contacto=None,nombre_contacto=None,
                   correo_contacto=None,observacion=None,ind_estado_integrante=None,id_pais=None,id_comuna=None,villa=None,nro_dpto=None,nro_block=None,nro_calle=None,calle=None,fec_ingreso=None,fec_retiro=None,
-                  fec_reincorporacion=None,aud_usuario_modifica=None,aud_usuario_modifica_pt=None,aud_usuario_modifica_p=None):
+                  fec_reincorporacion=None,aud_usuario_modifica=None):
     conn = get_connection()
     if not conn:
         return False
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+        cursor.execute("{CALL AC_TALLERISTAS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
             (id_estudiante,nombre_persona,apellido_paterno,apellido_materno,pronom_estudiante,genero,telefono,correo_electronico,telefono_contacto,nombre_contacto,correo_contacto,observacion,ind_estado_integrante,id_pais,
-            id_comuna,villa,nro_dpto,nro_block,nro_calle,calle,fec_ingreso,fec_retiro,fec_reincorporacion,aud_usuario_modifica,aud_usuario_modifica_pt,aud_usuario_modifica_p))
+            id_comuna,villa,nro_dpto,nro_block,nro_calle,calle,fec_ingreso,fec_retiro,fec_reincorporacion,aud_usuario_modifica))
         conn.commit()
-        # for i, value in enumerate(cursor):
-        #     print(i, value, type(value))
         return True
     except Exception as e:
         print(f"Error en AC_ESTUDIANTE: {e}")
@@ -366,15 +364,13 @@ def ver_taller(id_taller):
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try:
-        cursor.execute("{CALL VER_TALLERES(?)}", (id_taller))
+        cursor.execute("{CALL VER_TALLERES(?)}", (id_taller,))
         rows = cursor.fetchall()
         if not rows:
             return None
-        # for i, value in enumerate(rows):
-        #     print(i, value, type(value))
         first = rows[0]
-        for i, value in enumerate(first):
-            print(i, value, type(value))
+        # for i, value in enumerate(first):
+        #     print(i, value, type(value))
         taller = {
             'id_taller': first[0],
             'year_proceso': first[1],
@@ -598,7 +594,7 @@ def ver_profesor(id_profesor):
         return {"success": False, "message": "Error de conexión"}
     cursor = conn.cursor()
     try: 
-        cursor.execute("{CALL VER_PROFESOR(?)}", (id_profesor))
+        cursor.execute("{CALL VER_PROFESOR(?)}", (id_profesor,))
         rows = cursor.fetchall()
         if not rows:
             return None

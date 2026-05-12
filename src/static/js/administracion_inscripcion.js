@@ -41,23 +41,6 @@ const GestionInscripciones = {
         this.bindEventos();
     },
 
-    // formatearFecha: function(fechaRaw) {
-    //     if (!fechaRaw) return 'No Registrada';
-    //     let fechaRaw = FEC_INSCRIPCION;
-    //     let fecha = new Date(fechaRaw);
-    //     let opciones = { 
-    //         weekday: 'long', 
-    //         year: 'numeric', 
-    //         month: 'long', 
-    //         day: 'numeric', 
-    //         hour: 'numeric', 
-    //         minute: 'numeric' 
-    //     };
-    //     let fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
-    //     console.log(fechaFormateada);
-    //     document.getElementById("fecha").innerText = fechaFormateada;
-    // },
-
     cargarGeneroSelect: function() {
         fetch('/api/genero')
             .then(response => response.json())
@@ -359,8 +342,10 @@ const GestionInscripciones = {
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
                     document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
                     const generoSelect = document.getElementById('genero');
-                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) {generoSelect.value = t.genero;}
-                    document.getElementById('telefono').value = t.telefono || '';
+                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) 
+                        {generoSelect.value = t.genero;
+                    }
+                    document.getElementById('telefono').value = t.telefono;
                     document.getElementById('correo').value = t.correo_electronico || '';
                     document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
                     document.getElementById('nombreContacto').value = t.nombre_contacto || '';

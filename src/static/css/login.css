@@ -30,10 +30,13 @@
     box-sizing: border-box;
 }
 body {
-    font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #0a0a0a 0%, #0a0a0a 100%);
-    /* puta madre se ve asqueroso si le pongo color al fondo */
-    background-size: cover;
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    background:
+    linear-gradient(
+        135deg,
+        #15438b 0%,
+        #8b267f 100%
+    );
     background-attachment: fixed;
     min-height: 100vh;
 }
@@ -63,11 +66,15 @@ body {
     }
 }
 .login-header {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: rgb(0, 0, 0);
+    background: linear-gradient(
+        135deg,
+        var(--color-primario),
+        var(--color-secundario)
+    );
+    color: white;
     padding: 35px 30px;
     text-align: center;
-    border-radius: 15px 15px 0 0;
+    border-radius: 20px 20px 0 0;
 }
 .logo {
     width: 80px;
@@ -99,4 +106,17 @@ body {
     padding: 35px 30px;
     border-radius: 0 0 15px 15px;
     box-shadow: var(--shadow-lg);
+}
+.login-container .card{
+    border-radius: 20px;
+    overflow: hidden;
+    border: none;
+}
+.btn-login{
+    height: 52px;
+    font-size: 1rem;
+}
+.logo{
+    background: rgba(255,255,255,.12);
+    border: 2px solid rgba(255,255,255,.2);
 }

@@ -2,15 +2,31 @@
 {% block title %}Panel de Gestión - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <style>
-  .row {
+.modulo-card{
+    cursor: pointer;
+    transition: all .2s ease;
+    border-left: 5px solid var(--color-primario);
+}
+.modulo-card:hover{
+    transform: translateY(-4px);
+}
+.modulo-icon{
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
     display: flex;
-    gap: 20px;
-  }
-  .column {
-    flex: 1;
-    background-color: lightgrey;
-  }
+    align-items: center;
+    justify-content: center;
+    background: rgba(21,67,139,.08);
+}
+.header-institucional{
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--shadow-soft);
+}
 </style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jlk.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
 {% endblock %}
 {% block content %}

@@ -693,8 +693,6 @@ def api_actualizar_inscripcion(id_estudiante):
             fec_retiro=data.get('fec_retiro', ''),
             fec_reincorporaction=data.get('fec_reincorporaction', ''),
             aud_usuario_modifica=usuario_modifica,
-            aud_usuario_modifica_pt=usuario_modifica,
-            aud_usuario_modifica_p=usuario_modifica
         )
         if resultado:
             logger.add_to_log("info", f"modificacion realizada en api_actualizar_tallerista. ID Afectada: {id_estudiante} , Usuario que realizo el cambio:{session}", "ac_tallerista")
