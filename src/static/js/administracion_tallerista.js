@@ -68,23 +68,117 @@ const GestionTalleristas = {
                 if (result.success) {
                     const t = result.data;
                     let html = `
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <thead class="table-dark">
-                                    <tr><th>Origen</th><th>Tipo</th><th>Usuario</th><th>Fecha</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS PERSONA</td></tr>
-                                    <tr><td>Persona</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_persona || '-'}</td><td>${t.aud_fec_ingreso_persona || '-'}</td></tr>
-                                    <tr><td>Persona</td><td><span class="badge bg-warning text-dark" style="font-size: 0.8rem;">MODIFICACION</span></td><td>${t.aud_usuario_modifica_persona || '-'}</td><td>${t.aud_fec_modifica_persona || '-'}</td></tr>
-                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS PROFESOR</td></tr>
-                                    <tr><td>Profesor</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_profesor || '-'}</td><td>${t.aud_fec_ingreso_profesor || '-'}</td></tr>
-                                    <tr><td>Profesor</td><td><span class="badge bg-warning text-dark" style="font-size: 0.8rem;">MODIFICACION</span></td><td>${t.aud_usuario_modifica_profesor || '-'}</td><td>${t.aud_fec_modifica_profesor || '-'}</td></tr>
-                                    <tr class="table-secondary"><td colspan="4" class="fw-bold">DATOS GESTION</td></tr>
-                                    <tr><td>Gestion</td><td><span class="badge bg-success" style="font-size: 0.8rem;">CREACION</span></td><td>${t.aud_usuario_ingreso_gestion_profesor || '-'}</td><td>${t.aud_fec_ingreso_gestion_profesor || '-'}</td></tr>
-                                </tbody>
-                            </table>
-                        </div>`;
+                    <div class="detalle-grid-auditoria">
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-person-vcard"></i>
+                                Datos Persona
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación de Persona
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_persona || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_persona || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-modificacion">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Modificación de Persona
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_modifica_persona || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_modifica_persona || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-person-workspace"></i>
+                                Datos Profesor
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación de Profesor
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_profesor || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_profesor || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-modificacion">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Modificación de Profesor
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_modifica_profesor || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_modifica_profesor || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-diagram-3"></i>
+                                Datos Gestión
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación de Gestión
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_gestion_profesor || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_gestion_profesor || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
                     bodyContainer.innerHTML = html;
                 } else {
                     bodyContainer.innerHTML = `<div class="alert alert-danger">Error al cargar las auditorías</div>`;
@@ -468,29 +562,34 @@ const GestionTalleristas = {
         const overlay = document.getElementById('overlayTalleres');
         const bodyContainer = document.getElementById('overlayTalleresBody');
         const scrollY = window.scrollY;
-        let html = `
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID Taller</th>
-                            <th>Nombre del Taller</th>
-                            <th>Año Proceso</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
+        let html = `<div class="talleres-modal-grid">`;
         tallerista.talleres.forEach(taller => {
             html += `
-                <tr>
-                    <td>${taller.id_taller}</td>
-                    <td>${taller.nombre_taller || 'Sin nombre'}</td>
-                    <td>${taller.year_proceso || '-'}</td>
-                    <td>${nombresEstadoTaller[taller.id_estado_taller] || '-'}</td>
-                </tr>
+                <div class="taller-modal-card">
+                    <div class="taller-modal-top">
+                        <div class="taller-modal-main">
+                            <div class="taller-modal-nombre">
+                                ${taller.nombre_taller || 'Sin nombre'}
+                            </div>
+                            <div class="taller-modal-meta">
+                                <span class="taller-modal-chip taller-modal-chip-id">
+                                    <i class="bi bi-hash"></i>
+                                    ${taller.id_taller || '-'}
+                                </span>
+                                <span class="taller-modal-chip taller-modal-chip-year">
+                                    <i class="bi bi-calendar3"></i>
+                                    ${taller.year_proceso || '-'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="taller-modal-estado estado-${taller.id_estado_taller}">
+                            ${nombresEstadoTaller[taller.id_estado_taller] || '-'}
+                        </div>
+                    </div>
+                </div>
             `;
         });
-        html += `</tbody></table></div>`;
+        html += `</div>`;
         bodyContainer.innerHTML = html;
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -509,7 +608,6 @@ const GestionTalleristas = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    // console.log("Datos completos del tallerista:", t);
                     window.talleristaActual = t;
                     const talleresLista = t.talleres || [];
                     const totalTalleres = talleresLista.length;
@@ -517,13 +615,29 @@ const GestionTalleristas = {
                     if (totalTalleres > 0) {
                         const generarFilaTaller = (taller) => {
                             return `
-                                <tr>
-                                    <td>${taller.id_taller}</td>
-                                    <td>${taller.nombre_taller || 'Sin nombre'}</td>
-                                    <td>${nombresEstadoTaller[taller.id_estado_taller] || '-'}</td>
-                                    <td>${taller.year_proceso || '-'}</td>
-                                </tr>
-                            `;
+                            <div class="taller-asignado-item">
+                                <div class="taller-asignado-top">
+                                    <div class="taller-asignado-main">
+                                        <div class="taller-asignado-nombre">
+                                            ${taller.nombre_taller || '-'}
+                                        </div>
+                                        <div class="taller-asignado-meta">
+                                            <span class="taller-chip taller-chip-id">
+                                                <i class="bi bi-hash"></i>
+                                                ${taller.id_taller || '-'}
+                                            </span>
+                                            <span class="taller-chip taller-chip-year">
+                                                <i class="bi bi-calendar3"></i>
+                                                ${taller.year_proceso || '-'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="taller-estado-badge estado-${taller.id_estado_taller}">
+                                        ${nombresEstadoTaller[taller.id_estado_taller] || '-'}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
                         };
                         const mostrarInicial = 3;
                         const tieneMas = totalTalleres > mostrarInicial;
@@ -531,92 +645,190 @@ const GestionTalleristas = {
                         talleresMostrar.forEach(taller => { talleresHtml += generarFilaTaller(taller); });
                         if (tieneMas) {
                             talleresHtml += `
-                                <tr>
-                                    <td colspan="4" class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="GestionTalleristas.mostrarTodosTalleresOverlay()">
-                                            Ver los ${totalTalleres} talleres completos
-                                        </button>
-                                    </td>
-                                </tr>
+                                <div class="taller-ver-mas-card">
+                                    <div class="taller-ver-mas-icon">
+                                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                                    </div>
+                                    <div class="taller-ver-mas-content">
+                                        <div class="taller-ver-mas-title">
+                                            Hay más talleres asignados
+                                        </div>
+                                        <div class="taller-ver-mas-text">
+                                            Ver todos los talleres asociados al tallerista.
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="btn-ver-mas-talleres"
+                                        onclick="GestionTalleristas.mostrarTodosTalleresOverlay()">
+                                        <i class="bi bi-arrow-right-circle"></i>
+                                        Ver todos
+                                    </button>
+                                </div>
                             `;
                         }
                     } else {
                         talleresHtml = `<tr><td colspan="4" class="text-center text-muted">No tiene talleres asignados</td></tr>`;
                     }
                     let html = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Información Personal</h6>
-                                <table class="table table-sm text-nowrap">
-                                    <tr><th>ID Persona:</th><td>${t.id_persona || 'No registrado'}</td></tr>
-                                    <tr><th>ID Profesor:</th><td>${t.id_profesor || 'No registrado'}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || 'No registrado'}</td></tr>
-                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || 'No registrado'}</td></tr>
-                                    <tr><th>R.U.T:</th><td>${t.rut_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || 'No registrado'}</td></tr>
-                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || 'No registrada'}</td></tr>
-                                    <tr><th>Edad:</th><td>${t.edad || 'No registrada'}</td></tr>
-                                    <tr><th>Género:</th><td>${nombresGenero[t.genero] || 'No registrado'}</td></tr>
-                                    <tr><th>País:</th><td>${nombresPaises[t.id_pais] || t.id_pais || 'No registrado'}</td></tr>
-                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || t.id_comuna || 'No registrado'}</td></tr>
-                                </table>
+                        <div class="row g-3">
+                            <div class="col-lg-6">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-person-vcard"></i>
+                                        Información Personal
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>ID Persona</span>
+                                            <strong>${t.id_persona || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>ID Profesor</span>
+                                            <strong>${t.id_profesor || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Nombre Completo</span>
+                                            <strong>
+                                                ${(t.nombre_persona || '')}
+                                                ${(t.apellido_paterno || '')}
+                                                ${(t.apellido_materno || '')}
+                                            </strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>R.U.T</span>
+                                            <strong>
+                                                ${t.rut_persona || ''}-${t.dv_persona || ''}
+                                            </strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Edad</span>
+                                            <strong>${t.edad || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Fecha Nacimiento</span>
+                                            <strong>${t.fec_nacimiento || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Género</span>
+                                            <strong>${nombresGenero[t.genero] || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>País</span>
+                                            <strong>${nombresPaises[t.id_pais] || t.id_pais || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Comuna</span>
+                                            <strong>${nombresComunas[t.id_comuna] || t.id_comuna || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Contactos</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Teléfono del Profesor:</th><td>${t.telefono || 'No registrado'}</td></tr>
-                                    <tr><th>Correo del Profesor:</th><td>${t.correo_electronico || 'No registrado'}</td></tr>
-                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || 'No registrado'}</td></tr>
-                                    <tr><th>Teléfono del Contacto:</th><td>${t.telefono_contacto || 'No registrado'}</td></tr>
-                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || 'No registrado'}</td></tr>
-                                </table>    
+                            <div class="col-lg-6">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-telephone"></i>
+                                        Contactos
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>Teléfono</span>
+                                            <strong>${t.telefono || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Correo</span>
+                                            <strong>${t.correo_electronico || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Nombre Contacto</span>
+                                            <strong>${t.nombre_contacto || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Teléfono Contacto</span>
+                                            <strong>${t.telefono_contacto || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Correo Contacto</span>
+                                            <strong>${t.correo_contacto || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Información General</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Tipo de Usuario:</th><td>${t.tipo_usuario || 'No registrado'}</td></tr>
-                                    <tr><th>Observación:</th><td>${t.observacion || 'No registrado'}</td></tr>
-                                </table>
+                            <div class="col-12">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-briefcase"></i>
+                                        Resumen Profesional
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>Profesión</span>
+                                            <strong>${t.profesion || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Resumen Curricular</span>
+                                            <strong>${t.resumen_curricular || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Resumen Profesional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Profesión:</th><td>${t.profesion || 'No registrado'}</td></tr>
-                                    <tr><th>Resumen Curricular:</th><td>${t.resumen_curricular || 'No registrado'}</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-outline-info btn-ver-todas-auditorias" 
-                                            data-id="${t.id_profesor}"
-                                            data-nombre="${(t.nombre_persona || '') + ' ' + (t.apellido_paterno || '')}">
-                                        <i class="bi bi-file-earmark-person-fill"></i>Ver las auditorías
+                            <div class="col-12">
+                                <div class="acciones-detalle-card">
+                                    <div class="acciones-detalle-info">
+                                        <div class="acciones-detalle-icono">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div>
+                                            <div class="acciones-detalle-titulo">
+                                                Auditoría del Tallerista
+                                            </div>
+                                            <div class="acciones-detalle-texto">
+                                                Revisa el historial completo de auditorías y modificaciones.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="btn btn-auditoria btn-ver-todas-auditorias"
+                                        data-id="${t.id_profesor}"
+                                        data-nombre="${(t.nombre_persona || '') + ' ' + (t.apellido_paterno || '')}">
+                                        <i class="bi bi-file-earmark-person-fill"></i>
+                                        Ver las auditorías
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <h6 class="fw-bold">Talleres Asignados (${totalTalleres})</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-bordered">
-                                        <thead class="table-light">
-                                            <tr><th>ID</th><th>Nombre del Taller</th><th>Estado</th><th>Año Proceso</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            ${talleresHtml}
-                                        </tbody>
-                                    </table>
+                            <div class="col-12">
+                                <div class="detalle-card talleres-card">
+                                    <div class="talleres-banner">
+                                        <div class="talleres-banner-left">
+                                            <div class="talleres-banner-icon">
+                                                <i class="bi bi-journal-bookmark-fill"></i>
+                                            </div>
+                                            <div class="talleres-banner-content">
+                                                <div class="talleres-banner-title">
+                                                    Talleres Asignados
+                                                </div>
+                                                <div class="talleres-banner-subtitle">
+                                                    Visualiza todos los talleres actualmente asociados al tallerista.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="talleres-banner-stats">
+                                            <div class="talleres-banner-total">
+                                                ${totalTalleres}
+                                            </div>
+                                            <div class="talleres-banner-label">
+                                                Talleres
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="talleres-divider"></div>
+                                    <div class="detalle-grid-profesores talleres-grid">
+                                        ${talleresHtml}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     `;
-                    
+                    if (t.observacion) html += `<div class="mt-3"><h6 class="titulo-detalle">Observación:</h6><p>${t.observacion}</p></div>`;
                     document.getElementById('detallesTalleristaBody').innerHTML = html;
                     const auditButton = document.querySelector('#detallesTalleristaBody .btn-ver-todas-auditorias');
                     if (auditButton) {
@@ -643,27 +855,53 @@ const GestionTalleristas = {
     const idTallerAsignado = t.ID_TALLER || 'No tiene, o es un nuevo Profesor';
     const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Profesor';
         return `
-            <tr>
-                <td class="ps-4 fw-semibold">${t.ID_PROFESOR}</td>
-                <td>${t.NOMBRE_COMPLETO || 'Sin nombre'}</td>
-                <td>${idTallerAsignado}</td>
-                <td>${tallerAsignado}</td>
-                <td>${t.PROFESION || '-'}</td>
-                <td>${t.CORREO_ELECTRONICO || '-'}</td>
+            <tr class="fila-tallerista">
+                <td class="ps-4">
+                    <span class="tabla-id">
+                        #${t.ID_PROFESOR || '-'}
+                    </span>
+                </td>
+                <td>
+                    <div class="tabla-info">
+                        <div class="tabla-titulo">
+                            ${t.NOMBRE_COMPLETO || 'Sin nombre'}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="tabla-texto-suave">
+                        ${idTallerAsignado || '-'}
+                    </span>
+                </td>
+                <td>
+                    <div class="tabla-titulo">
+                        ${tallerAsignado || '-'}
+                    </div>
+                </td>
+                <td>
+                    <span class="tabla-profesion" title="${t.PROFESION || '-'}">
+                        ${t.PROFESION || '-'}
+                    </span>
+                </td>
+                <td>
+                    <div class="tabla-texto-suave">
+                        <i class="bi bi-envelope"></i>
+                        ${t.CORREO_ELECTRONICO || '-'}
+                    </div>
+                </td>
                 <td class="text-end pe-4">
-                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleristas.verDetalles(${t.ID_PROFESOR})" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleristas.editar(${t.ID_PROFESOR})" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </button>
+                    <div class="acciones-tabla">
+                        <button class="btn-tabla accion-ver" onclick="GestionTalleristas.verDetalles(${t.ID_PROFESOR})" title="Ver detalles">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn-tabla accion-editar" onclick="GestionTalleristas.editar(${t.ID_PROFESOR})" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
     },
-    // <button class="btn btn-sm btn-outline-danger" onclick="GestionTalleristas.confirmarEliminar(${t.ID_PROFESOR}, '${nombreCompleto.replace(/'/g, "\\'")}')" title="Suspender">
-    //     <i class="bi bi-trash"></i>
-    // </button>
 
     confirmarEliminar: function(id, nombre) {
         Swal.fire({

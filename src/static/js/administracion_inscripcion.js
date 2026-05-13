@@ -8,12 +8,10 @@ const nombresGenero = {
 
 const nombresPaises = {
     1: 'Chile'
-
 };
 
 const nombresComunas = {
     1: 'Quilicura'
-
 };
 
 const GestionInscripciones = {
@@ -242,7 +240,7 @@ const GestionInscripciones = {
             fecNaci.disabled = false;
         }
         const generoSelect = document.getElementById('genero');
-        if (generoSelect) generoSelect.value = '2';
+        if (generoSelect) generoSelect.value = '';
         document.getElementById('idPais').value = '1';
         document.getElementById('idComuna').value = '1';
         new bootstrap.Modal(document.getElementById('modalInscripcion')).show();
@@ -253,13 +251,13 @@ const GestionInscripciones = {
         const rutPersona = parseInt(document.getElementById('rutPersona').value);
         const dvPersona = parseInt(document.getElementById('dvPersona').value);
         const pasaporte = document.getElementById('pasaporte').value;
-        const nombrePersona = document.getElementById('nombrePersona').value.trim().toUpperCase();
+        const nombre = document.getElementById('nombrePersona').value.trim().toUpperCase();
         const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
         const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
         const genero = parseInt(document.getElementById('genero').value) || 2;
         const pronomEstudiante = document.getElementById('pronomEstudiante').value;
-        const telefonoPersona = document.getElementById('telefonoPersona').value.trim().toUpperCase();
-        const correoPersona = document.getElementById('correoPersona').value.trim().toUpperCase();
+        const telefono = document.getElementById('telefonoPersona').value.trim().toUpperCase();
+        const correo = document.getElementById('correoPersona').value.trim().toUpperCase();
         const telefono_contacto = document.getElementById('telefonoContacto').value.trim().toUpperCase();
         const nombre_contacto = document.getElementById('nombreContacto').value.trim().toUpperCase();
         const correo_contacto = document.getElementById('correoContacto').value.trim().toUpperCase();
@@ -272,8 +270,9 @@ const GestionInscripciones = {
         const nro_calle = document.getElementById('numeroCalle').value.trim().toUpperCase();
         const calle = document.getElementById('calle').value.trim().toUpperCase();
         const fechaInicio = document.getElementById('fechaNacimiento').value;
-        const fechaInscripcion = document.getElementById('').value;
-        const fechaReincorporacion = document.getElementById('').value;
+        const fechaInscripcion = document.getElementById('fechaInscripcion').value;
+        const fechaRetiro = document.getElementById('fechaRetiro').value;
+        const fechaReincorporacion = document.getElementById('fechaReincorporacion').value;
 
         if (!nombre) { this.mostrarError('El nombre es obligatorio'); return; }
         if (!correo) { this.mostrarError('El correo es obligatorio'); return; }
@@ -281,14 +280,14 @@ const GestionInscripciones = {
         const data = {
             rut_persona: rutPersona,
             dv_persona: dvPersona,
-            nombre_persona: nombrePersona,
+            nombre_persona: nombre,
             pasaporte: pasaporte,
             apellido_paterno: apellido_paterno,
             apellido_materno: apellido_materno,
             pronom_estudiante: pronomEstudiante,
             genero: genero,
-            telefono: telefonoPersona || '-',
-            correo_electronico: correoPersona,
+            telefono: telefono || '-',
+            correo_electronico: correo,
             telefono_contacto: telefono_contacto || '-',
             nombre_contacto: nombre_contacto || '-',
             correo_contacto: correo_contacto || '-',
@@ -329,7 +328,7 @@ const GestionInscripciones = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    console.log("Datos completos de la inscripcion:", t);
+                    // console.log("Datos completos de la inscripcion:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Inscripcion';
                     let hiddenId = document.getElementById('inscripcionId');
                     if (!hiddenId) {hiddenId = document.createElement('input');hiddenId.type = 'hidden';hiddenId.id = 'inscripcionId';document.getElementById('formInscripcion').appendChild(hiddenId);}hiddenId.value = id;
@@ -342,9 +341,7 @@ const GestionInscripciones = {
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
                     document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
                     const generoSelect = document.getElementById('genero');
-                    if (generoSelect && (t.genero !== undefined && t.genero !== null)) 
-                        {generoSelect.value = t.genero;
-                    }
+                    if (generoSelect && t.genero) {generoSelect.value = t.genero;}
                     document.getElementById('telefono').value = t.telefono;
                     document.getElementById('correo').value = t.correo_electronico || '';
                     document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
@@ -462,39 +459,81 @@ const GestionInscripciones = {
         });
     },
 
-    // debo usar small para poner mas cosas en pantalla
     generarFila: function(t) {
-        const nombreCompleto = `${t.NOMBRE_ESTUDIANTE || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim();
-        const idTallerAsignado = t.ID_TALLER || ' ...';
-        const tallerAsignado = t.NOMBRE_TALLER || 'No tiene, o es un nuevo Integrante';
-        const correoElectronico = t.CORREO_ELECTRONICO || 'No tiene o no esta Registrado';
-        let estadoBadge = '';
+        const nombreCompleto = t.NOMBRE_COMPLETO || `${t.NOMBRE_ESTUDIANTE || ''} ${t.APELLIDO_PATERNO || ''} ${t.APELLIDO_MATERNO || ''}`.trim() || 'Sin nombre';
+        const idTallerAsignado = t.ID_TALLER || '---';
+        const tallerAsignado = t.NOMBRE_TALLER || 'No tiene taller asignado';
+        const correoElectronico = t.CORREO_ELECTRONICO || 'No registrado';
+        let estadoTexto = '';
+        let estadoClass = '';
         switch(t.IND_ESTADO_INTEGRANTE) {
-            case 1: estadoBadge = '<span class="badge bg-success" style="font-size: 0.8rem;">INSCRITO</span>'; break;
-            case 2: estadoBadge = '<span class="badge bg-info" style="font-size: 0.8rem;">RETIRADO</span>'; break;
-            case 3: estadoBadge = '<span class="badge bg-secondary" style="font-size: 0.8rem;">LISTA DE ESPERA</span>'; break;
-            default: estadoBadge = '<span class="badge bg-danger" style="font-size: 0.8rem;">NO REGISTRADO</span>'; break;
+            case 1: estadoTexto = '<span class="badge bg-info" style="font-size: 0.8rem;">INSCRITO</span>'; estadoClass = 'estado 1'; break;
+            case 2: estadoTexto = '<span class="badge bg-success" style="font-size: 0.8rem;">RETIRADO</span>'; estadoClass = 'estado 2'; break;
+            case 3: estadoTexto = '<span class="badge bg-secondary" style="font-size: 0.8rem;">LISTA DE ESPERA</span>'; estadoClass = 'estado 3'; break;
+            default: estadoTexto = '<span class="badge bg-danger" style="font-size: 0.8rem;">NO REGISTRADO</span>'; estadoClass = 'estado 4'; break;
         }
-        // <td>${this.formatearFecha(t.FEC_INSCRIPCION)}</td>
+        const fechaInscripcion = t.FEC_INSCRIPCION ? new Date(t.FEC_INSCRIPCION).toLocaleDateString('es-CL',{day: '2-digit', month: '2-digit', year: 'numeric'}) : 'No registrada';
         return `
-            <tr>
-                <td class="ps-4 fw-semibold">${t.ID_ESTUDIANTE}</td>
-                <td>${t.NOMBRE_COMPLETO || 'Sin nombre'}</td>
-                <td>
-                    <small>${tallerAsignado}</small><br>
-                    <small class="text-muted">ID Taller: ${idTallerAsignado}</small>
+            <tr class="fila-integrante">
+                <td class="ps-4">
+                    <span class="tabla-id">
+                        #${t.ID_ESTUDIANTE || '-'}
+                    </span>
                 </td>
-                <td>${estadoBadge}</td>
-                <td>${t.YEAR_PROCESO || 'No Registrado'}</td>
-                <td>${t.FEC_INSCRIPCION || 'No se encuentra'}</td>
-                <td>${correoElectronico}</td>
+                <td>
+                    <div class="tabla-info">
+                        <div class="tabla-titulo">
+                            ${nombreCompleto}
+                        </div>
+                        <div class="tabla-subtitulo">
+                            <i class="bi bi-person"></i>
+                            Integrante registrado
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="tabla-info">
+                        <div class="tabla-titulo-secundario">
+                            ${tallerAsignado}
+                        </div>
+                        <div class="tabla-subtitulo">
+                            ID Taller:
+                            ${idTallerAsignado}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="estado-badge ${estadoClass}">
+                        ${estadoTexto}
+                    </div>
+                </td>
+                <td>
+                    <span class="tabla-year">
+                        ${t.YEAR_PROCESO || '-'}
+                    </span>
+                </td>
+                <td>
+                    <div class="tabla-fechas">
+                        <span>
+                            ${fechaInscripcion}
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tabla-correo" title="${correoElectronico}">
+                        <i class="bi bi-envelope"></i>
+                        ${correoElectronico}
+                    </div>
+                </td>
                 <td class="text-end pe-4">
-                    <button class="btn btn-sm btn-outline-info me-1" onclick="GestionInscripciones.verDetalles(${t.ID_ESTUDIANTE})" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionInscripciones.editarEstudiante(${t.ID_ESTUDIANTE})" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </button>
+                    <div class="acciones-tabla">
+                        <button class="btn-tabla accion-ver" onclick="GestionInscripciones.verDetalles(${t.ID_ESTUDIANTE})" title="Ver detalles">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn-tabla accion-editar" onclick="GestionInscripciones.editarEstudiante(${t.ID_ESTUDIANTE})" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;

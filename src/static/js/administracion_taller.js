@@ -329,57 +329,90 @@ const GestionTalleres = {
         const maximo = t.MAXIMO_ESTUDIANTE;
         const porcentaje = maximo > 0 ? (inscritos / maximo) * 100 : 0;
         let estadoClass = '';
-        // aqui pondre todos los estados de taller , son solo 4 por defecto pondre el estado 3(cerrado) como el predeterminado
-        // ESTA WEA ESTA ENTERA MALA 'GUTS'(palabra clave), por alguna razon que desconozco completamente el estado que se muestra en pantalla es el mismo al ultimo estado que dejo habilitado
-        // un ejemplo de esto, ahora mismo existen 4 case y un default, si dejo el default habiltado todos mostraran el estado 'CERRADO' por que es el texto que le puse
-        // si lo desactivo y dejo solo los 4 case todos tendran el estado 'DE BAJA' , hrmano esta wea esta entera mala xd
-        // 25/03/2026 11:34 am, ahora funciona salu2 solo tuve que ponerle el break; al final, no me crucifiquen salu2 salu2 y recuerd salu2
         switch (t.ID_ESTADO_TALLER) {
             case 1: estadoClass = 'estado 1' ; estadoTexto = '<span class="badge bg-info" style="font-size: 0.8rem;">INGRESADO</span>'; break;
             case 2: estadoClass = 'estado 2' ; estadoTexto = '<span class="badge bg-success" style="font-size: 0.8rem;">CALENDARIZADO</span>'; break;
             case 3: estadoClass = 'estado 3' ; estadoTexto = '<span class="badge bg-secondary" style="font-size: 0.8rem;">CERRADO</span>'; break;
             case 4: estadoClass = 'estado 4' ; estadoTexto = '<span class="badge bg-danger" style="font-size: 0.8rem;">DE BAJA</span>'; break;
             default : estadoClass = 'estado 3' ; estadoTexto = 'CERRADO-DEFAULT'; break;
-        }
+        };
+        const formatearFecha = (fecha) => {
+            if (!fecha) return '-';
+            return new Date(fecha).toLocaleDateString(
+                'es-CL',{day: '2-digit', month: 'long', year: 'numeric'}
+            );
+        };
         return `
-            <tr>
-                <td class="ps-4 fw-semibold">${t.ID_TALLER}</td>
-                <td>
-                    <div class="fw-semibold">${t.NOMBRE_TALLER || 'Sin nombre'}</div>
-                    <small class="text-muted">${t.LUGAR || 'Sin lugar'}</small>
-                </td>
-                <td>${this.obtenerNombreCategoria(t.ID_CATEGORIA) || t.ID_CATEGORIA || '-'}</td>
-                <td>${t.OBSERVACION && t.OBSERVACION.trim() !== '' && t.OBSERVACION !== '-' ? 'Asignado' : 'Pendiente'}</td>
-                <td style="min-width: 120px;">
-                    <div class="d-flex justify-content-between small">
-                        <span>${inscritos}/${maximo}</span>
-                        <span class="text-muted">${Math.round(porcentaje)}%</span>
+        <tr class="fila-taller">
+            <td class="ps-4">
+                <span class="tabla-id">
+                    #${t.ID_TALLER}
+                </span>
+            </td>
+            <td>
+                <div class="tabla-info">
+                    <div class="tabla-titulo">
+                        ${t.NOMBRE_TALLER || 'Sin nombre'}
                     </div>
-                    <div class="cupos-indicator">
-                        <div class="cupos-fill" style="width: ${porcentaje}%;"></div>
+                    <div class="tabla-subtitulo">
+                        <i class="bi bi-geo-alt"></i>
+                        ${t.LUGAR || 'Sin lugar'}
                     </div>
-                </td>
-                <td><span class="estado-badge ${estadoClass}">${estadoTexto}</span></td>
-                <td>
-                    <small>${t.FEC_INICIO ? t.FEC_INICIO.substring(0,10) : '-'}</small><br>
-                    <small class="text-muted">al ${t.FEC_TERMINO ? t.FEC_TERMINO.substring(0,10) : '-'}</small>
-                </td>
-                <td><span>${t.YEAR_PROCESO}</span></td>
-                <td class="text-end pe-4">
-                    <div class="acciones-tabla">
-                        <button class="btn btn-sm btn-outline-info me-1" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick="GestionTalleres.editarTaller(${t.ID_TALLER})" title="Editar">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="GestionTalleres.confirmarEliminar(${t.ID_TALLER}, '${t.NOMBRE_TALLER?.replace(/'/g, "\\'") || ''}')" title="Eliminar">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                </div>
+            </td>
+            <td>
+                <span class="tabla-texto-suave">
+                    ${this.obtenerNombreCategoria(t.ID_CATEGORIA) || t.ID_CATEGORIA || '-'}
+                </span>
+            </td>
+            <td>
+                <span class="estado-simple ${t.OBSERVACION && t.OBSERVACION.trim() !== '' && t.OBSERVACION !== '-' ? 'estado-asignado' : 'estado-pendiente'}">${t.OBSERVACION && t.OBSERVACION.trim() !== '' && t.OBSERVACION !== '-' ? 'ASIGNADA' : 'PENDIENTE'}</span>
+            </td>
+            <td style="min-width: 140px;">
+                <div class="cupos-top">
+                    <span>
+                        ${inscritos}/${maximo}
+                    </span>
+                    <span class="cupos-porcentaje">
+                        ${Math.round(porcentaje)}%
+                    </span>
+                </div>
+                <div class="cupos-indicator">
+                    <div class="cupos-fill" style="width:${porcentaje}%;">
                     </div>
-                </td>
-            </tr>
-        `;
+                </div>
+            </td>
+            <td>
+                <div class="estado-badge ${estadoClass}">
+                    ${estadoTexto}
+                </div>
+            </td>
+            <td>
+
+                <div class="tabla-fechas">
+                    <span> Del ${new Date(t.FEC_INICIO).toLocaleDateString('es-CL', {day: '2-digit', month: '2-digit', year: 'numeric'})}</span>
+                    <small> Al ${new Date(t.FEC_TERMINO).toLocaleDateString('es-CL', {day: '2-digit', month: '2-digit', year: 'numeric'})}</small>
+                </div>
+            </td>
+            <td>
+                <span class="tabla-year">
+                    ${t.YEAR_PROCESO || '-'}
+                </span>
+            </td>
+            <td class="text-end pe-4">
+                <div class="acciones-tabla">
+                    <button class="btn-tabla accion-ver" onclick="GestionTalleres.verDetalles(${t.ID_TALLER})" title="Ver detalles">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn-tabla accion-editar" onclick="GestionTalleres.editarTaller(${t.ID_TALLER})" title="Editar">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn-tabla accion-eliminar" onclick="GestionTalleres.confirmarEliminar(${t.ID_TALLER},'${t.NOMBRE_TALLER?.replace(/'/g, "\\'") || ''}')" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>`;
     },
     mostrarPagina: function(pagina){
         //esto mas que nada me serivra para mostrar una pagina especifica en ela lista de los talleres
@@ -490,12 +523,6 @@ const GestionTalleres = {
     guardarTaller: function() {
         const id = document.getElementById('tallerId').value;
         const selectCategoriaModal = document.querySelector('.select-categoria');
-        // const selectTallerista = document.getElementById('tallerista');
-        // console.log('Select tallerista:', selectTallerista);
-        // console.log('Valor seleccionado:', selectTallerista ? selectTallerista.value : 'null');
-        // const idProfesor = selectTallerista ? parseInt(selectTallerista.value) : null;
-        // console.log('idProfesor después de parseInt:', idProfesor);
-        // if (!idProfesor || isNaN(idProfesor)) {this.mostrarError('Debe seleccionar un tallerista obligatoriamente.');return;}
         const checks = document.querySelectorAll('#tallerista .check-tallerista:checked');
         const idsArray = Array.from(checks).map(cb => cb.value);
         const idsString = idsArray.join(',');
@@ -617,25 +644,35 @@ const GestionTalleres = {
         const overlay = document.getElementById('overlayProfesores');
         const bodyContainer = document.getElementById('overlayProfesoresBody');
         let html = `
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th><th>Nombre completo</th><th>Profesión</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
+            <div class="profesores-modal-grid">
+        `;
         taller.profesores.forEach(prof => {
             const nombreCompleto = `${prof.nombre_persona || ''} ${prof.apellido_paterno || ''} ${prof.apellido_materno || ''}`.trim();
             html += `
-                <tr>
-                    <td>${prof.id_profesor || 'S.A'}</td>
-                    <td>${nombreCompleto || '-'}</td>
-                    <td>${prof.profesion || '-'}</td>
-                </tr>
-            `;
+            <div class="profesor-modal-card">
+                <div class="profesor-modal-header">
+                    <div class="profesor-modal-avatar">
+                        ${nombreCompleto ? nombreCompleto.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div class="profesor-modal-main">
+                        <div class="profesor-modal-top">
+                            <div class="profesor-modal-nombre">
+                                ${nombreCompleto || '-'}
+                            </div>
+                            <div class="profesor-modal-id">
+                                #${prof.id_profesor || 'S.A'}
+                            </div>
+                        </div>
+                        <div class="profesor-modal-profesion">
+                            <i class="bi bi-briefcase-fill"></i>
+                            ${prof.profesion || 'Sin profesión registrada'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
         });
-        html += `</tbody></table></div>`;
+        html += `</div>`;
         bodyContainer.innerHTML = html;
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -662,11 +699,11 @@ const GestionTalleres = {
                     const disponibles = maximo - inscritos;
                     let estadoBadge = '';
                     switch(t.id_estado_taller) {
-                        case 1: estadoBadge = '<span class="badge bg-info" style="font-size: 0.8rem;">INGRESADO</span>'; break;
-                        case 2: estadoBadge = '<span class="badge bg-success" style="font-size: 0.8rem;">CALENDARIZADO</span>'; break;
-                        case 3: estadoBadge = '<span class="badge bg-secondary" style="font-size: 0.8rem;">CERRADO</span>'; break;
-                        case 4: estadoBadge = '<span class="badge bg-danger" style="font-size: 0.8rem;">DE BAJA</span>'; break;
-                        default: estadoBadge = '<span class="badge bg-light text-dark" style="font-size: 0.8rem;">DESCONOCIDO</span>';
+                        case 1: estadoBadge = '<mark class="badge bg-info" style="font-size: 0.8rem;">INGRESADO</mark>'; break;
+                        case 2: estadoBadge = '<mark class="badge bg-success" style="font-size: 0.8rem;">CALENDARIZADO</mark>'; break;
+                        case 3: estadoBadge = '<mark class="badge bg-secondary" style="font-size: 0.8rem;">CERRADO</mark>'; break;
+                        case 4: estadoBadge = '<mark class="badge bg-danger" style="font-size: 0.8rem;">DE BAJA</mark>'; break;
+                        default: estadoBadge = '<mark class="badge bg-light text-dark" style="font-size: 0.8rem;">DESCONOCIDO</mark>';
                     }
                     let profesoresHtml = '';
                     const profesoresLista = t.profesores || [];
@@ -679,16 +716,24 @@ const GestionTalleres = {
                             const nombreCompleto = `${prof.nombre_persona || ''} ${prof.apellido_paterno || ''} ${prof.apellido_materno || ''}`.trim();
                             profesoresHtml += `
                             <div class="profesor-item">
-                                <div class="profesor-top">
-                                    <div class="profesor-nombre">
-                                        ${nombreCompleto || '-'}
+                                <div class="profesor-header">
+                                    <div class="profesor-avatar">
+                                        ${nombreCompleto ? nombreCompleto.charAt(0).toUpperCase() : '?'}
                                     </div>
-                                    <span class="profesor-id">
-                                        ID: ${prof.id_profesor || 'S.A'}
-                                    </span>
-                                </div>
-                                <div class="profesor-profesion">
-                                    ${prof.profesion || '-'}
+                                    <div class="profesor-main">
+                                        <div class="profesor-top">
+                                            <div class="profesor-nombre">
+                                                ${nombreCompleto || '-'}
+                                            </div>
+                                            <div class="profesor-id">
+                                                #${prof.id_profesor || 'S.A'}
+                                            </div>
+                                        </div>
+                                        <div class="profesor-profesion">
+                                            <i class="bi bi-briefcase-fill"></i>
+                                            ${prof.profesion || 'Sin profesión registrada'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>`;
                         });

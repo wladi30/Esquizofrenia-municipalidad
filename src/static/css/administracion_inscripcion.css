@@ -1,165 +1,56 @@
-/* fiumba */
-.estado-1 { background-color: #d1fae5; color: #065f46; } /* (INGRESADO) ESTA ACTIVO */
-.estado-2 { background-color: #dbeafe; color: #1e40af; } /* (CALENDARIZADO) EN ESPERA O PROXIMAMENTE */
-.estado-3 { background-color: #e5e7eb; color: #374151; } /* (CERRADO) estado 3 podria ser FINALIZADO? deberia cambiar el color ya que soy daltonico */
-.estado-4 { background-color: #fee2e2; color: #991b1b; } /* (DE BAJA) este podria ser SUSPENDIDO estado 4 de la meteria */
-.table th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #475569;
+.fila-integrante{
+
+    transition: background .15s ease;
 }
 
-.table thead th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: #334155;
-    border-bottom-width: 1px;
-    border-bottom-color: #cbd5e1;
-    white-space: nowrap;
+.fila-integrante:hover{
+
+    background: rgba(0,0,0,.015);
 }
 
-.estado-badge {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 2px;
-    display: inline-block;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
+.tabla-titulo-secundario{
 
-.table thead th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: #334155;
-    border-bottom-width: 1px;
-    border-bottom-color: #cbd5e1;
-    white-space: nowrap;
-}
+    font-size: .84rem;
 
-.table tbody td {
-    vertical-align: middle;
-    font-size: 0.9rem;
-    color: #1e293b;
-    border-bottom: 1px solid #e2e8f0;
-}
+    font-weight: 700;
 
-.cupos-indicator {
-    width: 100%;
-    height: 6px;
-    background-color: #e2e8f0;
-    border-radius: 18px;
-    margin-top: 5px;
-}
-.cupos-fill {
-    height: 100%;
-    background-color: #2563eb;
-    border-radius: 18px;
-}
+    color: var(--color-texto);
 
-.filtros-card {
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
+    line-height: 1.35;
 
-.filtros-card .form-label {
-    font-weight: 500;
-    color: #334155;
-    margin-bottom: 0.25rem;
-}
+    max-width: 240px;
 
-.filtros-card .form-control,
-.filtros-card .form-select {
-    border-radius: 18px;
-    border: 1px solid #cbd5e1;
-}
-
-.filtros-card .form-control:focus,
-.filtros-card .form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
-}
-
-.modal-content{
-    border-radius: 18px;
     overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
-.modal-header {
-    background: linear-gradient(
-        90deg,
-        var(--color-primario),
-        var(--color-secundario)
-    );
+.tabla-correo{
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    max-width: 240px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: .82rem;
+
+    color: var(--color-texto-secundario);
 }
 
-.modal-header .btn-close {
-    filter: brightness(0) invert(1);
-}
+.tabla-correo i{
 
-.modal-title {
-    font-weight: 500;
-    font-size: 1.1rem;
-}
+    color: var(--color-primario);
 
-.modal-body {
-    padding: 1.5rem;
-}
-
-.modal-footer {
-    border-top: 1px solid #e2e8f0;
-    padding: 1rem 1.5rem;
-}
-
-.btn {
-    border-radius: 18px;
-    font-weight: 500;
-}
-
-.btn-primary {
-    background-color: var(--color-primario);
-    border-color: var(--color-primario);
-}
-
-.btn-primary:hover {
-    background-color: var(--color-primario-hover);
-    border-color: var(--color-primario-hover);
-}
-
-.btn-outline-primary {
-    color: #0B3B5C;
-    border-color: #0B3B5C;
-}
-
-.btn-outline-primary:hover {
-    background-color: #0B3B5C;
-    border-color: #0B3B5C;
-    color: white;
-}
-
-.pagination .page-link {
-    border-radius: 4px;
-    color: #0B3B5C;
-    border: 1px solid #d1d5db;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #0B3B5C;
-    border-color: #0B3B5C;
-    color: white;
-}
-
-.pagination .page-link:focus {
-    box-shadow: none;
+    flex-shrink: 0;
 }

@@ -1,60 +1,3 @@
-/* fiumba */
-.estado-1 { background-color: #d1fae5; color: #065f46; } /* (INGRESADO) ESTA ACTIVO */
-.estado-2 { background-color: #dbeafe; color: #1e40af; } /* (CALENDARIZADO) EN ESPERA O PROXIMAMENTE */
-.estado-3 { background-color: #e5e7eb; color: #374151; } /* (CERRADO) estado 3 podria ser FINALIZADO? deberia cambiar el color ya que soy daltonico */
-.estado-4 { background-color: #fee2e2; color: #991b1b; } /* (DE BAJA) este podria ser SUSPENDIDO estado 4 de la meteria */
-.table th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #475569;
-}
-
-.table thead th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: #334155;
-    border-bottom-width: 1px;
-    border-bottom-color: #cbd5e1;
-    white-space: nowrap;
-}
-
-.estado-badge {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 2px;
-    display: inline-block;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
-
-.table thead th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: #334155;
-    border-bottom-width: 1px;
-    border-bottom-color: #cbd5e1;
-    white-space: nowrap;
-}
-
-.table tbody td {
-    vertical-align: middle;
-    font-size: 0.9rem;
-    color: #1e293b;
-    border-bottom: 1px solid #e2e8f0;
-}
-
 .cupos-indicator {
     width: 100%;
     height: 6px;
@@ -69,98 +12,425 @@
     border-radius: 18px;
 }
 
-.filtros-card {
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+.detalle-grid-profesores{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
 }
 
-.filtros-card .form-label {
-    font-weight: 500;
-    color: #334155;
-    margin-bottom: 0.25rem;
-}
+.profesor-item{
 
-.filtros-card .form-control,
-.filtros-card .form-select {
+    background: rgb(255, 255, 255);
+
+    border: 1px solid var(--color-border);
+
     border-radius: 18px;
-    border: 1px solid #cbd5e1;
+
+    padding: 14px 16px;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.04),
+        0 8px 24px rgba(0,0,0,.05);
 }
 
-.filtros-card .form-control:focus,
-.filtros-card .form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+.profesor-item:hover{
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.06),
+        0 12px 28px rgba(0,0,0,.08);
 }
 
-.modal-content{
-    border-radius: 18px;
+.profesor-header{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.profesor-top{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 6px;
+}
+
+.profesor-avatar{
+
+    width: 48px;
+
+    height: 48px;
+
+    min-width: 48px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primario),
+            var(--color-secundario)
+        );
+
+    color: rgb(255, 255, 255);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+    font-size: 1rem;
+
+    text-transform: uppercase;
+}
+
+.profesor-main{
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.profesor-nombre{
+
+    font-size: .92rem;
+
+    font-weight: 700;
+
+    color: var(--color-texto);
+
     overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
-.modal-header {
-    background: linear-gradient(
-        90deg,
-        var(--color-primario),
-        var(--color-secundario)
-    );
+.profesor-id{
+
+    flex-shrink: 0;
+
+    background: #eef2ff;
+
+    color: #4338ca;
+
+    border-radius: 999px;
+
+    padding: 4px 10px;
+
+    font-size: .72rem;
+
+    font-weight: 700;
 }
 
-.modal-header .btn-close {
-    filter: brightness(0) invert(1);
+.profesor-profesion{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--color-texto-secundario);
+
+    font-size: .82rem;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
-.modal-title {
-    font-weight: 500;
-    font-size: 1.1rem;
+.profesor-profesion i{
+
+    color: var(--color-primario);
+
+    font-size: .8rem;
 }
 
-.modal-body {
-    padding: 1.5rem;
+
+.sin-profesores{
+
+    padding: 20px;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: .9rem;
 }
 
-.modal-footer {
-    border-top: 1px solid #e2e8f0;
-    padding: 1rem 1.5rem;
+@media (max-width: 768px){
+
+    .profesor-top{
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .profesor-nombre,
+    .profesor-profesion{
+
+        white-space: normal;
+    }
 }
 
-.btn {
-    border-radius: 18px;
-    font-weight: 500;
+@media (max-width: 768px){
+
+    .profesor-modal-top{
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .profesor-modal-nombre,
+    .profesor-modal-profesion{
+
+        white-space: normal;
+    }
 }
 
-.btn-primary {
-    background-color: var(--color-primario);
-    border-color: var(--color-primario);
+.profesor-modal-main{
+
+    flex: 1;
+
+    min-width: 0;
 }
 
-.btn-primary:hover {
-    background-color: var(--color-primario-hover);
-    border-color: var(--color-primario-hover);
+.profesor-modal-top{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
 }
 
-.btn-outline-primary {
-    color: #0B3B5C;
-    border-color: #0B3B5C;
+.profesor-modal-nombre{
+
+    font-size: .95rem;
+
+    font-weight: 700;
+
+    color: var(--color-texto);
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
-.btn-outline-primary:hover {
-    background-color: #0B3B5C;
-    border-color: #0B3B5C;
-    color: white;
+.profesor-modal-id{
+
+    flex-shrink: 0;
+
+    background: #eef2ff;
+
+    color: #4338ca;
+
+    border-radius: 999px;
+
+    padding: 4px 10px;
+
+    font-size: .72rem;
+
+    font-weight: 700;
 }
 
-.pagination .page-link {
-    border-radius: 4px;
-    color: #0B3B5C;
-    border: 1px solid #d1d5db;
+.profesor-modal-profesion{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: .82rem;
+
+    color: var(--color-texto-secundario);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
-.pagination .page-item.active .page-link {
-    background-color: #0B3B5C;
-    border-color: #0B3B5C;
-    color: white;
+.profesor-modal-profesion i{
+
+    color: var(--color-primario);
 }
 
-.pagination .page-link:focus {
-    box-shadow: none;
+.profesores-modal-grid{
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 16px;
+}
+
+.profesor-modal-card{
+
+    background: rgb(255, 255, 255);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 20px;
+
+    padding: 16px;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.04),
+        0 8px 24px rgba(0,0,0,.05);
+}
+
+.profesor-modal-card:hover{
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.06),
+        0 12px 28px rgba(0,0,0,.08);
+}
+
+.profesor-modal-header{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.profesor-modal-avatar{
+
+    width: 52px;
+
+    height: 52px;
+
+    min-width: 52px;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primario),
+            var(--color-secundario)
+        );
+
+    color: rgb(255, 255, 255);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+.fila-taller{
+
+    transition: background .15s ease;
+}
+
+.fila-taller:hover{
+
+    background: rgba(0,0,0,.015);
+}
+
+.estado-simple{
+
+    font-size: .8rem;
+
+    font-weight: 650;
+}
+
+.estado-asignado{
+
+    color: #8f1010;
+}
+
+.estado-pendiente{
+
+    color: #0e8392;
+}
+
+.cupos-top{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: .78rem;
+
+    margin-bottom: 5px;
+}
+
+.cupos-porcentaje{
+
+    color: var(--color-texto-secundario);
+}
+
+.tabla-fechas{
+
+    display: flex;
+
+    flex-direction: column;
+
+    font-size: .8rem;
+
+    line-height: 1.4;
+}
+
+.tabla-fechas small{
+
+    color: var(--color-texto-secundario);
+}
+
+.tabla-year{
+
+    font-size: .82rem;
+
+    font-weight: 600;
+
+    color: var(--color-texto);
 }

@@ -2,7 +2,7 @@
 {% block title %}Administracion de Talleres - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/jlk.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}"> -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_taller.css') }}">
 {% endblock %}
 {% block content %}
@@ -67,9 +67,6 @@
                         <option value="2020">2020</option>
                         <option value="2019">2019</option>
                         <option value="2018">2018</option>
-                        <!-- <option value="0">0, existe solo un taller asi</option> -->
-                        <!-- actualmente no funciona el buscar por año ai que tengo que resolverlo, por lo demas se muestran todos
-                        los talleres asi que ese es un avanze gordo -->
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -205,11 +202,9 @@
                                 <option></option>
                             </select>
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Tallerista <span class="text-danger">*</span></label>
-                            <!-- <span class="input-group-text bg-white">
-                                <i class="bi bi-search"></i>
-                            </span> -->
                             <input type="text" id="buscarTallerista" class="form-control form-control-sm mb-2" placeholder="Buscar por nombre o ID...">
                             <div id="tallerista" class="border rounded p-2" style="height: 150px; overflow-y: auto; background-color: #fff;">
                                 <span class="text-muted small">Cargando talleristas...</span>
@@ -380,22 +375,6 @@
                 <button type="button" class="btn btn-primary" onclick="GestionTalleres.abrirModalEditarDesdeDetalles()">
                     <i class="bi bi-pencil me-1"></i> Editar
                 </button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="modalTodosProfesores" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Lista completa de talleristas</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="modalTodosProfesoresBody">
-                <div class="text-center">Cargando...</div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

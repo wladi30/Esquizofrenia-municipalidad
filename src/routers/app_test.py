@@ -38,12 +38,6 @@ def index_chamuco():
 # o profesor podria hacer que se calcule en el momento?, podria funcionar pero cuanto consumiria eso? , si alguien trolea y se pone a ver un monton de alumnos que pasaria? , se podria 
 # pitiar todo con eso?, tendria que ver cual es la mejor forma.
 
-# JM me confirmo, tabla estudiante se asigna al momento de crear la persona que a su vez se pone como estudiante, la tabla estudiante no se modifica en ningun momento y queda asi
-# para siempre
-
-# viendo la base de datos note que puede tener mas de un profesor los talleres, la id 640 tiene 3 profesores, ids 52,53,54 relacionados con deporte y distintos roles, tendria que 
-# colocar el tema de que un taller pueda tener mas de un profesor y mostrar cuantos profesores tiene
-
 # IMPORTANTE
 # el nombre de los paises, comunas y tambien las categorias de los talleres, estan todos puestos en el backend, esto no debe ser asi
 # los paises y comunas no van a cambiar pero las categorias si asi que tengo que adaptarlo ya que pueden añadir nuevas categorias o tal evz sacar algunas , asi que deberia tomarlas de la

@@ -1,91 +1,140 @@
-editarEstudiante: function(id) {
-    fetch(`/api/inscripcion-get/${id}`)
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                const t = result.data;
-                console.log("Datos completos de la inscripción:", t);
+    guardar: function() {
+        const id = document.getElementById('talleristaId').value;
+        const RutProfesor = parseInt(document.getElementById('rutProfesor').value);
+        const DvProfesor = parseInt(document.getElementById('dvProfesor').value);
+        const nombre = document.getElementById('nombrePersona').value.trim().toUpperCase();
+        const apellido_paterno = document.getElementById('apellidoPaterno').value.trim().toUpperCase();
+        const apellido_materno = document.getElementById('apellidoMaterno').value.trim().toUpperCase();
+        const genero = parseInt(document.getElementById('genero').value) || 2;
+        const telefono = document.getElementById('telefono').value.trim().toUpperCase();
+        const correo = document.getElementById('correo').value.trim().toUpperCase();
+        const telefono_contacto = document.getElementById('telefonoContacto').value.trim().toUpperCase();
+        const nombre_contacto = document.getElementById('nombreContacto').value.trim().toUpperCase();
+        const correo_contacto = document.getElementById('correoContacto').value.trim().toUpperCase();
+        const profesion = document.getElementById('profesion').value.trim().toUpperCase();
+        const resumen_curricular = document.getElementById('resumenCurricular').value.trim().toUpperCase();
+        const observacion = document.getElementById('observacion').value.trim().toUpperCase();
+        const paisSelect = document.querySelector('.select-pais');
+        const comunaSelect = document.querySelector('.select-comuna');
+        const villa = document.getElementById('villa').value.trim().toUpperCase();
+        const nro_dpto = document.getElementById('numeroDepartamento').value.trim().toUpperCase();
+        const nro_block = document.getElementById('numeroBlock').value.trim().toUpperCase();
+        const nro_calle = document.getElementById('numeroCalle').value.trim().toUpperCase();
+        const calle = document.getElementById('calle').value.trim().toUpperCase();
+        const fechaInicio = document.getElementById('fechaNacimiento').value;
 
-                // Cambiar título del modal
-                document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Inscripción';
+        if (!nombre) { this.mostrarError('El nombre es obligatorio'); return; }
+        if (!correo) { this.mostrarError('El correo es obligatorio'); return; }
 
-                // Campo oculto para el ID
-                let hiddenId = document.getElementById('inscripcionId');
-                if (!hiddenId) {
-                    hiddenId = document.createElement('input');
-                    hiddenId.type = 'hidden';
-                    hiddenId.id = 'inscripcionId';
-                    document.getElementById('formInscripcion').appendChild(hiddenId);
+        const data = {
+            rut_profesor: RutProfesor,
+            dv_profesor: DvProfesor,
+            nombre_persona: nombre,
+            apellido_paterno: apellido_paterno,
+            apellido_materno: apellido_materno,
+            genero: genero,
+            telefono: telefono || '-',
+            correo_electronico: correo,
+            telefono_contacto: telefono_contacto || '-',
+            nombre_contacto: nombre_contacto || '-',
+            correo_contacto: correo_contacto || '-',
+            profesion: profesion || '-',
+            resumen_curricular: resumen_curricular || '-',
+            observacion: observacion || '-',
+            id_pais: paisSelect ? parseInt(paisSelect.value): 1,
+            id_comuna: comunaSelect ? parseInt(comunaSelect.value): 1,
+            villa: villa || '-',
+            nro_dpto: nro_dpto || '-',
+            nro_block: nro_block || '-',
+            nro_calle: nro_calle || '-',
+            calle: calle || '-',
+            fec_nacimiento: fechaInicio
+        };
+        const url = id ? `/api/tallerista-actualizar/${id}` : '/api/tallerista-crear';
+        const method = id ? 'PUT' : 'POST';
+        fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalTallerista')).hide();
+                    this.mostrarExito(result.message || 'Operación exitosa');
+                    this.cargarLista();
+                } else {
+                    this.mostrarError(result.message || 'Error al guardar');
                 }
-                hiddenId.value = id;
+            })
+            .catch(error => { console.error(error); this.mostrarError('Error de conexión'); });
+    },
 
-                // RUT y DV (coinciden con guardar)
-                const rutInput = document.getElementById('rutPersona');
-                const dvInput = document.getElementById('dvPersona');
-                if (rutInput) {
-                    rutInput.value = t.rut_persona || '';
-                    rutInput.disabled = true;
+    editar: function(id) {
+        // con esto cualquiera se vuelve ezquiso, me daba un problema de que no modificaba , reviso aqui y alla, veo el app funcionario, veo el procedimiento(mentira), todo bien todo correcto, 
+        // pero seguia sin funcionar, despues me di cuenta que podria ser el db_test, encuentro errores y digo ya bien ahora debe funcionar, sigue sin hacerlo
+        // reviso mas aun , hasta manoseo el css y nada, el problema? le puse la mierda right join en vez de left, salu2
+        fetch(`/api/tallerista-get/${id}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const t = result.data;
+                    // console.log("Datos completos del tallerista:", t);
+                    document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
+                    let hiddenId = document.getElementById('talleristaId');
+                    if (!hiddenId) {
+                        hiddenId = document.createElement('input');
+                        hiddenId.type = 'hidden';
+                        hiddenId.id = 'talleristaId';
+                        document.getElementById('formTallerista').appendChild(hiddenId);
+                    }
+                    hiddenId.value = id;
+                    const rutInput = document.getElementById('rutProfesor');
+                    const dvInput = document.getElementById('dvProfesor');
+                    if (rutInput) {
+                        rutInput.value = t.rut_persona || '';
+                        rutInput.disabled = true;
+                    }
+                    if (dvInput) {
+                        dvInput.value = t.dv_persona || '';
+                        dvInput.disabled = true;
+                    }
+                    document.getElementById('idProfesor').value = t.id_profesor;
+                    document.getElementById('nombrePersona').value = t.nombre_persona || '';
+                    document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
+                    document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
+                    const generoSelect = document.getElementById('genero');
+                    if (generoSelect && t.genero) {generoSelect.value = t.genero;}
+                    document.getElementById('telefono').value = t.telefono || '';
+                    document.getElementById('correo').value = t.correo_electronico || '';
+                    document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
+                    document.getElementById('nombreContacto').value = t.nombre_contacto || '';
+                    document.getElementById('correoContacto').value = t.correo_contacto || '';
+                    document.getElementById('profesion').value = t.profesion || '';
+                    document.getElementById('resumenCurricular').value = t.resumen_curricular || '';
+                    document.getElementById('observacion').value = t.observacion || '';
+                    const paisSelect = document.querySelector('.select-pais');
+                    if (paisSelect && t.id_pais) {paisSelect.value = t.id_pais;}
+                    const comunaSelect = document.querySelector('.select-comuna');
+                    if (comunaSelect && t.id_comuna) {comunaSelect.value = t.id_comuna;}
+                    document.getElementById('villa').value = t.villa || '';
+                    document.getElementById('numeroDepartamento').value = t.nro_dpto || '';
+                    document.getElementById('numeroBlock').value = t.nro_block || '';
+                    document.getElementById('numeroCalle').value = t.nro_calle || '';
+                    document.getElementById('calle').value = t.calle || '';
+                    document.getElementById('audUsuarioIngresoP').value = t.aud_usuario_ingreso_persona;
+                    document.getElementById('audFecIngresoP').value = t.aud_fec_ingreso_persona;
+                    document.getElementById('audUsuarioModificaP').value = t.aud_usuario_modifica_persona;
+                    document.getElementById('audFecModificaP').value = t.aud_fec_modifica_persona;
+                    document.getElementById('audUsuarioIngresoT').value = t.aud_usuario_ingreso_profesor;
+                    document.getElementById('audFecIngresoT').value = t.aud_fec_ingreso_profesor;
+                    document.getElementById('audUsuarioModificaT').value = t.aud_usuario_modifica_profesor;
+                    document.getElementById('audFecModificaT').value = t.aud_fec_modifica_profesor;
+                    const fecNaci = document.getElementById('fechaNacimiento');
+                    if (fecNaci) {
+                        fecNaci.value = t.fec_nacimiento || '';
+                        fecNaci.disabled = true;
+                    }
+                    new bootstrap.Modal(document.getElementById('modalTallerista')).show();
+                } else {
+                    this.mostrarError(result.message || 'No se pudo cargar el tallerista');
                 }
-                if (dvInput) {
-                    dvInput.value = t.dv_persona || '';
-                    dvInput.disabled = true;
-                }
-
-                // Pasaporte (opcional)
-                const pasaporteInput = document.getElementById('pasaporte');
-                if (pasaporteInput) pasaporteInput.value = t.pasaporte || '';
-
-                // Datos personales
-                document.getElementById('nombrePersona').value = t.nombre_persona || '';
-                document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
-                document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
-
-                // Género
-                const generoSelect = document.getElementById('genero');
-                if (generoSelect && t.genero !== undefined && t.genero !== null) {
-                    generoSelect.value = t.genero;
-                }
-
-                // Pronombre
-                const pronomInput = document.getElementById('pronomEstudiante');
-                if (pronomInput) pronomInput.value = t.pronom_estudiante || '';
-
-                // Contacto de la persona
-                document.getElementById('telefonoPersona').value = t.telefono || '';
-                document.getElementById('correoPersona').value = t.correo_electronico || '';
-
-                // Contacto de emergencia
-                document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
-                document.getElementById('nombreContacto').value = t.nombre_contacto || '';
-                document.getElementById('correoContacto').value = t.correo_contacto || '';
-
-                // Observación
-                document.getElementById('observacion').value = t.observacion || '';
-
-                // Dirección
-                document.getElementById('idPais').value = t.id_pais || 1;
-                document.getElementById('idComuna').value = t.id_comuna || 1;
-                document.getElementById('villa').value = t.villa || '';
-                document.getElementById('numeroDepartamento').value = t.nro_dpto || '';
-                document.getElementById('numeroBlock').value = t.nro_block || '';
-                document.getElementById('numeroCalle').value = t.nro_calle || '';
-                document.getElementById('calle').value = t.calle || '';
-
-                // Fecha de nacimiento (solo lectura)
-                const fecNaci = document.getElementById('fechaNacimiento');
-                if (fecNaci) {
-                    fecNaci.value = t.fec_nacimiento || '';
-                    fecNaci.disabled = true;
-                }
-
-                // Mostrar modal
-                new bootstrap.Modal(document.getElementById('modalInscripcion')).show();
-            } else {
-                this.mostrarError(result.message || 'No se pudo cargar la inscripción');
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            this.mostrarError('Error de conexión en editar');
-        });
-}
+            })
+        .catch(error => { console.error(error); this.mostrarError('Error de conexión en editar'); });
+    },
