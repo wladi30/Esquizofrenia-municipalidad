@@ -619,3 +619,33 @@
 
     vertical-align: middle;
 }
+
+.taller-chip-id {
+    position: relative;
+}
+
+.mensaje-copiado-id {
+
+    margin-top: 6px;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    color: #198754;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    opacity: 0;
+    transform: translateY(-4px);
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+}
+
+.mensaje-copiado-id.mostrar {
+    opacity: 1;
+    transform: translateY(0);
+}

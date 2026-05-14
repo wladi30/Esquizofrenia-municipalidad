@@ -1,3 +1,24 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const yearActual = new Date().getFullYear();
+    const selectsYear = document.querySelectorAll(
+        '.filtro-year-proceso'
+    );
+    selectsYear.forEach(select => {
+        select.innerHTML = `
+            <option value="">
+                Todos los años
+            </option>
+        `;
+        for(let year = yearActual; year >= 2018; year--){
+            select.innerHTML += `
+                <option value="${year}">
+                    ${year}
+                </option>
+            `;
+        }
+    });
+});
+
 const nombresGenero = {
     0: 'Masculino',
     1: 'Femenino',
@@ -38,6 +59,162 @@ const GestionInscripciones = {
         this.cargarComunaSelect();
         this.bindEventos();
     },
+
+    verTodasAuditorias: function(idEstudiante, nombreInscripcion) {
+        const overlay = document.getElementById('overlayAuditoria');
+        const bodyContainer = document.getElementById('overlayAuditoriaBody');
+        const tituloContainer = document.getElementById('overlayAuditoriaTitulo');
+        if (!overlay) {console.error('No se encontró el elemento overlayAuditoria');return;}
+        const scrollY = window.scrollY;
+        const nombreSanitizado = (nombreInscripcion || '').replace(/['"\\]/g, '');
+        tituloContainer.innerHTML = `<i class="bi bi-file-earmark-person-fill"></i>Todas las auditorías de la persona: ${nombreSanitizado || idEstudiante}`;
+        bodyContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando auditorías...</p></div>';
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        fetch(`/api/inscripcion-get/${idEstudiante}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const t = result.data;
+                    let html = `
+                    <div class="detalle-grid-auditoria">
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-person-vcard"></i>
+                                Datos Persona
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación de Persona
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_persona || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_persona || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-modificacion">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Modificación de Persona
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_modifica_persona || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_modifica_persona || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-person-workspace"></i>
+                                Datos Integrante
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación del Integrante
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_integrante_estudiante || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_integrante_estudiante || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-modificacion">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Modificación del Integrante
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_modifica_integrante_estudiante || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_modifica_integrante_estudiante || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="auditoria-seccion">
+                            <div class="auditoria-seccion-titulo">
+                                <i class="bi bi-diagram-3"></i>
+                                Datos Estudiante
+                            </div>
+                            <div class="auditoria-item">
+                                <div class="auditoria-icon auditoria-creacion">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="auditoria-info">
+                                    <div class="auditoria-accion">
+                                        Creación del Estudiante
+                                    </div>
+                                    <div class="auditoria-meta">
+                                        <span class="auditoria-usuario">
+                                            ${t.aud_usuario_ingreso_estudiante || '-'}
+                                        </span>
+                                        <span class="auditoria-fecha">
+                                            ${t.aud_fec_ingreso_estudiante || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                    bodyContainer.innerHTML = html;
+                } else {
+                    bodyContainer.innerHTML = `<div class="alert alert-danger">Error al cargar las auditorías</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                bodyContainer.innerHTML = `<div class="alert alert-danger">Error de conexión al cargar las auditorías</div>`;
+            });
+        const closeBtn = document.getElementById('closeOverlayAuditoria');
+        const closeBtn2 = document.getElementById('btnCerrarAuditoria');
+        const closeOverlay = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            window.scrollTo(0, scrollY);
+        };
+        if (closeBtn) closeBtn.onclick = closeOverlay;
+        if (closeBtn2) closeBtn2.onclick = closeOverlay;
+        overlay.onclick = (e) => {
+            if (e.target === overlay) closeOverlay(e);
+        };
+    },
+
 
     cargarGeneroSelect: function() {
         fetch('/api/genero')
@@ -219,6 +396,7 @@ const GestionInscripciones = {
         document.getElementById('formInscripcion').reset();
         const rutInput = document.getElementById('rutPersona');
         const dvInput = document.getElementById('dvPersona');
+        const pasaporteInput = document.getElementById('pasaporte');
         if (rutInput) {
             rutInput.disabled = false;
             rutInput.value = '';
@@ -226,6 +404,10 @@ const GestionInscripciones = {
         if (dvInput) {
             dvInput.disabled = false;
             dvInput.value = '';
+        }
+        if (pasaporteInput) {
+            pasaporteInput.disabled = false;
+            pasaporteInput.value = '';
         }
         let hiddenId = document.getElementById('inscripcionId');
         if (!hiddenId) {
@@ -328,22 +510,22 @@ const GestionInscripciones = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    // console.log("Datos completos de la inscripcion:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Inscripcion';
                     let hiddenId = document.getElementById('inscripcionId');
-                    if (!hiddenId) {hiddenId = document.createElement('input');hiddenId.type = 'hidden';hiddenId.id = 'inscripcionId';document.getElementById('formInscripcion').appendChild(hiddenId);}hiddenId.value = id;
+                    if (!hiddenId) {hiddenId = document.createElement('input'); hiddenId.type = 'hidden'; hiddenId.id = 'inscripcionId'; document.getElementById('formInscripcion').appendChild(hiddenId);} hiddenId.value = id;
                     const rutInput = document.getElementById('rutPersona');
                     const dvInput = document.getElementById('dvPersona');
+                    const pasaporteInput = document.getElementById('pasaporte');
                     if (rutInput) {rutInput.value = t.rut_persona || '';rutInput.disabled = true;}
                     if (dvInput) {dvInput.value = t.dv_persona || '';dvInput.disabled = true;}
-                    // document.getElementById('idEstudiante').value = t.id_estudiante;
+                    if (pasaporteInput) {pasaporteInput.value = t.pasaporte || '';pasaporteInput.disabled = true;}
                     document.getElementById('nombrePersona').value = t.nombre_persona || '';
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
                     document.getElementById('apellidoMaterno').value = t.apellido_materno || '';
                     const generoSelect = document.getElementById('genero');
                     if (generoSelect && t.genero) {generoSelect.value = t.genero;}
-                    document.getElementById('telefono').value = t.telefono;
-                    document.getElementById('correo').value = t.correo_electronico || '';
+                    document.getElementById('telefonoPersona').value = t.telefono;
+                    document.getElementById('correoPersona').value = t.correo_electronico || '';
                     document.getElementById('telefonoContacto').value = t.telefono_contacto || '';
                     document.getElementById('nombreContacto').value = t.nombre_contacto || '';
                     document.getElementById('correoContacto').value = t.correo_contacto || '';
@@ -355,12 +537,8 @@ const GestionInscripciones = {
                     document.getElementById('numeroBlock').value = t.nro_block || '';
                     document.getElementById('numeroCalle').value = t.nro_calle || '';
                     document.getElementById('calle').value = t.calle || '';
-                    document.getElementById('audUsuarioIngreso').value = t.aud_usuario_ingreso;
-                    document.getElementById('audFecIngreso').value = t.aud_fec_ingreso;
-                    document.getElementById('audUsuarioModifica').value = t.aud_usuario_modifica;
-                    document.getElementById('audFecModifica').value = t.aud_fec_modifica;
                     const fecNaci = document.getElementById('fechaNacimiento');
-                    if (fecNaci) {fecNaci.value = t.fec_nacimiento || '';fecNaci.disabled = true;}
+                    if (fecNaci) {fecNaci.value = t.fec_nacimiento || ''; fecNaci.disabled = true;}
                     new bootstrap.Modal(document.getElementById('modalInscripcion')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el inscripcion');
@@ -369,93 +547,249 @@ const GestionInscripciones = {
         .catch(error => { console.error(error); this.mostrarError('Error de conexión en editar'); });
     },
 
-    verDetalles: function(id) {
+    iniciarValidacionDocumento: function(){
+        const rutInput = document.getElementById('rutPersona');
+        const dvInput = document.getElementById('dvPersona');
+        const pasaporteInput = document.getElementById('pasaporte');
+        const actualizarValidacionDocumento = () => {
+            const tieneRut = rutInput.value.trim() !== '';
+            const tieneDv = dvInput.value.trim() !== '';
+            const tienePasaporte = pasaporteInput.value.trim() !== '';
+            // PASAPORTE -> desactiva RUT/DV
+            if(tienePasaporte){rutInput.required = false; dvInput.required = false;}
+            else{rutInput.required = true; dvInput.required = true;}
+            // RUT/DV -> desactiva PASAPORTE
+            if(tieneRut || tieneDv){pasaporteInput.required = false;}
+            else{pasaporteInput.required = true;}
+        };
+        rutInput.addEventListener('input',actualizarValidacionDocumento);
+        dvInput.addEventListener('input',actualizarValidacionDocumento);
+        pasaporteInput.addEventListener('input',actualizarValidacionDocumento);
+        actualizarValidacionDocumento();
+    },
+
+    verDetalles: function(id){
         fetch(`/api/inscripcion-get/${id}`)
             .then(response => response.json())
             .then(result => {
-                if (result.success) {
+                if(result.success){
                     const t = result.data;
-                    console.log("Datos del inscripcion:", t);
+                    const nombreCompleto = `${t.nombre_persona || ''} ${t.apellido_paterno || ''} ${t.apellido_materno || ''}`.replace(/\s+/g, ' ').trim();
+                    const fechaTexto = (fecha) => {if(!fecha) return '-';
+                        return new Date(fecha).toLocaleDateString('es-CL',{day: '2-digit', month: 'long', year: 'numeric'});
+                    };
                     let html = `
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion Personal</h6>
-                                <table class="table table-sm text-nowrap">
-                                    <tr><th>ID Persona:</th><td>${t.id_persona || '-'}</td></tr>
-                                    <tr><th>ID Estudiante:</th><td>${t.id_estudiante || '-'}</td></tr>
-                                    <tr><th>Nombre:</th><td>${t.nombre_persona || '-'}</td></tr>
-                                    <tr><th>Apellido Paterno:</th><td>${t.apellido_paterno || '-'}</td></tr>
-                                    <tr><th>Apellido Materno:</th><td>${t.apellido_materno || '-'}</td></tr>
-                                    <tr><th>R.U.T:</th><td>${t.rut_persona || '-'}</td></tr>
-                                    <tr><th>Digito Verificador:</th><td>${t.dv_persona || '-'}</td></tr>
-                                    <tr><th>Pasaporte:</th><td>${t.pasaporte || '-'}</td></tr>
-                                    <tr><th>Fecha de Nacimiento:</th><td>${t.fec_nacimiento || '-'}</td></tr>
-                                    <tr><th>Edad:</th><td>${t.edad || '-'}</td></tr>
-                                    <tr><th>Genero:</th><td>${nombresGenero[t.genero] || '-'}</td></tr>
-                                    <tr><th>Pronombre:</th><td>${t.pronom_estudiante || '-'}</td></tr>
-                                </table>
+                        <div class="row g-3">
+                            <div class="col-lg-6">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-person-vcard"></i>
+                                        Información Personal
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>ID Persona</span>
+                                            <strong>${t.id_persona || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>ID Estudiante</span>
+                                            <strong>${t.id_estudiante || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Nombre Completo</span>
+                                            <strong>${nombreCompleto || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>R.U.T</span>
+                                            <strong>
+                                                ${t.rut_persona || '-'}-${t.dv_persona || ''}
+                                            </strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Pasaporte</span>
+                                            <strong>${t.pasaporte || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Edad</span>
+                                            <strong>${t.edad || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Fecha Nacimiento</span>
+                                            <strong>${fechaTexto(t.fec_nacimiento)}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Género</span>
+                                            <strong>${nombresGenero[t.genero] || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Pronombre</span>
+                                            <strong>${t.pronom_estudiante || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Direcciones</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Pais:</th><td>${nombresPaises[t.id_pais] || '-'}</td></tr>
-                                    <tr><th>Comuna:</th><td>${nombresComunas[t.id_comuna] || '-'}</td></tr>
-                                    <tr><th>Villa:</th><td>${t.villa || '-'}</td></tr>
-                                    <tr><th>Calle:</th><td>${t.calle || '-'}</td></tr>
-                                    <tr><th>Numero de Calle:</th><td>${t.nro_calle || '-'}</td></tr>
-                                    <tr><th>Numero de Block:</th><td>${t.nro_block || '-'}</td></tr>
-                                    <tr><th>Numero de Departamento:</th><td>${t.nro_dpto || '-'}</td></tr>
-                                </table>
-                                <h6 class="fw-bold">Contactos</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Telefono de la Persona:</th><td>${t.telefono || '-'}</td></tr>
-                                    <tr><th>Correo de la Persona:</th><td>${t.correo_electronico || '-'}</td></tr>
-                                    <tr><th>Nombre del Contacto:</th><td>${t.nombre_contacto || '-'}</td></tr>
-                                    <tr><th>Telefono del Contacto:</th><td>${t.telefono_contacto || '-'}</td></tr>
-                                    <tr><th>Correo del Contacto:</th><td>${t.correo_contacto || '-'}</td></tr>
-                                </table>    
+                            <div class="col-lg-6">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-geo-alt"></i>
+                                        Dirección
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>País</span>
+                                            <strong>${nombresPaises[t.id_pais] || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Comuna</span>
+                                            <strong>${nombresComunas[t.id_comuna] || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Villa</span>
+                                            <strong>${t.villa || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Calle</span>
+                                            <strong>${t.calle || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>N° Calle</span>
+                                            <strong>${t.nro_calle || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Block</span>
+                                            <strong>${t.nro_block || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Departamento</span>
+                                            <strong>${t.nro_dpto || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion del Integracion</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Fecha de Inscripcion:</th><td>${t.fec_inscripcion || '-'}</td></tr>
-                                    <tr><th>Fecha de Retiro:</th><td>${t.fec_retiro || '-'}</td></tr>
-                                    <tr><th>Fecha de Reincorporacion:</th><td>${t.fec_reincorporacion || '-'}</td></tr>
-                                </table>
+                            <div class="col-lg-12">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-telephone-plus"></i>
+                                        Contactos
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>Teléfono</span>
+                                            <strong>${t.telefono || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Correo</span>
+                                            <strong>${t.correo_electronico || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Nombre Contacto</span>
+                                            <strong>${t.nombre_contacto || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Teléfono Contacto</span>
+                                            <strong>${t.telefono_contacto || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Correo Contacto</span>
+                                            <strong>${t.correo_contacto || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion del Taller</h6>
-                                <table class="table table-sm">
-                                    <tr><th>ID del Taller:</th><td>${t.id_taller || 'No existe'}</td></tr>
-                                    <tr><th>Nombre del Taller:</th><td>${t.nombre_taller || 'No existe'}</td></tr>
-                                    <tr><th>Año del Proceso:</th><td>${t.year_proceso || 'No existe'}</td></tr>
-                                </table>
+                            <div class="col-lg-6">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-calendar-check"></i>
+                                        Información de Inscripción
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>Fecha Inscripción</span>
+                                            <strong>${fechaTexto(t.fec_inscripcion)}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Fecha Retiro</span>
+                                            <strong>${fechaTexto(t.fec_retiro)}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Fecha Reincorporación</span>
+                                            <strong>${fechaTexto(t.fec_reincorporacion)}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold">Informacion Adicional</h6>
-                                <table class="table table-sm">
-                                    <tr><th>Usuario que ingreso al Estudiante/Integrante:</th><td>${t.aud_usuario_ingreso}</td></tr>
-                                    <tr><th>Fecha del ingreso:</th><td>${t.aud_fec_ingreso}</td></tr>
-                                    <tr><th>Usuario que hizo la ultima modificación:</th><td>${t.aud_usuario_modifica}</td></tr>
-                                    <tr><th>Fecha de la ultima modificación:</th><td>${t.aud_fec_modifica}</td></tr>
-                                </table>
+                            <div class="col-lg-6">
+                                <div class="detalle-card">
+                                    <div class="detalle-header">
+                                        <i class="bi bi-journal-bookmark"></i>
+                                        Información del Taller
+                                    </div>
+                                    <div class="detalle-grid">
+                                        <div class="detalle-item">
+                                            <span>ID Taller</span>
+                                            <strong>${t.id_taller || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item">
+                                            <span>Año Proceso</span>
+                                            <strong>${t.year_proceso || '-'}</strong>
+                                        </div>
+                                        <div class="detalle-item detalle-full">
+                                            <span>Nombre Taller</span>
+                                            <strong>${t.nombre_taller || '-'}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="acciones-detalle-card">
+                                    <div class="acciones-detalle-info">
+                                        <div class="acciones-detalle-icono">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div>
+                                            <div class="acciones-detalle-titulo">
+                                                Auditoría de Inscripción
+                                            </div>
+                                            <div class="acciones-detalle-texto">
+                                                Revisa el historial completo de ingresos y modificaciones.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-auditoria btn-ver-todas-auditorias" data-id="${t.id_estudiante}" data-nombre="${(t.nombre_persona || '') + ' ' + (t.apellido_paterno || '')}">
+                                        <i class="bi bi-file-earmark-person-fill"></i>
+                                        Ver auditoría
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
-                    if (t.observacion) html += `<div class="mt-3"><h6 class="fw-bold">Observación:</h6><p>${t.observacion}</p></div>`;
+                    if (t.observacion) html += `<div class="mt-3"><h6 class="titulo-detalle">Observación:</h6><p>${t.observacion}</p></div>`;
                     document.getElementById('detallesInscripcionBody').innerHTML = html;
+                    const auditButton = document.querySelector('#detallesInscripcionBody .btn-ver-todas-auditorias');
+                    if (auditButton) {
+                        auditButton.addEventListener('click', (e) => {
+                            const id = auditButton.getAttribute('data-id');
+                            const nombre = auditButton.getAttribute('data-nombre');
+                            this.verTodasAuditorias(id, nombre);
+                        });
+                    }
                     window.estudianteDetallesId = id;
                     new bootstrap.Modal(document.getElementById('modalDetallesInscripcion')).show();
-                } 
-                else {
-                    this.mostrarError('No se pudieron cargar los detalles.');
+                }
+                else{
+                    this.mostrarError(
+                        'No se pudieron cargar los detalles.'
+                    );
                 }
             })
         .catch(error => {
-            console.error('Error en fetch verDetalles:', error);
-            this.mostrarError('Error de conexion al cargar detalles.');
+            console.error(
+                'Error en fetch verDetalles:',
+                error
+            );
+            this.mostrarError(
+                'Error de conexión al cargar detalles.'
+            );
         });
     },
 

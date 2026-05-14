@@ -2,7 +2,7 @@
 {% block title %}Administración de Inscripciones - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/jlk.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}"> -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_Inscripcion.css') }}">
 {% endblock %}
 {% block content %}
@@ -55,17 +55,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small fw-semibold">Año del Proceso</label>
-                    <select class="form-select" id="busqueda_year_proceso">
-                        <option value="" selected>Todos</option>
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                        <option value="2021">2021</option>
-                        <option value="2020">2020</option>
-                        <option value="2019">2019</option>
-                        <option value="2018">2018</option>
+                    <select class="form-select filtro-year-proceso" id="busqueda_year_proceso">
                         <!-- <option value="0">0, existe solo un taller asi</option> -->
                     </select>
                 </div>
@@ -125,15 +115,15 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Rut <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="rutPersona" required>
+                            <input type="number" class="form-control" id="rutPersona">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">DV <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="dvPersona" required>
+                            <input type="text" class="form-control" id="dvPersona">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Pasaporte</label>
-                            <input type="text" class="form-control" id="pasaporte" required>
+                            <input type="text" class="form-control" id="pasaporte">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Nombre(s) <span class="text-danger">*</span></label>
@@ -157,24 +147,16 @@
                     
                     <div class="row">
                         <div class="col-md-3 mb-2">
-                            <label class="form-label fw-semibold">Telefono</label>
-                            <input type="text" class="form-control" id="telefonoPersona">
-                        </div>
-                        <div class="col-md-2 mb-1">
-                            <label class="form-label fw-semibold">Edad</label>
-                            <input type="text" class="form-control" id="edad" disabled>
+                            <label class="form-label fw-semibold">Telefono <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="telefonoPersona" required>
                         </div>
                         <div class="col-md-5 mb-3">
                             <label class="form-label fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fechaNacimiento" required>
                         </div>
-                        <div class="col-md-3 mb-1">
+                        <div class="col-md-4 mb-1">
                             <label class="form-label fw-semibold">Género</label>
-                            <select class="form-select" id="genero">
-                                <option value="0">Masculino</option>
-                                <option value="1">Femenino</option>
-                                <option value="2">Otro</option>
-                            </select>
+                            <select class="form-select" id="genero"></select>
                         </div>
                         <div class="col-md-5 mb-3">
                             <label class="form-label fw-semibold">Pronombre</label>
@@ -212,12 +194,16 @@
                     
                     <div class="row">
                         <div class="col-md-2 mb-3">
-                            <label class="form-label fw-semibold">ID Pais</label>
-                            <input type="number" class="form-control" id="idPais">
+                            <label class="form-label fw-semibold">Pais <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="idPais" required>
                         </div>
                         <div class="col-md-2 mb-3">
-                            <label class="form-label fw-semibold">ID Comuna</label>
-                            <input type="number" class="form-control" id="idComuna">
+                            <label class="form-label fw-semibold">Comuna <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="idComuna" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Villa</label>
+                            <input type="text" class="form-control" id="villa">
                         </div>
                     </div>
 
@@ -232,43 +218,18 @@
                             <label class="form-label fw-semibold">N° de Block</label>
                             <input type="text" class="form-control" id="numeroBlock">
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <label class="form-label fw-semibold">Villa</label>
-                            <input type="text" class="form-control" id="villa">
-                        </div>
                     </div>
 
                     <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 4px;">
                     
                     <div class="row">
                         <div class="col-md-2 mb-3">
-                            <label class="form-label fw-semibold">N° de Calle</label>
-                            <input type="text" class="form-control" id="numeroCalle">
+                            <label class="form-label fw-semibold">N° de Calle <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="numeroCalle" required>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <label class="form-label fw-semibold">Calle</label>
-                            <input type="text" class="form-control" id="calle">
-                        </div>
-                    </div>
-
-                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 4px;">
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que ingreso la inscripcion</label>
-                            <input type="text" class="form-control" id="audUsuarioIngreso" disabled>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-semibold">Fecha del Ingreso</label>
-                            <input type="datetime-local" class="form-control" id="audFecIngreso" disabled>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación</label>
-                            <input type="text" class="form-control" id="audUsuarioModifica" disabled>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-semibold">Fecha de la ultima modificación</label>
-                            <input type="datetime-local" class="form-control" id="audFecModifica" disabled>
+                            <label class="form-label fw-semibold">Calle <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="calle" required>
                         </div>
                     </div>
                 </div>
@@ -287,6 +248,23 @@
             <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body"><p id="mensajeConfirmacion"></p></div>
             <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-danger" id="btnConfirmar">Confirmar</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="overlayAuditoria" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; overflow-y: auto;">
+    <div style="background: rgb(255, 255, 255); border-radius: 12px; width: 90%; max-width: 1000px; margin: 40px auto; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0d6efd; margin-bottom: 15px; padding-bottom: 10px;">
+            <h4 class="m-0" id="overlayAuditoriaTitulo">
+                <i class="bi bi-clock-history me-2"></i>Historial de Auditoría
+            </h4>
+            <button type="button" id="closeOverlayAuditoria" class="btn-close" aria-label="Cerrar"></button>
+        </div>
+        <div id="overlayAuditoriaBody" style="max-height: 70vh; overflow-y: auto;">
+            <div class="text-center py-4">Cargando registros de auditoría...</div>
+        </div>
+        <div class="mt-3 text-end">
+            <button type="button" class="btn btn-secondary" id="btnCerrarAuditoria">Cerrar</button>
         </div>
     </div>
 </div>

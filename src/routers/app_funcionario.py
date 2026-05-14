@@ -12,7 +12,7 @@ from db_test import (
     ac_estudiante,
     ac_profesor,
     ac_taller,
-    borrar_estudiante,
+    # borrar_estudiante,
     cambiar_estado_taller_de_baja,
     inscribir_el_taller,
     inscribir_taller_o_espera,

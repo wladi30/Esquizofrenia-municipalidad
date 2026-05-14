@@ -13,6 +13,27 @@ if (typeof data !== 'undefined' && data !== null) {
     // asi que puede ser algo molesto ver que el error sale todo el rato
     console.warn("La variable 'data' no esta definida en esta pagina.");
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const yearActual = new Date().getFullYear();
+    const selectsYear = document.querySelectorAll(
+        '.filtro-year-proceso'
+    );
+    selectsYear.forEach(select => {
+        select.innerHTML = `
+            <option value="">
+                Todos los años
+            </option>
+        `;
+        for(let year = yearActual; year >= 2018; year--){
+            select.innerHTML += `
+                <option value="${year}">
+                    ${year}
+                </option>
+            `;
+        }
+    });
+});
 // Aqui doy inicio al js principal que se encargara de casi todo sobre administracion de talleres
 
 // el de aca sera lo que definira a lo que se muestra en la pag de talleres, aqui hare definiciones de cuandos talleres se muestran por pagina al igual que setear cuales seran los filtros
@@ -63,7 +84,6 @@ const GestionTalleres = {
     // para por toda una sesion de busqueda de dicha cosa
     cargarDatosIniciales: function() {
         this.cargarCategorias();
-        // this.CargarDepartamentos();
         this.cargarTalleristasSelect();
     },
 
@@ -612,7 +632,7 @@ const GestionTalleres = {
                     document.getElementById('nroClases').value = t.nro_clases_anual;
                     document.getElementById('horasTotales').value = t.horas_totales;
                     document.getElementById('estadoTaller').value = t.id_estado_taller;
-                    document.getElementById('fecEstado').value = t.fec_estado_taller;
+                    // document.getElementById('fecEstado').value = t.fec_estado_taller;
                     document.getElementById('observacion').value = t.observacion;
                     document.getElementById('lugar').value = t.lugar;
                     document.getElementById('minEstudiantes').value = t.minimo_estudiante;
@@ -624,10 +644,10 @@ const GestionTalleres = {
                     document.getElementById('tipoTaller').value = t.ind_tipo_taller;
                     if (t.id_profesor) {const idsParaMarcar = t.id_profesor.toString().split(',');idsParaMarcar.forEach(id => {const checkbox = document.querySelector(`#t_check_${id.trim()}`);
                         if (checkbox) checkbox.checked = true;});}
-                    document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso_taller;
-                    document.getElementById('fecIngreso').value = t.aud_fec_ingreso_taller;
-                    document.getElementById('usuarioModifica').value = t.aud_usuario_modifica_taller;
-                    document.getElementById('fecModifica').value = t.aud_fec_modifica_taller;
+                    // document.getElementById('usuarioIngreso').value = t.aud_usuario_ingreso_taller;
+                    // document.getElementById('fecIngreso').value = t.aud_fec_ingreso_taller;
+                    // document.getElementById('usuarioModifica').value = t.aud_usuario_modifica_taller;
+                    // document.getElementById('fecModifica').value = t.aud_fec_modifica_taller;
                     new bootstrap.Modal(document.getElementById('modalTaller')).show();
                 } 
                 else {this.mostrarError('No se pudo cargar el taller para editar.');}
@@ -725,7 +745,7 @@ const GestionTalleres = {
                                             <div class="profesor-nombre">
                                                 ${nombreCompleto || '-'}
                                             </div>
-                                            <div class="profesor-id">
+                                            <div class="profesor-modal-id">
                                                 #${prof.id_profesor || 'S.A'}
                                             </div>
                                         </div>

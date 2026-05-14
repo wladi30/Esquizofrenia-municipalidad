@@ -32,7 +32,7 @@
                 <i class="bi bi-plus-lg me-1"></i>
                 Nuevo Taller
             </button>
-            <div class="dropdown">
+            <!-- <div class="dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     <i class="bi bi-files me-1"></i> Masivo
                 </button>
@@ -48,28 +48,17 @@
                         <i class="bi bi-file-spreadsheet me-2"></i>Carga Masiva
                     </a></li>
                 </ul>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-1">
+                <div class="col-md-auto">
                     <label class="form-label small fw-semibold">Año</label>
-                    <select class="form-select form-select-sm" id="filtroAnio">
-                        <option value="" selected>Todos</option>
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                        <option value="2021">2021</option>
-                        <option value="2020">2020</option>
-                        <option value="2019">2019</option>
-                        <option value="2018">2018</option>
-                    </select>
+                    <select class="form-select form-select-sm filtro-year-proceso" id="filtroAnio"></select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-auto">
                     <label class="form-label small fw-semibold">Estado</label>
                     <select class="form-select form-select-sm" id="filtroEstado">
                         <option value="">Todos</option>
@@ -106,7 +95,7 @@
                         <input type="text" class="form-control" id="busqueda_lugar" placeholder="Lugar del taller...">
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-auto mb-3">
                     <label class="form-label fw-semibold">Categoria <span class="text-danger"></span></label>
                     <select class="form-select select-categoria-filtro" >
                         <option></option>
@@ -211,7 +200,9 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+
+                        <!-- <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Usuario que ingreso el taller<span class="text-danger"></span></label>
                             <textarea class="form-control" id="usuarioIngreso" rows="1" maxlength="20" disabled></textarea>
                         </div>
@@ -227,7 +218,7 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha de la ultima modificación <span class="text-danger"></span></label>
                             <input type="datetime-local" class="form-control" id="fecModifica" disabled>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="mb-3">
@@ -239,6 +230,8 @@
                         <textarea class="form-control" id="observacion" rows="2" maxlength="500"></textarea>
                     </div>
 
+                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+                    
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha Inicio <span class="text-danger">*</span></label>
@@ -248,12 +241,14 @@
                             <label class="form-label fw-semibold">Fecha Termino <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fecTermino">
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <!-- <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Fecha Estado Taller <span class="text-danger"></span></label>
                             <input type="date" class="form-control" id="fecEstado" disabled>
-                        </div>
+                        </div> -->
                     </div>
 
+                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+                    
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-semibold">Lugar</label>
@@ -273,6 +268,8 @@
                         </div>
                     </div>
 
+                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+                    
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">Edad Minima</label>
@@ -292,6 +289,8 @@
                         </div>
                     </div>
 
+                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+                    
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Materiales Requeridos</label>
                         <textarea class="form-control" id="material" rows="2" maxlength="500" placeholder="Lista de materiales necesarios..."></textarea>
@@ -302,6 +301,8 @@
                         <textarea class="form-control" id="requisitos" rows="2" maxlength="500" placeholder="Requisitos para participar..."></textarea>
                     </div>
 
+                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+                    
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
@@ -320,6 +321,9 @@
                             </select>
                         </div>
                     </div>
+
+                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 1px;">
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

@@ -2,7 +2,7 @@
 {% block title %}Administración de Talleristas - Municipalidad de Quilicura{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/jlk.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/funcionario.css') }}"> -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/administracion_tallerista.css') }}">
 {% endblock %}
 {% block content %}
@@ -134,10 +134,10 @@
                             <label class="form-label fw-semibold">Telefono</label>
                             <input type="text" class="form-control" id="telefono">
                         </div>
-                        <div class="col-md-2 mb-1">
+                        <!-- <div class="col-md-2 mb-1">
                             <label class="form-label fw-semibold">Edad</label>
                             <input type="text" class="form-control" id="edad" disabled>
-                        </div>
+                        </div> -->
                         <div class="col-md-5 mb-3">
                             <label class="form-label fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fechaNacimiento" required>
@@ -196,6 +196,10 @@
                             <label class="form-label fw-semibold">Comuna</label>
                             <select class="form-select select-comuna"></select>
                         </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-semibold">Villa</label>
+                            <input type="text" class="form-control" id="villa">
+                        </div>
                     </div>
 
                     <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 4px;">
@@ -208,10 +212,6 @@
                         <div class="col-md-3 mb-3">
                             <label class="form-label fw-semibold">N° de Block</label>
                             <input type="text" class="form-control" id="numeroBlock">
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label class="form-label fw-semibold">Villa</label>
-                            <input type="text" class="form-control" id="villa">
                         </div>
                     </div>
 
@@ -227,49 +227,6 @@
                             <input type="text" class="form-control" id="calle">
                         </div>
                     </div>
-
-                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 4px;">
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que ingreso a la Persona</label>
-                            <input type="text" class="form-control" id="audUsuarioIngresoP" disabled>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-semibold">Fecha del Ingreso</label>
-                            <input type="datetime-local" class="form-control" id="audFecIngresoP" disabled>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación</label>
-                            <input type="text" class="form-control" id="audUsuarioModificaP" disabled>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-semibold">Fecha de la ultima modificación</label>
-                            <input type="datetime-local" class="form-control" id="audFecModificaP" disabled>
-                        </div>
-                    </div>
-
-                    <hr style="height: 1px; background-color: rgb(0, 0, 0); border: none; opacity: 0.4; margin-top: 4px;">
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que ingreso al tallerista</label>
-                            <input type="text" class="form-control" id="audUsuarioIngresoT" disabled>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-semibold">Fecha del Ingreso</label>
-                            <input type="datetime-local" class="form-control" id="audFecIngresoT" disabled>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Usuario que hizo la ultima modificación</label>
-                            <input type="text" class="form-control" id="audUsuarioModificaT" disabled>
-                        </div>
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-semibold">Fecha de la ultima modificación</label>
-                            <input type="datetime-local" class="form-control" id="audFecModificaT" disabled>
-                        </div>
-                    </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

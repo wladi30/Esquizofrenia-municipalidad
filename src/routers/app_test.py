@@ -18,6 +18,16 @@ def index_chamuco():
 # te permite ver cuantos talleristas tienes con sus nombres , etc. Tambien deberia ser que aqui mismo te permita ingresar al tema de poder ver los talleristas y editarlo
 # seria un gran QoL eso.
 
+# INSCRIPCION
+# revisando vi que me falta añadir algunas cosas al modal de crear ins, le falta el tema de poder meterse a un taller, deberia ponerlo en el estudiante? o deberia dejarlo en un
+# apartado distinto?, tambien faltan mas detalles , como fecha de inicio y fecha de retiro , creo que por la diferencia de datos voy a tener que crear un nuevo modal solo para editar
+# y otro para crear , algo lamentable por que el tema del js estaba siempre ligado a que fueran casi lo mismo, despues de que esto este listo deberia mejorar gestion de lista de espera
+# aprovechando que estoy manoseando todo, asi ya para el 20 tendre creo el 80% u 90% listo, faltaria el tema de que quede mas bonito y el tema de la neutralidad del lenguaje visible
+# abajo esta ese mismo tema \/
+
+# ADMIN
+# tengo que crear 2 usuarios adicionals, admin y vista, ya se como los hare y que podran hacer pero debo tenerlos listo este finde, los hare mañana viernes 15/05
+
 # CSS
 # mejorando todo el css y como se ve , por ahora los colores no tengo idea cual seria el mejor pero sin duda se ve mejor que antes, paso de verse como un excel mal hecho ahora a algo
 # mas suave?, ni idea pero lo que si se es que se ve entero gey la verdad ,  los pronombres y los colores lo hacen solo peor, ademas despues le voy a poner el tema de lenguaje

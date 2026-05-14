@@ -51,6 +51,35 @@ const GestionTalleristas = {
         return rut.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     },
 
+    copiarIdTaller: function(idTaller, elemento) {
+        navigator.clipboard.writeText(idTaller.toString())
+            .then(() => {
+                const existente = elemento.parentElement.querySelector('.mensaje-copiado-id');
+                if (existente) {
+                    existente.remove();
+                }
+                const mensaje = document.createElement('div');
+                mensaje.className = 'mensaje-copiado-id';
+                mensaje.innerHTML = `
+                    <i class="bi bi-check-circle-fill"></i>
+                    Copiado
+                `;
+                elemento.parentElement.appendChild(mensaje);
+                setTimeout(() => {
+                    mensaje.classList.add('mostrar');
+                }, 10);
+                setTimeout(() => {
+                    mensaje.classList.remove('mostrar');
+                    setTimeout(() => {
+                        mensaje.remove();
+                    }, 250);
+                }, 1400);
+            })
+        .catch(error => {
+            console.error('Error al copiar ID:', error);
+        });
+    },
+
     verTodasAuditorias: function(idTallerista, nombreTallerista) {
         const overlay = document.getElementById('overlayAuditoria');
         const bodyContainer = document.getElementById('overlayAuditoriaBody');
@@ -492,26 +521,13 @@ const GestionTalleristas = {
             .then(result => {
                 if (result.success) {
                     const t = result.data;
-                    // console.log("Datos completos del tallerista:", t);
                     document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Tallerista';
                     let hiddenId = document.getElementById('talleristaId');
-                    if (!hiddenId) {
-                        hiddenId = document.createElement('input');
-                        hiddenId.type = 'hidden';
-                        hiddenId.id = 'talleristaId';
-                        document.getElementById('formTallerista').appendChild(hiddenId);
-                    }
-                    hiddenId.value = id;
+                    if (!hiddenId) {hiddenId = document.createElement('input'); hiddenId.type = 'hidden'; hiddenId.id = 'talleristaId'; document.getElementById('formTallerista').appendChild(hiddenId);} hiddenId.value = id;
                     const rutInput = document.getElementById('rutProfesor');
                     const dvInput = document.getElementById('dvProfesor');
-                    if (rutInput) {
-                        rutInput.value = t.rut_persona || '';
-                        rutInput.disabled = true;
-                    }
-                    if (dvInput) {
-                        dvInput.value = t.dv_persona || '';
-                        dvInput.disabled = true;
-                    }
+                    if (rutInput) {rutInput.value = t.rut_persona || '';rutInput.disabled = true;}
+                    if (dvInput) {dvInput.value = t.dv_persona || '';dvInput.disabled = true;}
                     document.getElementById('idProfesor').value = t.id_profesor;
                     document.getElementById('nombrePersona').value = t.nombre_persona || '';
                     document.getElementById('apellidoPaterno').value = t.apellido_paterno || '';
@@ -535,19 +551,8 @@ const GestionTalleristas = {
                     document.getElementById('numeroBlock').value = t.nro_block || '';
                     document.getElementById('numeroCalle').value = t.nro_calle || '';
                     document.getElementById('calle').value = t.calle || '';
-                    document.getElementById('audUsuarioIngresoP').value = t.aud_usuario_ingreso_persona;
-                    document.getElementById('audFecIngresoP').value = t.aud_fec_ingreso_persona;
-                    document.getElementById('audUsuarioModificaP').value = t.aud_usuario_modifica_persona;
-                    document.getElementById('audFecModificaP').value = t.aud_fec_modifica_persona;
-                    document.getElementById('audUsuarioIngresoT').value = t.aud_usuario_ingreso_profesor;
-                    document.getElementById('audFecIngresoT').value = t.aud_fec_ingreso_profesor;
-                    document.getElementById('audUsuarioModificaT').value = t.aud_usuario_modifica_profesor;
-                    document.getElementById('audFecModificaT').value = t.aud_fec_modifica_profesor;
                     const fecNaci = document.getElementById('fechaNacimiento');
-                    if (fecNaci) {
-                        fecNaci.value = t.fec_nacimiento || '';
-                        fecNaci.disabled = true;
-                    }
+                    if (fecNaci) {fecNaci.value = t.fec_nacimiento || ''; fecNaci.disabled = true;}
                     new bootstrap.Modal(document.getElementById('modalTallerista')).show();
                 } else {
                     this.mostrarError(result.message || 'No se pudo cargar el tallerista');
@@ -572,7 +577,7 @@ const GestionTalleristas = {
                                 ${taller.nombre_taller || 'Sin nombre'}
                             </div>
                             <div class="taller-modal-meta">
-                                <span class="taller-modal-chip taller-modal-chip-id">
+                                <span class="taller-chip taller-chip-id taller-id-copiable" onclick="GestionTalleristas.copiarIdTaller(${taller.id_taller}, this)" title="Copiar ID del taller" style="cursor: pointer;">
                                     <i class="bi bi-hash"></i>
                                     ${taller.id_taller || '-'}
                                 </span>
@@ -622,7 +627,7 @@ const GestionTalleristas = {
                                             ${taller.nombre_taller || '-'}
                                         </div>
                                         <div class="taller-asignado-meta">
-                                            <span class="taller-chip taller-chip-id">
+                                            <span class="taller-chip taller-chip-id taller-id-copiable" onclick="GestionTalleristas.copiarIdTaller(${taller.id_taller}, this)" title="Copiar ID del taller" style="cursor: pointer;">
                                                 <i class="bi bi-hash"></i>
                                                 ${taller.id_taller || '-'}
                                             </span>
@@ -786,10 +791,7 @@ const GestionTalleristas = {
                                             </div>
                                         </div>
                                     </div>
-                                    <button
-                                        class="btn btn-auditoria btn-ver-todas-auditorias"
-                                        data-id="${t.id_profesor}"
-                                        data-nombre="${(t.nombre_persona || '') + ' ' + (t.apellido_paterno || '')}">
+                                    <button class="btn btn-auditoria btn-ver-todas-auditorias" data-id="${t.id_profesor}" data-nombre="${(t.nombre_persona || '') + ' ' + (t.apellido_paterno || '')}">
                                         <i class="bi bi-file-earmark-person-fill"></i>
                                         Ver las auditorías
                                     </button>
